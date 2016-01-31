@@ -14,7 +14,7 @@
 ##Ideas:
 
 * Use Trello for organisation?
-* State Machine for handling different tasks?
+* State Machine for handling different tasks? [LeJOS Behavior Programming](http://www.lejos.org/nxt/nxj/tutorial/Behaviors/BehaviorProgramming.htm)
 
 ##Useful links:
 
