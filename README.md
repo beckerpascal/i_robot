@@ -27,3 +27,10 @@
 [Ich, Robot WS12/13](https://www.youtube.com/watch?v=tzhMOD3CbzQ)
 
 [Ich, Robot WS13/14](https://www.youtube.com/watch?v=f1y_e5mDq7w)
+
+##Installation
+
+1. Clone Repo to wherever you want
+2. Import project in Eclipse
+3. Go to project properties → Java Build Path → Libraries → Add Library... → Choose LeJos Library Container
+4. Have fun!
