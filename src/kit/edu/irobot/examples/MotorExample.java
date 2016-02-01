@@ -11,10 +11,13 @@ public class MotorExample {
  
       public static void main(String[] args) 
       {
+          EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.A);
+          EV3LargeRegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
+         
+    	  
            LCD.drawString("MotorExample", 0, 0);
            Button.waitForAnyPress();
-           EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.A);
-           EV3LargeRegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
+
            
            RegulatedMotor[] list = {motorB};
            
@@ -23,20 +26,20 @@ public class MotorExample {
            motorB.startSynchronization();
            
            motorA.setSpeed(motorA.getMaxSpeed());
-           LCD.drawString("Max Speed A: " + motorA.getMaxSpeed(), 0, 1);
-           motorA.backward();
+           LCD.drawString("Max Speed A: " + motorA.getMaxSpeed()/2, 0, 1);
+           motorA.forward();
            motorB.setSpeed(motorB.getMaxSpeed());
-           LCD.drawString("Max Speed B: " + motorB.getMaxSpeed(), 0, 2);
-           motorB.backward();
+           LCD.drawString("Max Speed B: " + motorB.getMaxSpeed()/2, 0, 2);
+           motorB.forward();
 
            Delay.msDelay(4000);
            
            motorA.endSynchronization();
 
            Delay.msDelay(4000);
-
            
-           Button.waitForAnyPress();
+           LCD.drawString("Motor blocked! ", 0, 2);
+
       }
  
  }
