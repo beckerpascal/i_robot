@@ -2,7 +2,9 @@ package kit.edu.irobot.examples;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.MotorPort;
+import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
 public class MotorExample {
@@ -11,21 +13,29 @@ public class MotorExample {
       {
            LCD.drawString("MotorExample", 0, 0);
            Button.waitForAnyPress();
-           Motor.A.setSpeed(7200);
-           Motor.B.setSpeed(720);
-           Motor.A.forward();
-           Motor.B.forward();
+           EV3LargeRegulatedMotor motorA = new EV3LargeRegulatedMotor(MotorPort.A);
+           EV3LargeRegulatedMotor motorB = new EV3LargeRegulatedMotor(MotorPort.B);
+           
+           RegulatedMotor[] list = {motorB};
+           
+           motorA.synchronizeWith(list);
+           motorA.startSynchronization();
+           motorB.startSynchronization();
+           
+           motorA.setSpeed(motorA.getMaxSpeed());
+           LCD.drawString("Max Speed A: " + motorA.getMaxSpeed(), 0, 1);
+           motorA.backward();
+           motorB.setSpeed(motorB.getMaxSpeed());
+           LCD.drawString("Max Speed B: " + motorB.getMaxSpeed(), 0, 2);
+           motorB.backward();
 
-//           LCD.clear();
-//           Delay.msDelay(2000);
-//           LCD.drawInt(Motor.A.getTachoCount(),0,0);
-//           Motor.A.stop();
-//           LCD.drawInt(Motor.A.getTachoCount(),0,1);
-//           Motor.A.backward();
-//           while (Motor.A.getTachoCount()>0); 
-//           LCD.drawInt(Motor.A.getTachoCount(),0,2);
-//           Motor.A.stop();
-//           LCD.drawInt(Motor.A.getTachoCount(),0,3);
+           Delay.msDelay(4000);
+           
+           motorA.endSynchronization();
+
+           Delay.msDelay(4000);
+
+           
            Button.waitForAnyPress();
       }
  
