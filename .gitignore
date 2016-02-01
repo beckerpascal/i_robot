@@ -9,6 +9,7 @@ tmp/
 local.properties
 .settings/
 .loadpath
+*.jar
 
 # External tool builders
 .externalToolBuilders/
