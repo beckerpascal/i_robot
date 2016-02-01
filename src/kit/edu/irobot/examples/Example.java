@@ -1,4 +1,4 @@
-package kit.edu.irobot;
+package kit.edu.irobot.examples;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
