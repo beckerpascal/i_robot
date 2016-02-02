@@ -1,14 +1,16 @@
 package kit.edu.irobot.behaviors;
 
+import kit.edu.irobot.robot.Robot;
 import lejos.robotics.subsumption.Arbitrator;
 
 public abstract class StageSolver {
 	private String name;
 	public Arbitrator arby;
-	
+	private Robot robot;
 	
 	public StageSolver(String name){
 		this.name = name;
+		this.robot = robot.getInstance();
 	}
 	
 	public String getName(){
@@ -19,5 +21,9 @@ public abstract class StageSolver {
 		return this.arby;
 	}
 
+	public Robot getRobot(){
+		return robot;
+	}
+	
 	abstract public void solve();
 }

@@ -24,7 +24,8 @@ public class StageController{
 		solver.add(rollingFieldStage);
 		solver.add(SeesawStage);
 		
-	
+		rollingFieldStage.solve();
+		
 	}
 	
 }

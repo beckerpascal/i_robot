@@ -34,7 +34,6 @@ public class Robot {
 	}
 
 	public void setMotorSpeed(float motorA, float motorB) {
-
 	}
 
 	/**
