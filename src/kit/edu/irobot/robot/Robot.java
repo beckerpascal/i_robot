@@ -32,21 +32,21 @@ public class Robot {
 	final int FORWARD  =  1; 
 	
 	int direction = FORWARD;
-	private Robot() {
+	private Robot(){
 
 		motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
 		motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
 		
-		if(Constants.LIGHT_SENSOR != null)sensorLight    = new EV3ColorSensor(Constants.LIGHT_SENSOR);
-		else 							  sensorLight    = null;
+		if(Constants.LIGHT_SENSOR != null)sensorLight       = new EV3ColorSensor(Constants.LIGHT_SENSOR);
+		else 							  sensorLight       = null;
 		
-		if(Constants.DISTANCE_SENSOR != null)sensorDistance    = new EV3UltrasonicSensor(Constants.LIGHT_SENSOR);
-		else 							     sensorDistance    = null;
+		if(Constants.DISTANCE_SENSOR != null)sensorDistance = new EV3UltrasonicSensor(Constants.LIGHT_SENSOR);
+		else 							     sensorDistance = null;
 		
-		if(Constants.TOUCH_1_SENSOR != null)sensorTouch_1   = new EV3TouchSensor(Constants.TOUCH_1_SENSOR);
+		if(Constants.TOUCH_FRONT_SENSOR != null)sensorTouch_1   = new EV3TouchSensor(Constants.TOUCH_FRONT_SENSOR);
 		else 							    sensorTouch_1   = null;
 
-		if(Constants.TOUCH_2_SENSOR != null)sensorTouch_2   = new EV3TouchSensor(Constants.TOUCH_2_SENSOR);
+		if(Constants.TOUCH_BACK_SENSOR != null)sensorTouch_2   = new EV3TouchSensor(Constants.TOUCH_BACK_SENSOR);
 		else 							    sensorTouch_2   = null;
 		
 	}

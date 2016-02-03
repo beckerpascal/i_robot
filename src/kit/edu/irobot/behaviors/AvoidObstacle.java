@@ -16,10 +16,7 @@ public class AvoidObstacle implements Behavior {
 	   private float[] values;
 	   
 	   public AvoidObstacle(){
-		   sonar = new EV3UltrasonicSensor(SensorPort.S1);
-		   
-		   sonar.getDistanceMode();
-		   values = new float[sonar.sampleSize()];
+		   robot = Robot.getInstance();
 	   }
 	   
 	   public boolean takeControl() {
