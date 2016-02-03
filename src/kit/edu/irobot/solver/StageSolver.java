@@ -1,4 +1,4 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
 import kit.edu.irobot.robot.Robot;
 import lejos.robotics.subsumption.Arbitrator;

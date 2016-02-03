@@ -1,5 +1,6 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
+import kit.edu.irobot.behaviors.DriveForward;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
@@ -10,36 +11,13 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class BossStageSolver extends  StageSolver{
 	
-	public class DoSomeThing  implements Behavior{
-
-		@Override
-		public boolean takeControl() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public void action() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void suppress() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
 	public BossStageSolver() {
 		super("BossStageSolver");
 		
-		Behavior b1 = new DoSomeThing();
+		Behavior b1 = new DriveForward();
 
 		Behavior[] bArray = {b1};
 		super.arby = new Arbitrator(bArray);
-		super.arby.start();
 		// TODO Auto-generated constructor stub
 	}
 

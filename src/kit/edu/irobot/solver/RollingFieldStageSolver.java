@@ -1,16 +1,16 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
 import lejos.robotics.subsumption.Behavior;
 
 /**
- * Behavior for the maze
+ * Behavior for rolling field challenge
  * @author Pascal Becker
  *
  */
-public class MazeStageSolver extends StageSolver{
+public class RollingFieldStageSolver extends StageSolver{
 
-	public MazeStageSolver() {
-		super("MazeStageSolver");
+	public RollingFieldStageSolver() {
+		super("RollingFieldStageSolver");
 		// TODO Auto-generated constructor stub
 	}
 

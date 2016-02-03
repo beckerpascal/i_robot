@@ -1,16 +1,16 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
 import lejos.robotics.subsumption.Behavior;
 
 /**
- * Behavior for rolling field challenge
+ * Class for executing the seesaw part of the challenge
  * @author Pascal Becker
  *
  */
-public class RollingFieldStageSolver extends StageSolver{
+public class SeesawStageSolver extends StageSolver{
 
-	public RollingFieldStageSolver() {
-		super("RollingFieldStageSolver");
+	public SeesawStageSolver() {
+		super("SeesawStageSolver");
 		// TODO Auto-generated constructor stub
 	}
 

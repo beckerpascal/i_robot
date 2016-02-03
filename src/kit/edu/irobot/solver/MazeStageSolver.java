@@ -1,16 +1,17 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
+import kit.edu.irobot.robot.Robot;
 import lejos.robotics.subsumption.Behavior;
 
 /**
- * Class for executing the seesaw part of the challenge
+ * Behavior for the maze
  * @author Pascal Becker
  *
  */
-public class SeesawStageSolver extends StageSolver{
-
-	public SeesawStageSolver() {
-		super("SeesawStageSolver");
+public class MazeStageSolver extends StageSolver{	
+	
+	public MazeStageSolver() {
+		super("MazeStageSolver");
 		// TODO Auto-generated constructor stub
 	}
 

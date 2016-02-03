@@ -1,4 +1,4 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.solver;
 
 import lejos.robotics.subsumption.Behavior;
 
