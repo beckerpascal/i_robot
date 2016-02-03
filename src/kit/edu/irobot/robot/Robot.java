@@ -23,12 +23,11 @@ public class Robot {
 	private EV3LargeRegulatedMotor motorLeft;
 	private EV3LargeRegulatedMotor motorRight;
 
-	/*
-	public EV3UltrasonicSensor  sensorDistance;
-	public EV3ColorSensor 		sensorLight; 
-	public EV3TouchSensor 		sensorTouch_1;
-	public EV3TouchSensor 		sensorTouch_2;
-	*/
+	private EV3UltrasonicSensor  sensorDistance;
+	private EV3ColorSensor 		 sensorLight; 
+	private EV3TouchSensor 		 sensorTouch_1;
+	private EV3TouchSensor 		 sensorTouch_2;
+	
 	
 	final int BACKWARD = -1;
 	final int FORWARD  =  1; 
@@ -46,10 +45,26 @@ public class Robot {
 		sensorTouch_2  = new EV3TouchSensor(SensorPort.S4);
 		// TODO: Init all other sensors
 		*/
+		sensorDistance = null;
+		sensorLight    = null;
+		sensorTouch_1  = null;
+		sensorTouch_2  = null;
 	}
 
-	public EV3LargeRegulatedMotor getMotorLeft(){
-		return motorLeft;
+	public EV3UltrasonicSensor getSensorDistance(){
+		return sensorDistance;
+	}
+	
+	public EV3ColorSensor getSensorLight(){
+		return sensorLight;
+	}
+	
+	public EV3TouchSensor getSensorTouchFront(){
+		return sensorTouch_1;
+	}
+	
+	public EV3TouchSensor getSensorTouchBack(){
+		return sensorTouch_2;
 	}
 	
 	public EV3LargeRegulatedMotor getMotorRight(){
