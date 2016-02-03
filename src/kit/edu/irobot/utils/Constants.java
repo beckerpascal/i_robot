@@ -21,8 +21,8 @@ public final class Constants {
 	public static Port TOUCH_BACK_SENSOR   = null;// SensorPort.S1;
 	public static Port GYROSCOP_SENSOR     = null;// SensorPort.S1;
 	
-	public static float PID_KP = 10;                             
-	public static float PID_KI = 0;//0.5f;                             
+	public static float PID_KP = 250;                             
+	public static float PID_KI = 0.1f;//0.5f;                             
 	public static float PID_KD = 0;//50;                           
 	public static float PID_OFFSET =0.45f;     
 	
