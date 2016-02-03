@@ -8,9 +8,12 @@ public abstract class StageSolver {
 	public Arbitrator arby;
 	private Robot robot;
 	
+	private boolean abort;
+	
 	public StageSolver(String name){
 		this.name = name;
 		this.robot = robot.getInstance();
+		this.abort = false;
 	}
 	
 	public String getName(){
@@ -21,6 +24,10 @@ public abstract class StageSolver {
 		return this.arby;
 	}
 
+	public void abort(){
+		abort = true;
+	}
+	
 	public Robot getRobot(){
 		return robot;
 	}

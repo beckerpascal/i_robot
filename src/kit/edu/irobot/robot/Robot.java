@@ -20,7 +20,8 @@ import lejos.utility.Delay;
 
 public class Robot {
 	private static Robot instance = null;
-	EV3LargeRegulatedMotor motorLeft, motorRight;
+	private EV3LargeRegulatedMotor motorLeft;
+	private EV3LargeRegulatedMotor motorRight;
 
 	/*
 	public EV3UltrasonicSensor  sensorDistance;
@@ -47,6 +48,14 @@ public class Robot {
 		*/
 	}
 
+	public EV3LargeRegulatedMotor getMotorLeft(){
+		return motorLeft;
+	}
+	
+	public EV3LargeRegulatedMotor getMotorRight(){
+		return motorRight;
+	}
+	
 	public static Robot getInstance() {
 		if (instance == null) {
 			instance = new Robot();
@@ -122,8 +131,8 @@ public class Robot {
 	   }
 	   
 	   public void rotate(float angle){
-		   float speed = this.motorLeft.getRotationSpeed();
-		   float rotation_time = angle/speed;
+		   float ang_vel = this.motorLeft.getSpeed();
+		   float rotation_time = angle/ang_vel;
 		   
 		   if(angle < 0.f){
 			   rotateRight();

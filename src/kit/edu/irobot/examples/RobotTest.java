@@ -1,28 +1,15 @@
 package kit.edu.irobot.examples;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.solver.StageSolver;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 public class RobotTest {
-	
-	public static String modeToText(int mode){
-		switch (mode){
-			case 0:
-				return "Forward";
-			
-			case 1:
-				return "Backward";
-			
-			case 2:
-				return "TurnLeft";
-
-			case 3:
-				return "TurnRight";
-		}
-		return "Wrong Mode";
-	}
 	
 	public static void main(String[] args) 
     {
@@ -39,23 +26,35 @@ public class RobotTest {
 
 		final int max_mode = 3;
 
+		List<String> modes = new ArrayList<String>();
+		modes.add("Forward");
+		modes.add("Backward");
+		modes.add("TurnLeft");
+		modes.add("TurnRight");
+		modes.add("TurnAround");
+
+	
 		robot.setSpeed(speed);
 		
 		while(button != Button.ID_ESCAPE){
 			if( button == Button.ID_UP){
-				switch(mode){
-					case 0:
+				switch(modes.get(mode)){
+					case "Forward":
 						robot.moveForward();
 						break;
-					case 1: 
+					case "Backward": 
 						robot.moveBackward();
 						break;
-					case 2: 
+					case "TurnLeft": 
 						robot.rotateLeft();
 						break;
-					case 3: 
+					case "TurnRight": 
 						robot.rotateRight();
 						break;
+					case "TurnAround": 
+						robot.rotate(180.0f);
+						break;
+						
 				}
 			}else if( button == Button.ID_DOWN){
 			}else if( button == Button.ID_LEFT){
@@ -66,7 +65,7 @@ public class RobotTest {
 				robot.setSpeed(speed);
 			}else if( button == Button.ID_ENTER){
 				mode = mode +1;
-				if(mode > max_mode){
+				if(mode >= modes.size()){
 					mode = 0;
 				}
 				robot.stopMotion();
@@ -74,7 +73,7 @@ public class RobotTest {
 			button = -1;
 			
 			LCD.clear();
-			LCD.drawString("Mode: "   + modeToText(mode), 0, 0);
+			LCD.drawString("Mode: "   + modes.get(mode), 0, 0);
 			LCD.drawString("Speed: "  + speed, 0, 2);
 			button = Button.getButtons();
 			Delay.msDelay(100);
