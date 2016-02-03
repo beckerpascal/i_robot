@@ -28,7 +28,6 @@ public class Robot {
 	private EV3TouchSensor 		 sensorTouch_1;
 	private EV3TouchSensor 		 sensorTouch_2;
 	
-	
 	final int BACKWARD = -1;
 	final int FORWARD  =  1; 
 	
@@ -38,17 +37,18 @@ public class Robot {
 		motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
 		motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
 		
-		/*
-		sensorDistance = new EV3UltrasonicSensor(SensorPort.S1);
-		sensorLight    = new EV3ColorSensor(SensorPort.S2);
-		sensorTouch_1  = new EV3TouchSensor(SensorPort.S3);
-		sensorTouch_2  = new EV3TouchSensor(SensorPort.S4);
-		// TODO: Init all other sensors
-		*/
-		sensorDistance = null;
-		sensorLight    = null;
-		sensorTouch_1  = null;
-		sensorTouch_2  = null;
+		if(Constants.LIGHT_SENSOR != null)sensorLight    = new EV3ColorSensor(Constants.LIGHT_SENSOR);
+		else 							  sensorLight    = null;
+		
+		if(Constants.DISTANCE_SENSOR != null)sensorDistance    = new EV3UltrasonicSensor(Constants.LIGHT_SENSOR);
+		else 							     sensorDistance    = null;
+		
+		if(Constants.TOUCH_1_SENSOR != null)sensorTouch_1   = new EV3TouchSensor(Constants.TOUCH_1_SENSOR);
+		else 							    sensorTouch_1   = null;
+
+		if(Constants.TOUCH_2_SENSOR != null)sensorTouch_2   = new EV3TouchSensor(Constants.TOUCH_2_SENSOR);
+		else 							    sensorTouch_2   = null;
+		
 	}
 
 	public EV3UltrasonicSensor getSensorDistance(){
