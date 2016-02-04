@@ -53,11 +53,6 @@ public class MazeStageSolver extends StageSolver{
 		while (!Button.ESCAPE.isDown()) {	    	
 			Delay.msDelay(500);
 		}
-		
-		solver.stopSolver();
-		solver.stopSolver();
-		solver.stopSolver();
-		solver.stopSolver();
 		solver.stopSolver();
 	}
 
