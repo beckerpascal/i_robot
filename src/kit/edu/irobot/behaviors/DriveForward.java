@@ -10,8 +10,8 @@ public class DriveForward  implements Behavior {
 	   public boolean exit;
 	   public Robot robot;
 	   
-	   public void terminate(boolean exit){
-		   this.exit = exit;
+	   public void terminate(){
+		   this.exit = true;
 	   }
 	   
 	   public DriveForward(Robot robot){
@@ -20,7 +20,6 @@ public class DriveForward  implements Behavior {
 	   
 	   public boolean takeControl() {
 		   if(this.exit == true) {
-			   suppressed = true;
 			   return false;
 		   }
 		   
@@ -32,12 +31,11 @@ public class DriveForward  implements Behavior {
 	   }
 
 	   public void action() {
+   	     suppressed = false;
 	     LCD.clear();
-	     LCD.drawString("still active...", 0, 0);
-		   
-		 
+	     LCD.drawString("drive forward...", 0, 0);
+		   		 
 	     robot.setRobotSpeed(0.3f);
 	     robot.moveRobotForward();
-	     
 	   }
 }

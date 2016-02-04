@@ -39,7 +39,8 @@ public class MazeStageSolver extends StageSolver{
 	@Override
 	public void stopSolver() {
 		// TODO Auto-generated method stub
-		driveForward.exit = true;
+		driveForward.terminate();
+		hitObstacle.terminate();
 		super.getRobot().stopMotion();
 		LCD.drawString("stop motion...", 1, 0);
 		 
@@ -51,6 +52,9 @@ public class MazeStageSolver extends StageSolver{
 		while (!Button.ESCAPE.isDown()) {	    	
 			Delay.msDelay(500);
 		}
+		
+		solver.stopSolver();
+		solver.stopSolver();
 		solver.stopSolver();
 		solver.stopSolver();
 		solver.stopSolver();

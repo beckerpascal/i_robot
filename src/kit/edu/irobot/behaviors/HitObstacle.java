@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
@@ -29,7 +30,7 @@ public class HitObstacle implements Behavior {
 	   }
 	   
 	   public boolean takeControl() {
-	    	if(exit == true) return false;
+	    	if(this.exit == true) return false;
 	    	
 	    	touch.fetchSample(touch_samples, 0);
 	    	if(touch_samples[0] == 1.0 )
@@ -44,14 +45,17 @@ public class HitObstacle implements Behavior {
 	   public void action() {
 	     suppressed = false;
 
+	     LCD.clear();
+	     LCD.drawString("bumper...", 0, 0);
+	     
 	     robot.setRobotSpeed(0.2f);
 	     robot.moveRobotBackward();
 	     Delay.msDelay(1000);
 	     robot.stopMotion();
-	     
 	     robot.setRobotSpeed(0.2f);
-	     robot.rotateRobot(-90.0f);
-	     
+	     robot.rotateRobotLeft();
+	     Delay.msDelay(2000);
+	     robot.stopMotion(); 
 	     
 	   }
 }
