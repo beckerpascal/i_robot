@@ -7,7 +7,7 @@ import lejos.robotics.subsumption.Behavior;
 public class DriveForward  implements Behavior {
 	   private boolean suppressed = false;
 	   
-	   public boolean exit;
+	   public boolean exit = false;
 	   public Robot robot;
 	   
 	   public void terminate(){
@@ -19,10 +19,12 @@ public class DriveForward  implements Behavior {
 	   }
 	   
 	   public boolean takeControl() {
+		   LCD.clear();
+		   LCD.drawString("drive forward control...", 2, 0);
+			 
 		   if(this.exit == true) {
 			   return false;
 		   }
-		   
 		   return true;
 	   }
 

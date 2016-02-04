@@ -32,9 +32,14 @@ public class HitObstacle implements Behavior {
 	   public boolean takeControl() {
 	    	if(this.exit == true) return false;
 	    	
+	    	LCD.clear();
+			LCD.drawString("hitobstacle forward control...", 3, 0);
+				
 	    	touch.fetchSample(touch_samples, 0);
-	    	if(touch_samples[0] == 1.0 )
+	    	if(touch_samples[0] == 1.0 ){
 	    		return true;
+	    	}
+	    	
 	    	return false;
 	   }
 
@@ -57,5 +62,11 @@ public class HitObstacle implements Behavior {
 	     Delay.msDelay(2000);
 	     robot.stopMotion(); 
 	     
+	     touch_samples[0] = 0.f;
+
+	     LCD.clear();
+	     LCD.drawString("bumper ende...", 0, 0);
+	     
+	     suppressed = true;
 	   }
 }

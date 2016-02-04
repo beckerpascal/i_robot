@@ -63,8 +63,14 @@ public class RobotTest {
 						}
 						solver.stopSolver();
 						break;
-					
-						
+					case "MazeStageSolver":
+						MazeStageSolver maze = new MazeStageSolver();
+						maze.start();
+						while (!Button.ESCAPE.isDown()) {	    	
+							Delay.msDelay(100);
+						}
+						maze.stopSolver();
+						break;						
 				}
 			}else if( button == Button.ID_DOWN){
 			
