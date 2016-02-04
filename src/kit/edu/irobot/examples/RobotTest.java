@@ -60,7 +60,7 @@ public class RobotTest {
 						LineFollowingStageSolver solverLine = new LineFollowingStageSolver();
 						solverLine.start();
 						while (!Button.ESCAPE.isDown()) {	    	
-							Delay.msDelay(500);
+							Delay.msDelay(100);
 						}
 						solverLine.stopSolver();
 						break;

@@ -85,7 +85,7 @@ public class AvoidObstacle implements Behavior {
 			}
 		}
 
-		while (!suppressed){
+		while (!suppressed && !exit){			
 			Thread.yield();
 		}
 
