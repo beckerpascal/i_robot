@@ -8,6 +8,7 @@ import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.RegulatedMotor;
 import lejos.utility.Delay;
 
 /**
@@ -21,9 +22,8 @@ import lejos.utility.Delay;
 
 public class Robot {
 	private static Robot instance = null;
-	private EV3LargeRegulatedMotor motorLeft;
-	private EV3LargeRegulatedMotor motorRight;
-
+	private EV3LargeRegulatedMotor  motorLeft;
+	private EV3LargeRegulatedMotor  motorRight;
 	private EV3MediumRegulatedMotor motorSpecial;
 
 	private EV3UltrasonicSensor  sensorDistance;
@@ -77,6 +77,10 @@ public class Robot {
 		return sensorTouch_2;
 	}
 	
+	public EV3LargeRegulatedMotor getMotorLeft(){
+		return motorLeft;
+	}
+	
 	public EV3LargeRegulatedMotor getMotorRight(){
 		return motorRight;
 	}
@@ -98,20 +102,24 @@ public class Robot {
 		   this.motorRight.setSpeed(motorRight);
 	   }
 	   
-	   //speed = [0-1]
-	   public void setSpeed(float speed){
+	   public void setMotorSpeed(float speed,RegulatedMotor motor){
 		   speed = Math.abs(speed);
 		   speed = Math.min(speed, 1.0f);
-		   
-		   float maxspeed_left= this.motorLeft.getMaxSpeed();
-		   float maxspeed_right = this.motorLeft.getMaxSpeed();
-		   
-		   float new_speed = Math.min(maxspeed_left, maxspeed_right)*speed;
-		   
-		   driveWithSpeed(new_speed,new_speed);
+
+		   float max_speed= motor.getMaxSpeed();
+		   float new_speed = max_speed*speed;
+		   motor.setSpeed((int)new_speed);
+	   }
+	   //speed = [0-1]
+	   public void setRobotSpeed(float speed){
+		   setMotorSpeed(speed,this.motorLeft);
+		   setMotorSpeed(speed,this.motorRight);
 	   }
 	   
 	   public void moveForward(){
+		   RegulatedMotor[] motors = {this.motorRight};
+		   this.motorLeft.synchronizeWith(motors);
+		   this.motorLeft.startSynchronization();
 		   if(direction == BACKWARD){
 			 this.motorLeft.backward();
 			 this.motorRight.backward();     
@@ -151,8 +159,11 @@ public class Robot {
 	   }
 	   
 	   public void stopMotion(){
+		   
 		   this.motorLeft.stop();
 		   this.motorRight.stop();
+		   
+		   this.motorLeft.endSynchronization();
 	   }
 	   
 	   public void rotate(float angle){

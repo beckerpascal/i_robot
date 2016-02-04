@@ -38,7 +38,7 @@ public class HitObstacle implements Behavior {
 	   public void action() {
 	     suppressed = false;
 	     
-	     robot.setSpeed(0.1f);
+	     robot.setRobotSpeed(0.1f);
 	     
 	     robot.rotateLeft();
 	     while( !suppressed )

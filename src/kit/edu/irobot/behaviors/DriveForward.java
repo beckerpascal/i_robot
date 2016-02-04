@@ -18,7 +18,7 @@ public class DriveForward  implements Behavior {
 	   public void action() {
 	     suppressed = false;
 	     
-	     robot.setSpeed(0.3f);
+	     robot.setRobotSpeed(0.3f);
 	     
 	     robot.moveForward();
 	     while( !suppressed )

@@ -34,7 +34,7 @@ public class RobotTest {
 		modes.add("TurnAround");
 
 	
-		robot.setSpeed(speed);
+		robot.setRobotSpeed(speed);
 		
 		while(button != Button.ID_ESCAPE){
 			if( button == Button.ID_UP){
@@ -59,10 +59,10 @@ public class RobotTest {
 			}else if( button == Button.ID_DOWN){
 			}else if( button == Button.ID_LEFT){
 				speed = speed - 0.05f;
-				robot.setSpeed(speed);
+				robot.setRobotSpeed(speed);
 			}else if( button == Button.ID_RIGHT){
 				speed = speed + 0.05f;
-				robot.setSpeed(speed);
+				robot.setRobotSpeed(speed);
 			}else if( button == Button.ID_ENTER){
 				mode = mode +1;
 				if(mode >= modes.size()){
