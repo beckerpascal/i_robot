@@ -16,22 +16,23 @@ public class HitObstacle implements Behavior {
 	   private float[] touch_samples;
 	   
 	   public HitObstacle(){
-		   sonar.getDistanceMode();
+		   robot.getInstance();
+		   
+		   touch = robot.getSensorTouchFront();
 		   touch.getTouchMode();
 		   sonar_samples = new float[sonar.sampleSize()];
 		   touch_samples = new float[touch.sampleSize()];
 	   }
 	   
 	   public boolean takeControl() {
-	    	sonar.fetchSample(sonar_samples, 0);
 	    	touch.fetchSample(touch_samples, 0);
-	    	if(sonar_samples[0]< 0.05 || touch_samples[0] < 1.0 )
+	    	if(touch_samples[0] == 1.0 )
 	    		return true;
 	    	return false;
 	   }
 
 	   public void suppress() {
-		   if(sonar_samples[0]> 0.05 && touch_samples[0] > 1.0 )
+		   if(touch_samples[0] > 1.0 )
 			   suppressed =  true;
 	   }
 
@@ -39,8 +40,7 @@ public class HitObstacle implements Behavior {
 	     suppressed = false;
 	     
 	     robot.setRobotSpeed(0.1f);
-	     
-	     robot.rotateLeft();
+	     robot.rotateRobot(-90.0f);
 	     while( !suppressed )
 	        Thread.yield();
 	    

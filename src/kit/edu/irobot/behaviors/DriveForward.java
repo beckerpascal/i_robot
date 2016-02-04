@@ -20,7 +20,7 @@ public class DriveForward  implements Behavior {
 	     
 	     robot.setRobotSpeed(0.3f);
 	     
-	     robot.moveForward();
+	     robot.moveRobotForward();
 	     while( !suppressed )
 	        Thread.yield();
 	    

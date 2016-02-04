@@ -40,19 +40,19 @@ public class RobotTest {
 			if( button == Button.ID_UP){
 				switch(modes.get(mode)){
 					case "Forward":
-						robot.moveForward();
+						robot.moveRobotForward();
 						break;
 					case "Backward": 
-						robot.moveBackward();
+						robot.moveRobotBackward();
 						break;
 					case "TurnLeft": 
-						robot.rotateLeft();
+						robot.rotateRobotLeft();
 						break;
 					case "TurnRight": 
-						robot.rotateRight();
+						robot.rotateRobotRight();
 						break;
 					case "TurnAround": 
-						robot.rotate(180.0f);
+						robot.rotateRobot(180.0f);
 						break;
 						
 				}

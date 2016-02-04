@@ -46,7 +46,7 @@ public class Robot {
 		if(Constants.LIGHT_SENSOR != null)sensorLight       = new EV3ColorSensor(Constants.LIGHT_SENSOR);
 		else 							  sensorLight       = null;
 		
-		if(Constants.DISTANCE_SENSOR != null)sensorDistance = new EV3UltrasonicSensor(Constants.LIGHT_SENSOR);
+		if(Constants.DISTANCE_SENSOR != null)sensorDistance = new EV3UltrasonicSensor(Constants.DISTANCE_SENSOR);
 		else 							     sensorDistance = null;
 		
 		if(Constants.TOUCH_FRONT_SENSOR != null)sensorTouch_1   = new EV3TouchSensor(Constants.TOUCH_FRONT_SENSOR);
@@ -116,10 +116,10 @@ public class Robot {
 		   setMotorSpeed(speed,this.motorRight);
 	   }
 	   
-	   public void moveForward(){
-		   RegulatedMotor[] motors = {this.motorRight};
-		   this.motorLeft.synchronizeWith(motors);
-		   this.motorLeft.startSynchronization();
+	   public void moveRobotForward(){
+		   //RegulatedMotor[] motors = {this.motorRight};
+		   //this.motorLeft.synchronizeWith(motors);
+		   //this.motorLeft.startSynchronization();
 		   if(direction == BACKWARD){
 			 this.motorLeft.backward();
 			 this.motorRight.backward();     
@@ -129,7 +129,7 @@ public class Robot {
 		   }
 	   }
 
-	   public void moveBackward(){
+	   public void moveRobotBackward(){
 		   if(direction == BACKWARD){
 			 this.motorLeft.forward();
 			 this.motorRight.forward();     
@@ -138,7 +138,7 @@ public class Robot {
 			 this.motorRight.backward(); 
 		   }
 	   }
-	   public void rotateLeft(){
+	   public void rotateRobotLeft(){
 		   if(direction == BACKWARD){
 		      this.motorLeft.backward();
 		      this.motorRight.forward(); 
@@ -148,7 +148,7 @@ public class Robot {
 		   }
 	   }
 
-	   public void rotateRight(){
+	   public void rotateRobotRight(){
 		   if(direction == BACKWARD){
 				  this.motorLeft.forward();
 				  this.motorRight.backward();
@@ -166,20 +166,20 @@ public class Robot {
 		   this.motorLeft.endSynchronization();
 	   }
 	   
-	   public void rotate(float angle){
+	   public void rotateRobot(float angle){
 		   float ang_vel = this.motorLeft.getSpeed();
 		   float rotation_time = angle/ang_vel;
 		   
 		   if(angle < 0.f){
-			   rotateRight();
+			   rotateRobotRight();
 		   }else{
-			   rotateLeft();
+			   rotateRobotLeft();
 		   }
 		   Delay.msDelay((int)(rotation_time* 1000.f));
 		   stopMotion();		   
 	   }
 	   
 	   public void turnAround(){
-		   rotate(180.f);
+		   rotateRobot(180.f);
 	   }
 }

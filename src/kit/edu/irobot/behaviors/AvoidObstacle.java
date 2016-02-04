@@ -39,7 +39,7 @@ public class AvoidObstacle implements Behavior {
 	     
 	     robot.setRobotSpeed(0.1f);
 	     
-	     robot.rotateLeft();
+	     robot.rotateRobotLeft();
 	     while( !suppressed )
 	        Thread.yield();
 	    
