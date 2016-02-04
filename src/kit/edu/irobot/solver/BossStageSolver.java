@@ -14,18 +14,24 @@ public class BossStageSolver extends  StageSolver{
 	public BossStageSolver() {
 		super("BossStageSolver");
 		
-		Behavior b1 = new DriveForward();
+		Behavior b1 = new DriveForward(super.getRobot());
 
 		Behavior[] bArray = {b1};
 		super.arby = new Arbitrator(bArray);
 		// TODO Auto-generated constructor stub
 	}
 
-	
 	@Override
-	public void solve() {
-		arby.start();
-			// TODO Auto-generated method stub
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void stopSolver() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

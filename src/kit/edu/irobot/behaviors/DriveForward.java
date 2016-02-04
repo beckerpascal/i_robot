@@ -5,10 +5,23 @@ import lejos.robotics.subsumption.Behavior;
 
 public class DriveForward  implements Behavior {
 	   private boolean suppressed = false;
+	   
+	   public boolean exit;
 	   public Robot robot;
 	   
+	   public void terminate(boolean exit){
+		   this.exit = exit;
+	   }
+	   
+	   public DriveForward(Robot robot){
+		   this.robot = robot;
+	   }
+	   
 	   public boolean takeControl() {
-	      return true;
+		   if(this.exit == true) 
+			   return false;
+		   
+		   return true;
 	   }
 
 	   public void suppress() {
@@ -19,11 +32,9 @@ public class DriveForward  implements Behavior {
 	     suppressed = false;
 	     
 	     robot.setRobotSpeed(0.3f);
-	     
 	     robot.moveRobotForward();
 	     while( !suppressed )
 	        Thread.yield();
-	    
 	     robot.stopMotion();
 	     
 	   }

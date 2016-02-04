@@ -4,23 +4,22 @@ import kit.edu.irobot.robot.Robot;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
 
 public class HitObstacle implements Behavior {
 	   private boolean suppressed = false;
 	   public Robot robot;
 	   
 	   private EV3TouchSensor touch;
-	   private EV3UltrasonicSensor sonar;
 
-	   private float[] sonar_samples;
 	   private float[] touch_samples;
 	   
-	   public HitObstacle(){
-		   robot.getInstance();
+	   public HitObstacle(Robot robot){
+		   
+		   this.robot = robot;
 		   
 		   touch = robot.getSensorTouchFront();
 		   touch.getTouchMode();
-		   sonar_samples = new float[sonar.sampleSize()];
 		   touch_samples = new float[touch.sampleSize()];
 	   }
 	   
@@ -32,14 +31,18 @@ public class HitObstacle implements Behavior {
 	   }
 
 	   public void suppress() {
-		   if(touch_samples[0] > 1.0 )
-			   suppressed =  true;
+		   suppressed = true;
 	   }
 
 	   public void action() {
 	     suppressed = false;
+
+	     robot.setRobotSpeed(0.2f);
+	     robot.moveRobotBackward();
+	     Delay.msDelay(1000);
+	     robot.stopMotion();
 	     
-	     robot.setRobotSpeed(0.1f);
+	     robot.setRobotSpeed(0.2f);
 	     robot.rotateRobot(-90.0f);
 	     while( !suppressed )
 	        Thread.yield();

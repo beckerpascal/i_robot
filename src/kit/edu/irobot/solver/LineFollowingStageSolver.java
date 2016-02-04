@@ -15,7 +15,13 @@ public class LineFollowingStageSolver  extends StageSolver{
 	}
 
 	@Override
-	public void solve() {
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopSolver() {
 		// TODO Auto-generated method stub
 		
 	}

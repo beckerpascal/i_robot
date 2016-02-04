@@ -9,7 +9,7 @@ import lejos.robotics.subsumption.Behavior;
 public class StageController{
 	
 	public static void main(String [] args){
-		StageSolver bossStage         = new BossStageSolver();
+		/*StageSolver bossStage         = new BossStageSolver();
 		StageSolver bridgeStage       = new BridgeStageSolver();
 		StageSolver lineFollwingStage = new LineFollowingStageSolver();
 		StageSolver mazeStage         = new MazeStageSolver();
@@ -24,7 +24,7 @@ public class StageController{
 		solver.add(rollingFieldStage);
 		solver.add(SeesawStage);
 		
-		rollingFieldStage.solve();
+		rollingFieldStage.solve();*/
 		
 	}
 	

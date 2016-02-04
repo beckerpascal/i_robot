@@ -3,7 +3,7 @@ package kit.edu.irobot.solver;
 import kit.edu.irobot.robot.Robot;
 import lejos.robotics.subsumption.Arbitrator;
 
-public abstract class StageSolver {
+public abstract class StageSolver extends Thread{
 	private String name;
 	public Arbitrator arby;
 	private Robot robot;
@@ -12,25 +12,22 @@ public abstract class StageSolver {
 	
 	public StageSolver(String name){
 		this.name = name;
-		this.robot = robot.getInstance();
+		this.robot = Robot.getInstance();
 		this.abort = false;
-	}
-	
-	public String getName(){
-		return this.name;
 	}
 	
 	public Arbitrator getArbitrator(){
 		return this.arby;
-	}
-
-	public void abort(){
-		abort = true;
 	}
 	
 	public Robot getRobot(){
 		return robot;
 	}
 	
-	abstract public void solve();
+	public void setRobot(Robot robot){
+		this.robot = robot;
+	}
+
+	abstract public void stopSolver();
+	abstract public void run();
 }
