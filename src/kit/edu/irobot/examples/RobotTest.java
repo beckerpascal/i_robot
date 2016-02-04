@@ -33,6 +33,7 @@ public class RobotTest {
 		modes.add("TurnRight");
 		modes.add("TurnAround");
 		modes.add("FollowLine");
+		modes.add("MazeSolver");
 
 	
 		robot.setRobotSpeed(speed);
@@ -56,12 +57,20 @@ public class RobotTest {
 						robot.rotateRobot(180.0f);
 						break;
 					case "FollowLine":
-						LineFollowingStageSolver solver = new LineFollowingStageSolver();
-						solver.start();
+						LineFollowingStageSolver solverLine = new LineFollowingStageSolver();
+						solverLine.start();
 						while (!Button.ESCAPE.isDown()) {	    	
 							Delay.msDelay(500);
 						}
-						solver.stopSolver();
+						solverLine.stopSolver();
+						break;
+					case "MazeSolver":
+						MazeStageSolver solverMaze = new MazeStageSolver();
+						solverMaze.start();
+						while (!Button.ESCAPE.isDown()) {	    	
+							Delay.msDelay(500);
+						}
+						solverMaze.stopSolver();
 						break;
 					
 						

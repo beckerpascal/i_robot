@@ -1,8 +1,8 @@
 package kit.edu.irobot.solver;
 
+import kit.edu.irobot.behaviors.AvoidObstacle;
 import kit.edu.irobot.behaviors.DriveForward;
 import kit.edu.irobot.behaviors.HitObstacle;
-import kit.edu.irobot.robot.Robot;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Arbitrator;
@@ -19,16 +19,17 @@ public class MazeStageSolver extends StageSolver{
 	/*behaviours*/
 	public DriveForward driveForward;
 	public HitObstacle hitObstacle;
+	public AvoidObstacle avoidObstacle;
 	
 	public MazeStageSolver() {
 		super("MazeStageSolver");
 		
 		driveForward = new DriveForward(super.getRobot());
 		hitObstacle  = new HitObstacle(super.getRobot());
+		avoidObstacle = new AvoidObstacle(super.getRobot());
 		
-		Behavior[] bArray = {driveForward,hitObstacle};//,hitObstacle};
+		Behavior[] bArray = {driveForward, hitObstacle, avoidObstacle};
 		super.arby = new Arbitrator(bArray,true);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -38,9 +39,9 @@ public class MazeStageSolver extends StageSolver{
 	
 	@Override
 	public void stopSolver() {
-		// TODO Auto-generated method stub
 		driveForward.terminate();
 		hitObstacle.terminate();
+		avoidObstacle.terminate();
 		super.getRobot().stopMotion();
 		LCD.drawString("stop motion...", 1, 0);
 		 

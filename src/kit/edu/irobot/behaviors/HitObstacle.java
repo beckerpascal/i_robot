@@ -8,54 +8,56 @@ import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 
 public class HitObstacle implements Behavior {
-	   private boolean suppressed = false;
-	   public Robot robot;
-	   
-	   private EV3TouchSensor touch;
+	private boolean suppressed = false;
+	public Robot robot;
 
-	   private float[] touch_samples;
-	   private boolean exit;
-	   
-	   public void terminate(){
-		   this.exit = true;
-	   }
-	   
-	   public HitObstacle(Robot robot){
-		   
-		   this.robot = robot;
-		   
-		   touch = robot.getSensorTouchFront();
-		   touch.getTouchMode();
-		   touch_samples = new float[touch.sampleSize()];
-	   }
-	   
-	   public boolean takeControl() {
-	    	if(this.exit == true) return false;
-	    	
-	    	touch.fetchSample(touch_samples, 0);
-	    	if(touch_samples[0] == 1.0 )
-	    		return true;
-	    	return false;
-	   }
+	private EV3TouchSensor touch;
 
-	   public void suppress() {
-		   suppressed = true;
-	   }
+	private float[] touch_samples;
+	private boolean exit;
 
-	   public void action() {
-	     suppressed = false;
+	public void terminate() {
+		this.exit = true;
+	}
 
-	     LCD.clear();
-	     LCD.drawString("bumper...", 0, 0);
-	     
-	     robot.setRobotSpeed(0.2f);
-	     robot.moveRobotBackward();
-	     Delay.msDelay(1000);
-	     robot.stopMotion();
-	     robot.setRobotSpeed(0.2f);
-	     robot.rotateRobotLeft();
-	     Delay.msDelay(2000);
-	     robot.stopMotion(); 
-	     
-	   }
+	public HitObstacle(Robot robot) {
+
+		this.robot = robot;
+
+		touch = robot.getSensorTouchFront();
+		touch.getTouchMode();
+		touch_samples = new float[touch.sampleSize()];
+	}
+
+	public boolean takeControl() {
+		if (this.exit == true)
+			return false;
+
+		touch.fetchSample(touch_samples, 0);
+		if (touch_samples[0] == 1.0)
+			return true;
+		return false;
+	}
+
+	public void suppress() {
+		suppressed = true;
+	}
+
+	public void action() {
+		robot.writeBehaviorNameToDisplay("HitObstacleBeh");
+		suppressed = false;
+
+		LCD.clear();
+		LCD.drawString("bumper...", 0, 0);
+
+		robot.setRobotSpeed(0.2f);
+		robot.moveRobotBackward();
+		Delay.msDelay(1000);
+		robot.stopMotion();
+		robot.setRobotSpeed(0.2f);
+		robot.rotateRobotLeft();
+		Delay.msDelay(2000);
+		robot.stopMotion();
+
+	}
 }

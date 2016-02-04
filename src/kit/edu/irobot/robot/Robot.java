@@ -2,6 +2,7 @@ package kit.edu.irobot.robot;
 
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.Button;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -185,4 +186,8 @@ public class Robot {
 	   
 	   public void turnAround(){
 		   rotateRobot(180.f);}
+	   
+	   public void writeBehaviorNameToDisplay(String name){
+		   LCD.drawString("I am in " + name, 1, 5);
+	   }
 }
