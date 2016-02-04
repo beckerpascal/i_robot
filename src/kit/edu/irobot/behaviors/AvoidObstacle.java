@@ -7,6 +7,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 import lejos.robotics.subsumption.Behavior;
+import lejos.utility.Delay;
 
 public class AvoidObstacle implements Behavior {
 	private boolean suppressed = false;
@@ -19,6 +20,7 @@ public class AvoidObstacle implements Behavior {
 
 	private float[] values;
 
+	public int x = 0;
 	public void terminate(){
 		this.exit = true;
 	}
@@ -35,28 +37,44 @@ public class AvoidObstacle implements Behavior {
     	if(exit == true){
     		return false;
     	}
-
 		average.fetchSample(values, 0);
 		LCD.drawString("Values:"+values[0], 0, 2);
 		if (values[0] < Constants.ULTRASONIC_DISTANCE_ACTIVE) {
 			return true;
 		}
+		x++;
+		LCD.drawString("x:"+x,8, 4);
 		return false;
 	}
 
 	public void suppress() {
+		/*
 		average.fetchSample(values, 0);
-		if (values[0] > 0.2) {
+		if (suppressed == false && (values[0] > Constants.ULTRASONIC_DISTANCE_MAX) ) {
 			suppressed = true;
-		} else {
+			
+			
+		}else {
 			suppressed = false;
 		}
+
+		LCD.clear();
+		LCD.drawString("suppress AVOID...", 0, 2);
+		x++;
+		LCD.drawString("x:"+x, 5, 4);
+		*/
+
+		x++;
+		LCD.drawString("x:"+x ,5, 4);
+		robot.stopMotion();
 	}
 
 	public void action() {
+		suppressed = false;
+		
 		robot.setLEDPattern(5);
 		robot.writeBehaviorNameToDisplay("AvoidObstacleBeh");
-		suppressed = false;
+		
 		
 		average.fetchSample(values, 0);
 		if(Constants.ULTRASONIC_SENSOR_ON_RIGHT_SIDE){
@@ -86,12 +104,9 @@ public class AvoidObstacle implements Behavior {
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
 			}
 		}
-
-		while (!suppressed && !exit){			
-			Thread.yield();
-		}
-
-		robot.stopMotion();
-
+		Delay.msDelay(1000);
+		x++;
+		LCD.drawString("x:"+x, 2, 4);
+		
 	}
 }

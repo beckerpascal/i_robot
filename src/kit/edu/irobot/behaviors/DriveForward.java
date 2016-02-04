@@ -11,6 +11,7 @@ public class DriveForward implements Behavior {
 	public boolean exit = false;
 	public Robot robot;
 
+	public int x = 0;
 	public void terminate() {
 		this.exit = true;
 	}
@@ -23,21 +24,31 @@ public class DriveForward implements Behavior {
 		if (this.exit == true) {
 			return false;
 		}
+		x++;
+		LCD.drawString("x:"+x, 1,2);
+		
 		return true;
 	}
 
 	public void suppress() {
 		suppressed = true;
 	}
+	
 
 	public void action() {
+		suppressed = false;
 		robot.writeBehaviorNameToDisplay("DriveForwardBeh");
 
-		suppressed = false;
 		LCD.clear();
 		LCD.drawString("drive forward...", 0, 0);
 
 		robot.setRobotSpeed(0.3f);
 		robot.moveRobotForward();
+		
+		while(!suppressed && !exit){
+			Thread.yield();
+		}
+		
+		robot.stopMotion();
 	}
 }

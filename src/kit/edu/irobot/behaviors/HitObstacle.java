@@ -16,6 +16,8 @@ public class HitObstacle implements Behavior {
 	private float[] touch_samples;
 	private boolean exit = false;
 
+	
+	public int x = 0;
 	public void terminate() {
 		this.exit = true;
 	}
@@ -24,7 +26,7 @@ public class HitObstacle implements Behavior {
 
 		this.robot = robot;
 
-		touch = robot.getSensorTouchFront();
+		touch = robot.getSensorTouchBack();
 		touch.getTouchMode();
 		touch_samples = new float[touch.sampleSize()];
 	}
@@ -32,11 +34,16 @@ public class HitObstacle implements Behavior {
 	public boolean takeControl() {
 		if (this.exit == true)
 			return false;
-
+		x++;
+		LCD.drawString("x:"+x, 0, 4);
+		
 		touch.fetchSample(touch_samples, 0);
 		if (touch_samples[0] == 1.0)
 			return true;
+		
+		suppress();
 		return false;
+		
 	}
 
 	public void suppress() {
@@ -44,9 +51,8 @@ public class HitObstacle implements Behavior {
 	}
 
 	public void action() {
-		robot.writeBehaviorNameToDisplay("HitObstacleBeh");
 		suppressed = false;
-
+		robot.writeBehaviorNameToDisplay("HitObstacleBeh");
 		LCD.clear();
 		LCD.drawString("bumper...", 0, 0);
 
@@ -57,7 +63,14 @@ public class HitObstacle implements Behavior {
 		robot.setRobotSpeed(0.2f);
 		robot.rotateRobotLeft();
 		Delay.msDelay(2000);
+		
+		
+		while(!suppressed && !exit){
+			Thread.yield();
+		}
 		robot.stopMotion();
-
+		
+		x++;
+		LCD.drawString("x:"+x, 2, 4);
 	}
 }

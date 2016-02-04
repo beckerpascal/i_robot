@@ -45,7 +45,7 @@ public class RobotTest {
 				robot.stopMotion();	
 			}else if( button == Button.ID_DOWN){
 				mode = mode -1;
-				if(mode < 0)mode = modes.size();
+				if(mode < 0)mode = modes.size()-1;
 				robot.stopMotion();
 			}else if( button == Button.ID_LEFT){
 				speed = speed - 0.05f;
@@ -78,7 +78,7 @@ public class RobotTest {
 					}
 					solverLine.stopSolver();
 					break;
-				case "MazeStageSolver":
+				case "MazeSolver":
 					MazeStageSolver maze = new MazeStageSolver();
 					maze.start();
 					while (!Button.DOWN.isDown()) {	    	
