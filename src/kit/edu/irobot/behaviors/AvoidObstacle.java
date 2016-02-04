@@ -27,6 +27,10 @@ public class AvoidObstacle implements Behavior {
 	}
 
 	public boolean takeControl() {
+    	if(exit == true){
+    		return false;
+    	}
+
 		sonar.fetchSample(values, 0);
 		if (values[0] < Constants.ULTRASONIC_DISTANCE_MAX) {
 			return true;
