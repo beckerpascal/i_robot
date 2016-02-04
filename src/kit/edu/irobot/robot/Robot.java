@@ -105,6 +105,8 @@ public class Robot {
 	   public void driveWithSpeed(double motorLeft, double motorRight){
 		   this.motorLeft.setSpeed((float) motorLeft);
 		   this.motorRight.setSpeed((float) motorRight);
+		   
+		   this.moveRobotForward();
 	   }
 	   
 	   public void setMotorSpeed(float speed,RegulatedMotor motor){

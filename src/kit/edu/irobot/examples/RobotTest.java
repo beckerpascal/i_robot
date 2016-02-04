@@ -40,49 +40,13 @@ public class RobotTest {
 		
 		while(button != Button.ID_ESCAPE){
 			if( button == Button.ID_UP){
-				switch(modes.get(mode)){
-					case "Forward":
-						robot.moveRobotForward();
-						break;
-					case "Backward": 
-						robot.moveRobotBackward();
-						break;
-					case "TurnLeft": 
-						robot.rotateRobotLeft();
-						break;
-					case "TurnRight": 
-						robot.rotateRobotRight();
-						break;
-					case "TurnAround": 
-						robot.rotateRobot(180.0f);
-						break;
-					case "FollowLine":
-						LineFollowingStageSolver solverLine = new LineFollowingStageSolver();
-						solverLine.start();
-						while (!Button.ESCAPE.isDown()) {	    	
-							Delay.msDelay(100);
-						}
-						solverLine.stopSolver();
-						break;
-					case "MazeSolver":
-						MazeStageSolver solverMaze = new MazeStageSolver();
-						solverMaze.start();
-						while (!Button.ESCAPE.isDown()) {	    	
-							Delay.msDelay(500);
-						}
-						solverMaze.stopSolver();
-						break;
-					case "MazeStageSolver":
-						MazeStageSolver maze = new MazeStageSolver();
-						maze.start();
-						while (!Button.ESCAPE.isDown()) {	    	
-							Delay.msDelay(100);
-						}
-						maze.stopSolver();
-						break;						
-				}
+				mode = mode +1;
+				if(mode >= modes.size())mode = 0;
+				robot.stopMotion();	
 			}else if( button == Button.ID_DOWN){
-			
+				mode = mode -1;
+				if(mode < 0)mode = modes.size()-1;
+				robot.stopMotion();
 			}else if( button == Button.ID_LEFT){
 				speed = speed - 0.05f;
 				robot.setRobotSpeed(speed);
@@ -90,12 +54,39 @@ public class RobotTest {
 				speed = speed + 0.05f;
 				robot.setRobotSpeed(speed);
 			}else if( button == Button.ID_ENTER){
-				mode = mode +1;
-				if(mode >= modes.size()){
-					mode = 0;
+				switch(modes.get(mode)){
+				case "Forward":
+					robot.moveRobotForward();
+					break;
+				case "Backward": 
+					robot.moveRobotBackward();
+					break;
+				case "TurnLeft": 
+					robot.rotateRobotLeft();
+					break;
+				case "TurnRight": 
+					robot.rotateRobotRight();
+					break;
+				case "TurnAround": 
+					robot.rotateRobot(180.0f);
+					break;
+				case "FollowLine":
+					LineFollowingStageSolver solverLine = new LineFollowingStageSolver();
+					solverLine.start();
+					while (!Button.DOWN.isDown()) {	    	
+						Delay.msDelay(100);
+					}
+					solverLine.stopSolver();
+					break;
+				case "MazeSolver":
+					MazeStageSolver maze = new MazeStageSolver();
+					maze.start();
+					while (!Button.DOWN.isDown()) {	    	
+						Delay.msDelay(100);
+					}
+					maze.stopSolver();
+					break;	
 				}
-				
-				robot.stopMotion();
 			}
 			button = -1;
 			
@@ -104,7 +95,6 @@ public class RobotTest {
 			LCD.drawString("Speed: "  + speed, 0, 2);
 			button = Button.getButtons();
 			Delay.msDelay(100);
-		}
-		robot.stopMotion();
-    }
+			}
+	}
 };

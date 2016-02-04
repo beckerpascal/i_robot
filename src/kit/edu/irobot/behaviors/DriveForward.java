@@ -4,6 +4,7 @@ import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
 
 
+	public boolean exit = false;
 public class DriveForward extends RobotBehavior {
 
 	public DriveForward(Robot robot) {
@@ -14,22 +15,31 @@ public class DriveForward extends RobotBehavior {
 		if (this.exit == true) {
 			return false;
 		}
-
+		x++;
+		LCD.drawString("x:"+x, 1,2);
+		
 		return true;
 	}
 
 	public void suppress() {
 		suppressed = true;
 	}
+	
 
 	public void action() {
+		suppressed = false;
 		robot.writeBehaviorNameToDisplay("DriveForwardBeh");
 
-		suppressed = false;
 		LCD.clear();
 		LCD.drawString("drive forward...", 0, 0);
 
 		robot.setRobotSpeed(0.3f);
 		robot.moveRobotForward();
+		
+		while(!suppressed && !exit){
+			Thread.yield();
+		}
+		
+		robot.stopMotion();
 	}
 }
