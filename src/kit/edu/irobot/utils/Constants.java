@@ -29,7 +29,7 @@ public final class Constants {
 	public static float PID_OFFSET = 0.45f;      
 	
 	public static boolean ULTRASONIC_SENSOR_ON_RIGHT_SIDE = true;
-	public static float[] ULTRASONIC_MEAN_WEIGHTS = { 0.1f, 0.15f, 0.2f, 0.3f, 0.25f };
+	public static int ULTRASONIC_AVERAGE_AMOUNT = 5;
 	public static double ULTRASONIC_DISTANCE_TARGET = 0.07;
 	public static double ULTRASONIC_DISTANCE_ACTIVE = 0.25;
 	public static double ULTRASONIC_DISTANCE_DELTA = 0.02;

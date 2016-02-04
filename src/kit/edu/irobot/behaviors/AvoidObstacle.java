@@ -3,6 +3,8 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.filter.MeanFilter;
 import lejos.robotics.subsumption.Behavior;
 
 public class AvoidObstacle implements Behavior {
@@ -12,9 +14,9 @@ public class AvoidObstacle implements Behavior {
 	public Robot robot;
 
 	private EV3UltrasonicSensor sonar;
+	private SampleProvider average;
 
 	private float[] values;
-	private float[] history = { 0f, 0f, 0f, 0f, 0f };
 
 	public void terminate(boolean exit) {
 		this.exit = exit;
@@ -24,6 +26,8 @@ public class AvoidObstacle implements Behavior {
 		robot = Robot.getInstance();
 		sonar = robot.getSensorUltrasonic();
 		sonar.getDistanceMode();
+		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
+		values = new float[average.sampleSize()];
 	}
 
 	public boolean takeControl() {
@@ -39,7 +43,7 @@ public class AvoidObstacle implements Behavior {
 	}
 
 	public void suppress() {
-		sonar.fetchSample(values, 0);
+		average.fetchSample(values, 0);
 		if (values[0] > 0.2) {
 			suppressed = true;
 		} else {
@@ -51,25 +55,31 @@ public class AvoidObstacle implements Behavior {
 		robot.setLEDPattern(5);
 		suppressed = false;
 		
-		double mean = calcMean();
+		average.fetchSample(values, 0);
 		if(Constants.ULTRASONIC_SENSOR_ON_RIGHT_SIDE){
-			if(mean < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){ 			//turn left
+			// turn left
+			if(values[0] < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE, 
 									 Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			}else if(mean > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){ 	// turn right
+			// turn right
+			}else if(values[0] > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE, 
 						 			 Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			}else{																							// just forward
+			// forward
+			}else{
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
 			}
 		}else{
-			if(mean < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){ 			//turn right
+			// turn right
+			if(values[0] < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE, 
 									 Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			}else if(mean > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){ 	// turn left
+			// turn left
+			}else if(values[0] > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE, 
 						 			 Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			}else{																							// just forward
+			// forward
+			}else{
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
 			}
 		}
@@ -80,27 +90,5 @@ public class AvoidObstacle implements Behavior {
 
 		robot.stopMotion();
 
-	}
-
-	private double calcMean() {
-		refreshHistory();
-		double mean = 0;
-		for (int i = 0; i < history.length; i++) {
-			mean += Constants.ULTRASONIC_MEAN_WEIGHTS[i] * history[i];
-		}
-
-		return mean;
-	}
-
-	private void refreshHistory() {
-		float tmp = values[0];
-		if (255 <= tmp) {
-			for (int i = 0; i < history.length - 1; i++) {
-				history[i] = history[i + 1]; // Shift everything to the left
-			}
-			history[history.length - 1] = tmp;
-		} else {
-			// greater 255, infinite distance measured or rubbish
-		}
 	}
 }
