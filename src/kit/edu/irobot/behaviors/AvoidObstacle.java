@@ -18,12 +18,12 @@ public class AvoidObstacle implements Behavior {
 
 	private float[] values;
 
-	public void terminate(boolean exit) {
-		this.exit = exit;
+	public void terminate(){
+		this.exit = true;
 	}
 
-	public AvoidObstacle() {
-		robot = Robot.getInstance();
+	public AvoidObstacle(Robot robot) {
+		this.robot = robot;
 		sonar = robot.getSensorUltrasonic();
 		sonar.getDistanceMode();
 		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
@@ -53,6 +53,7 @@ public class AvoidObstacle implements Behavior {
 
 	public void action() {
 		robot.setLEDPattern(5);
+		robot.writeBehaviorNameToDisplay("AvoidObstacleBeh");
 		suppressed = false;
 		
 		average.fetchSample(values, 0);
@@ -84,7 +85,7 @@ public class AvoidObstacle implements Behavior {
 			}
 		}
 
-		while (!suppressed){
+		while (!suppressed && !exit){			
 			Thread.yield();
 		}
 
