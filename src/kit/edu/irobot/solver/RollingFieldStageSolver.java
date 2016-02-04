@@ -23,6 +23,7 @@ public class RollingFieldStageSolver extends StageSolver{
 	@Override
 	public void stopSolver() {
 		// TODO Auto-generated method stub
-		
 	}
+	
+	
 }
