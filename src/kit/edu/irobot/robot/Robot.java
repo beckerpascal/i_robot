@@ -2,6 +2,7 @@ package kit.edu.irobot.robot;
 
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -23,6 +24,8 @@ public class Robot {
 	private EV3LargeRegulatedMotor motorLeft;
 	private EV3LargeRegulatedMotor motorRight;
 
+	private EV3MediumRegulatedMotor motorSpecial;
+
 	private EV3UltrasonicSensor  sensorDistance;
 	private EV3ColorSensor 		 sensorLight; 
 	private EV3TouchSensor 		 sensorTouch_1;
@@ -36,6 +39,9 @@ public class Robot {
 
 		motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
 		motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+		
+		if(Constants.SPECIAL_MOTOR != null)motorSpecial = new EV3MediumRegulatedMotor(Constants.SPECIAL_MOTOR);
+		else 							   motorSpecial = null;
 		
 		if(Constants.LIGHT_SENSOR != null)sensorLight       = new EV3ColorSensor(Constants.LIGHT_SENSOR);
 		else 							  sensorLight       = null;
@@ -51,6 +57,10 @@ public class Robot {
 		
 	}
 
+	public EV3MediumRegulatedMotor getMotorSpecial(){
+		return motorSpecial;
+	}
+	
 	public EV3UltrasonicSensor getSensorDistance(){
 		return sensorDistance;
 	}

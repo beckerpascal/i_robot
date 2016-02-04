@@ -13,6 +13,7 @@ public final class Constants {
 	
 	public static Port RIGHT_MOTOR = MotorPort.A;
 	public static Port LEFT_MOTOR = MotorPort.B;
+	public static Port SPECIAL_MOTOR = MotorPort.C;
 
 	public static Port LIGHT_SENSOR        = null;// SensorPort.S1;
 	public static Port DISTANCE_SENSOR     = null;//SensorPort.S1;
