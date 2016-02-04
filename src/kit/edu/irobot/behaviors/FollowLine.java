@@ -30,7 +30,9 @@ public class FollowLine  implements Behavior {
 
 	   public void action() {
 		    suppressed = false; 
-			
+		    LCD.clear();
+		    LCD.drawString("Running Follow Line: ", 1, 0);
+		    
 		    SampleProvider sample = robot.getSensorLight().getRedMode();
 					
 			float integral   = 0;                          
@@ -40,7 +42,7 @@ public class FollowLine  implements Behavior {
 			LCD.clear();
 			LCD.drawString("Mode: follow line", 0, 0);
 						
-			while(!suppressed)
+			while(!suppressed && !this.exit)
 			{			
 				float[] values = new float[sample.sampleSize()];
 				sample.fetchSample(values, 0);

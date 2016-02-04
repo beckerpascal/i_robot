@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Behavior;
 
@@ -22,7 +23,10 @@ public class FindLine  implements Behavior {
 		if (this.exit == true) {
 			return false;
 		} 
-
+		
+		return false;
+		
+		/*
 		SampleProvider sample = robot.getSensorLight().getRedMode();
 
 		float[] values = new float[sample.sampleSize()];
@@ -40,6 +44,7 @@ public class FindLine  implements Behavior {
 		}
 
 		return false;
+		*/
 	}
 
 	public void suppress() {
@@ -47,7 +52,10 @@ public class FindLine  implements Behavior {
 	}
 
 	public void action() {
-		// TODO
+		suppressed = false;
+		
+	    LCD.clear();
+	    LCD.drawString("Running Follow Line: ", 1, 0);
 	}
 
 	public void terminate() {
