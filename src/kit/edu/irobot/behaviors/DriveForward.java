@@ -2,9 +2,6 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
-
-
-	public boolean exit = false;
 public class DriveForward extends RobotBehavior {
 
 	public DriveForward(Robot robot) {
@@ -14,10 +11,7 @@ public class DriveForward extends RobotBehavior {
 	public boolean takeControl() {
 		if (this.exit == true) {
 			return false;
-		}
-		x++;
-		LCD.drawString("x:"+x, 1,2);
-		
+		}		
 		return true;
 	}
 
