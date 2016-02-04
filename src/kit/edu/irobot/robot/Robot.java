@@ -1,10 +1,9 @@
 package kit.edu.irobot.robot;
 
 import kit.edu.irobot.utils.Constants;
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -61,7 +60,7 @@ public class Robot {
 		return motorSpecial;
 	}
 	
-	public EV3UltrasonicSensor getSensorDistance(){
+	public EV3UltrasonicSensor getSensorUltrasonic(){
 		return sensorDistance;
 	}
 	
@@ -91,15 +90,20 @@ public class Robot {
 		}
 		return instance;
 	}
+	
+	public void setLEDPattern(int pattern){
+		Button.LEDPattern(pattern);
+		
+	}
 
 	/**
 	    * Uses the initialized motors and drives with the given speed.
 	    * @param motorA 
 	    * @param motorB
 	    */
-	   public void driveWithSpeed(float motorLeft, float motorRight){
-		   this.motorLeft.setSpeed(motorLeft);
-		   this.motorRight.setSpeed(motorRight);
+	   public void driveWithSpeed(double motorLeft, double motorRight){
+		   this.motorLeft.setSpeed((float) motorLeft);
+		   this.motorRight.setSpeed((float) motorRight);
 	   }
 	   
 	   public void setMotorSpeed(float speed,RegulatedMotor motor){
@@ -180,6 +184,5 @@ public class Robot {
 	   }
 	   
 	   public void turnAround(){
-		   rotateRobot(180.f);
-	   }
+		   rotateRobot(180.f);}
 }
