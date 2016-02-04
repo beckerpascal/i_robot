@@ -9,6 +9,7 @@ public class DriveForward extends RobotBehavior {
 	}
 
 	public boolean takeControl() {
+		robot.writeBehaviorNameToDisplay("DriveForward tC");
 		if (this.exit == true) {
 			return false;
 		}		
@@ -16,13 +17,14 @@ public class DriveForward extends RobotBehavior {
 	}
 
 	public void suppress() {
+		robot.writeBehaviorNameToDisplay("DriveForward s");
 		suppressed = true;
 	}
 	
 
 	public void action() {
 		suppressed = false;
-		robot.writeBehaviorNameToDisplay("DriveForwardBeh");
+		robot.writeBehaviorNameToDisplay("DriveForward a");
 
 		LCD.clear();
 		LCD.drawString("drive forward...", 0, 0);

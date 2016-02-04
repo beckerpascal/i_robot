@@ -24,8 +24,6 @@ public class RobotTest {
 		float speed = 0.3f;
 		int mode = 0;
 
-		final int max_mode = 3;
-
 		List<String> modes = new ArrayList<String>();
 		modes.add("Forward");
 		modes.add("Backward");

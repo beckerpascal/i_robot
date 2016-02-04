@@ -9,44 +9,44 @@ public class HitObstacle extends RobotBehavior {
 	
 	private EV3TouchSensor touch;
 	private float[] touch_samples;
-
-	
-	public int x = 0;
-	public void terminate() {
-		this.exit = true;
-	}
+	private boolean touched = false;
 
 	public HitObstacle(Robot robot) {
 
 		this.robot = robot;
-
-		touch = robot.getSensorTouchBack();
+		touch = robot.getSensorTouchFront();
 		touch.getTouchMode();
 		touch_samples = new float[touch.sampleSize()];
 	}
 
 	public boolean takeControl() {
-		if (this.exit == true)
+		robot.writeBehaviorNameToDisplay("HitObstacle tC");
+		if (this.exit == true){
 			return false;
-		x++;
-		LCD.drawString("x:"+x, 0, 4);
+		}
+		
+		if(touched){
+			return true;
+		}
 		
 		touch.fetchSample(touch_samples, 0);
-		if (touch_samples[0] == 1.0)
+		if (touch_samples[0] == 1.0){
+			touched = true;
 			return true;
+		}
 		
-		suppress();
-		return false;
-		
+		return false;		
 	}
 
 	public void suppress() {
-		suppressed = true;
+		if(!touched){
+			robot.writeBehaviorNameToDisplay("HitObstacle s");
+			robot.stopMotion();
+		}
 	}
 
 	public void action() {
-		suppressed = false;
-		robot.writeBehaviorNameToDisplay("HitObstacleBeh");
+		robot.writeBehaviorNameToDisplay("HitObstacle a");
 		LCD.clear();
 		LCD.drawString("bumper...", 0, 0);
 
@@ -57,14 +57,6 @@ public class HitObstacle extends RobotBehavior {
 		robot.setRobotSpeed(0.2f);
 		robot.rotateRobotLeft();
 		Delay.msDelay(2000);
-		
-		
-		while(!suppressed && !exit){
-			Thread.yield();
-		}
-		robot.stopMotion();
-		
-		x++;
-		LCD.drawString("x:"+x, 2, 4);
+		touched = false;
 	}
 }
