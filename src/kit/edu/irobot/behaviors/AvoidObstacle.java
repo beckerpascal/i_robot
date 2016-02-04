@@ -2,6 +2,7 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
@@ -9,7 +10,7 @@ import lejos.robotics.subsumption.Behavior;
 
 public class AvoidObstacle implements Behavior {
 	private boolean suppressed = false;
-	public boolean exit;
+	public boolean exit = false;
 
 	public Robot robot;
 
@@ -35,8 +36,9 @@ public class AvoidObstacle implements Behavior {
     		return false;
     	}
 
-		sonar.fetchSample(values, 0);
-		if (values[0] < Constants.ULTRASONIC_DISTANCE_MAX) {
+		average.fetchSample(values, 0);
+		LCD.drawString("Values:"+values[0], 0, 2);
+		if (values[0] < Constants.ULTRASONIC_DISTANCE_ACTIVE) {
 			return true;
 		}
 		return false;

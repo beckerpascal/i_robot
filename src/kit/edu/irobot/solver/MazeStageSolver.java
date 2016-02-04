@@ -25,10 +25,10 @@ public class MazeStageSolver extends StageSolver{
 		super("MazeStageSolver");
 		
 		driveForward = new DriveForward(super.getRobot());
-		hitObstacle  = new HitObstacle(super.getRobot());
 		avoidObstacle = new AvoidObstacle(super.getRobot());
+		hitObstacle  = new HitObstacle(super.getRobot());
 		
-		Behavior[] bArray = {driveForward, hitObstacle, avoidObstacle};
+		Behavior[] bArray = {driveForward, avoidObstacle, hitObstacle};
 		super.arby = new Arbitrator(bArray,true);
 	}
 

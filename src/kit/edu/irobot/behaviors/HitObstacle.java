@@ -14,7 +14,7 @@ public class HitObstacle implements Behavior {
 	private EV3TouchSensor touch;
 
 	private float[] touch_samples;
-	private boolean exit;
+	private boolean exit = false;
 
 	public void terminate() {
 		this.exit = true;
