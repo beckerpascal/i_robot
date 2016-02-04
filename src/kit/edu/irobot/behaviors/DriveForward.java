@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
 
 public class DriveForward  implements Behavior {
@@ -18,8 +19,10 @@ public class DriveForward  implements Behavior {
 	   }
 	   
 	   public boolean takeControl() {
-		   if(this.exit == true) 
+		   if(this.exit == true) {
+			   suppressed = true;
 			   return false;
+		   }
 		   
 		   return true;
 	   }
@@ -29,13 +32,12 @@ public class DriveForward  implements Behavior {
 	   }
 
 	   public void action() {
-	     suppressed = false;
-	     
+	     LCD.clear();
+	     LCD.drawString("still active...", 0, 0);
+		   
+		 
 	     robot.setRobotSpeed(0.3f);
 	     robot.moveRobotForward();
-	     while( !suppressed )
-	        Thread.yield();
-	     robot.stopMotion();
 	     
 	   }
 }
