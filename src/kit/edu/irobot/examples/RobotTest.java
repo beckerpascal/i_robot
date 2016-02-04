@@ -8,6 +8,7 @@ import kit.edu.irobot.solver.StageSolver;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import kit.edu.irobot.solver.*;
 
 public class RobotTest {
 	
@@ -32,6 +33,7 @@ public class RobotTest {
 		modes.add("TurnLeft");
 		modes.add("TurnRight");
 		modes.add("TurnAround");
+		modes.add("FollowLine");
 
 	
 		robot.setRobotSpeed(speed);
@@ -53,7 +55,11 @@ public class RobotTest {
 						break;
 					case "TurnAround": 
 						robot.rotateRobot(180.0f);
+					case "FollowLinw":
+						LineFollowingStageSolver lineSolver = new LineFollowingStageSolver();
+						lineSolver.solve();
 						break;
+					
 						
 				}
 			}else if( button == Button.ID_DOWN){

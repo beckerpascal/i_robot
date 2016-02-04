@@ -13,6 +13,11 @@ public class HitObstacle implements Behavior {
 	   private EV3TouchSensor touch;
 
 	   private float[] touch_samples;
+	   private boolean exit;
+	   
+	   public void terminate(){
+		   this.exit = true;
+	   }
 	   
 	   public HitObstacle(Robot robot){
 		   
@@ -24,6 +29,8 @@ public class HitObstacle implements Behavior {
 	   }
 	   
 	   public boolean takeControl() {
+	    	if(exit == true) return false;
+	    	
 	    	touch.fetchSample(touch_samples, 0);
 	    	if(touch_samples[0] == 1.0 )
 	    		return true;
@@ -44,10 +51,7 @@ public class HitObstacle implements Behavior {
 	     
 	     robot.setRobotSpeed(0.2f);
 	     robot.rotateRobot(-90.0f);
-	     while( !suppressed )
-	        Thread.yield();
-	    
-	     robot.stopMotion();
+	     
 	     
 	   }
 }
