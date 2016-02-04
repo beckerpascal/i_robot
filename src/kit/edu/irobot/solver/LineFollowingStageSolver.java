@@ -34,5 +34,6 @@ public class LineFollowingStageSolver  extends StageSolver {
 	@Override
 	public void stopSolver() {
 		followLine.terminate();
+		findLine.terminate();
 	}
 }

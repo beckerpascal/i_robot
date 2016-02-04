@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kit.edu.irobot.robot.Robot;
-import kit.edu.irobot.solver.StageSolver;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
@@ -55,14 +54,20 @@ public class RobotTest {
 						break;
 					case "TurnAround": 
 						robot.rotateRobot(180.0f);
-					case "FollowLinw":
-						LineFollowingStageSolver lineSolver = new LineFollowingStageSolver();
-						lineSolver.solve();
+						break;
+					case "FollowLine":
+						LineFollowingStageSolver solver = new LineFollowingStageSolver();
+						solver.start();
+						while (!Button.ESCAPE.isDown()) {	    	
+							Delay.msDelay(500);
+						}
+						solver.stopSolver();
 						break;
 					
 						
 				}
 			}else if( button == Button.ID_DOWN){
+			
 			}else if( button == Button.ID_LEFT){
 				speed = speed - 0.05f;
 				robot.setRobotSpeed(speed);
@@ -74,6 +79,7 @@ public class RobotTest {
 				if(mode >= modes.size()){
 					mode = 0;
 				}
+				
 				robot.stopMotion();
 			}
 			button = -1;
