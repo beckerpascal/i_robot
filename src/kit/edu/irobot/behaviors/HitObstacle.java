@@ -3,22 +3,13 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 
-public class HitObstacle implements Behavior {
-	private boolean suppressed = false;
-	public Robot robot;
-
+public class HitObstacle extends RobotBehavior {
+	
 	private EV3TouchSensor touch;
-
 	private float[] touch_samples;
-	private boolean exit;
 
-	public void terminate() {
-		this.exit = true;
-	}
 
 	public HitObstacle(Robot robot) {
 

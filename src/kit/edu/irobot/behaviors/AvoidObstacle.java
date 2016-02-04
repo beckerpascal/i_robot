@@ -5,25 +5,16 @@ import kit.edu.irobot.utils.Constants;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
-import lejos.robotics.subsumption.Behavior;
 
-public class AvoidObstacle implements Behavior {
-	private boolean suppressed = false;
-	public boolean exit;
-
-	public Robot robot;
+public class AvoidObstacle extends RobotBehavior {
 
 	private EV3UltrasonicSensor sonar;
 	private SampleProvider average;
-
 	private float[] values;
 
-	public void terminate(){
-		this.exit = true;
-	}
-
-	public AvoidObstacle(Robot robot) {
-		this.robot = robot;
+	public AvoidObstacle(Robot robotObj) {
+		
+		robot = robotObj;
 		sonar = robot.getSensorUltrasonic();
 		sonar.getDistanceMode();
 		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
@@ -85,11 +76,7 @@ public class AvoidObstacle implements Behavior {
 			}
 		}
 
-		while (!suppressed && !exit){			
-			Thread.yield();
-		}
-
-		robot.stopMotion();
+		super.run();
 
 	}
 }

@@ -2,18 +2,9 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
-import lejos.robotics.subsumption.Behavior;
 
 
-public class DriveForward implements Behavior {
-	private boolean suppressed = false;
-
-	public boolean exit;
-	public Robot robot;
-
-	public void terminate() {
-		this.exit = true;
-	}
+public class DriveForward extends RobotBehavior {
 
 	public DriveForward(Robot robot) {
 		this.robot = robot;
