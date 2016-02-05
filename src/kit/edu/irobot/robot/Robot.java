@@ -12,6 +12,8 @@ import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.navigation.ArcRotateMoveController;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 /**
@@ -58,11 +60,14 @@ public class Robot {
 	private int sonicSensor = 4;
 	private int touchSensor1 = 5;
 	private int touchSensor2 = 6;
+	@SuppressWarnings("unused")
 	private int gyroSensor = 7;
 
 	private boolean[] curActSens = new boolean[8];
 
 	int direction = FORWARD;
+	
+	private ArcRotateMoveController pilot;
 	
 
 	/**
@@ -164,6 +169,13 @@ public class Robot {
 			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
 		}
 
+		pilot = new DifferentialPilot(14.275, 4.315, motorLeft, motorRight);
+		pilot.setRotateSpeed(Constants.ROTATE_SPEED);
+		pilot.setTravelSpeed(Constants.TRAVEL_SPEED);
+	}
+	
+	public ArcRotateMoveController getPilot() {
+		return pilot;
 	}
 
 	public EV3MediumRegulatedMotor getMotorSpecial() {
