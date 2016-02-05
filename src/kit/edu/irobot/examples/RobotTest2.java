@@ -14,7 +14,7 @@ public class RobotTest2 {
 	public static void main(String[] args) 
     {
 		Robot robot;
-		robot = Robot.getInstance(new boolean[]{true,true,true,false,false,false,false,false});
+		robot = Robot.getInstance(new boolean[]{true,true,true,true,true,true,false,false});
 
 		LCD.clear();
 		LCD.drawString("Press Enter to ch. Mode", 0, 0);

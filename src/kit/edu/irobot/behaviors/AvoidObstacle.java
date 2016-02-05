@@ -37,8 +37,7 @@ public class AvoidObstacle extends RobotBehavior {
 	}
 
 	public void suppress() {
-		robot.writeBehaviorNameToDisplay("AvoidObstacle s");
-		robot.stopMotion();
+		suppressed = true;
 	}
 
 	public void action() {

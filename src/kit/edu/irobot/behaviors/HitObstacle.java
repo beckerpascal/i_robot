@@ -36,16 +36,18 @@ public class HitObstacle extends RobotBehavior {
 	}
 
 	public void action() {
-		robot.writeBehaviorNameToDisplay("HitObstacle a");
-		LCD.clear();
+		suppressed = false;
+		robot.writeBehaviorNameToDisplay("HitObstacle");
 
 		robot.setRobotSpeed(0.2f);
 		robot.moveRobotBackward();
 		Delay.msDelay(1000);
+		
 		robot.stopMotion();
 		robot.setRobotSpeed(0.2f);
 		robot.rotateRobotLeft();
 		Delay.msDelay(2000);
+		
 		robot.stopMotion();
 	}
 }
