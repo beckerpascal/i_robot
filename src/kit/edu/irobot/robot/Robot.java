@@ -37,6 +37,19 @@ public class Robot {
 
 	final int BACKWARD = -1;
 	final int FORWARD = 1;
+	
+	public static final int MOTOR_L = 		 1 << 0;
+	public static final int MOTOR_R = 		 1 << 1;
+	public static final int MOTOR_H = 		 1 << 2;
+	public static final int SENSOR_LIGHT =  1 << 3;
+	public static final int SENSOR_SONIC =  1 << 4;
+	public static final int SENSOR_TOUCH_FRONT = 1 << 5;
+	public static final int SENSOR_TOUCH_BACK = 1 << 6;
+	public static final int SENSOR_GYRO =   1 << 7;
+	
+	public static final int MOTORS = MOTOR_R | MOTOR_L;
+	public static final int LINE = SENSOR_LIGHT | MOTORS;
+	public static final int ALL = ~0;
 
 	private int motorA = 0;
 	private int motorB = 1;
@@ -67,6 +80,25 @@ public class Robot {
 			instance = new Robot(enableArr);
 		}
 		return instance;
+	}
+	
+	/**
+	 * Returns an instance of the robot as a Singleton.
+	 * 
+	 * Use like this:</br>
+	 * robot = Robot.getInstance(MOTOR_R | MOROT_L | SENSOR_LIGHT);
+	 * @param flags bitflags for sensors and actors to enable
+	 * @return instance of robot
+	 */
+	public static Robot getInstance(int flags) {
+		if (instance == null) {
+			instance = new Robot(flags);
+		}
+		return instance;
+	}
+	
+	public static Robot getInstance() {
+		return getInstance(ALL);
 	}
 
 	private Robot(boolean actSens[]) {
@@ -100,6 +132,35 @@ public class Robot {
 			sensorTouch_2 = new EV3TouchSensor(Constants.TOUCH_BACK_SENSOR);
 		}
 		if (this.curActSens[motorA]) {
+			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
+		}
+
+	}
+	
+	private Robot(int flags) {
+
+		if ((flags & MOTOR_L) != 0) {
+			motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
+		}
+		if ((flags & MOTOR_R) != 0) {
+			motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+		}
+		if ((flags & MOTOR_H) != 0) {
+			motorSpecial = new EV3MediumRegulatedMotor(Constants.SPECIAL_MOTOR);
+		}
+		if ((flags & SENSOR_LIGHT) != 0) {
+			sensorLight = new EV3ColorSensor(Constants.LIGHT_SENSOR);
+		}
+		if ((flags & SENSOR_SONIC) != 0) {
+			sensorSonic = new EV3UltrasonicSensor(Constants.DISTANCE_SENSOR);
+		}
+		if ((flags & SENSOR_TOUCH_FRONT) != 0) {
+			sensorTouch_1 = new EV3TouchSensor(Constants.TOUCH_FRONT_SENSOR);
+		}
+		if ((flags & SENSOR_TOUCH_BACK) != 0) {
+			sensorTouch_2 = new EV3TouchSensor(Constants.TOUCH_BACK_SENSOR);
+		}
+		if ((flags & SENSOR_GYRO) != 0) {
 			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
 		}
 
