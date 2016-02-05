@@ -13,6 +13,12 @@ public final class Constants {
 	
 	public static float TARGET_SPEED = 150;
 	
+	/** travel speed in cm/s */
+	public static double TRAVEL_SPEED = 25;
+	
+	/** roation speed in °/s */
+	public static double ROTATE_SPEED = 90;
+	
 	public static Port RIGHT_MOTOR = MotorPort.A;
 	public static Port LEFT_MOTOR = MotorPort.B;
 	public static Port SPECIAL_MOTOR = MotorPort.C;
