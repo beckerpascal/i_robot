@@ -51,7 +51,7 @@ public class Robot {
 	
 	public static final int MOTORS = MOTOR_R | MOTOR_L;
 	public static final int LINE = SENSOR_LIGHT | MOTORS;
-	public static final int ALL = ~0;
+	public static final int ALL = ~SENSOR_GYRO;
 
 	private int motorA = 0;
 	private int motorB = 1;
