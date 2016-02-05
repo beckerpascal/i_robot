@@ -19,9 +19,10 @@ public final class Constants {
 
 	public static Port LIGHT_SENSOR        = SensorPort.S3;
 	public static Port DISTANCE_SENSOR     = SensorPort.S1;
-	public static Port TOUCH_FRONT_SENSOR  = SensorPort.S2;
-	public static Port TOUCH_BACK_SENSOR   = null;//SensorPort.S2;
-	public static Port GYROSCOP_SENSOR     = null;// SensorPort.S1;
+	public static Port TOUCH_FRONT_SENSOR  = SensorPort.S4;
+	public static Port TOUCH_BACK_SENSOR   = SensorPort.S2;
+	public static Port GYROSCOP_SENSOR     = SensorPort.S2;
+
 	
 	public static float PID_KP = 220;                             
 	public static float PID_KI = 0;   		                            
