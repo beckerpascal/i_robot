@@ -19,7 +19,7 @@ public class HitObstacle extends RobotBehavior {
 	}
 
 	public boolean takeControl() {
-		robot.writeBehaviorNameToDisplay("HitObstacle tC");
+		//robot.writeBehaviorNameToDisplay("HitObstacle tC");
 		if (this.exit == true){
 			return false;
 		}
@@ -37,7 +37,7 @@ public class HitObstacle extends RobotBehavior {
 
 	public void action() {
 		suppressed = false;
-		robot.writeBehaviorNameToDisplay("HitObstacle");
+		//robot.writeBehaviorNameToDisplay("HitObstacle");
 
 		robot.setRobotSpeed(0.2f);
 		robot.moveRobotBackward();

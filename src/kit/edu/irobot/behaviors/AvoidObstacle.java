@@ -14,6 +14,8 @@ public class AvoidObstacle extends RobotBehavior {
 	private SampleProvider average;
 	private float[] values;
 
+	private float P,I,D,max_V;
+	
 	public AvoidObstacle(Robot robot) {
 		
 		this.robot = robot;
@@ -21,19 +23,19 @@ public class AvoidObstacle extends RobotBehavior {
 		sonar.getDistanceMode();
 		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
 		values = new float[average.sampleSize()];
+		
+		P = 400.f;
+		I = 0.f;
+		D = 0.f;
+	
+		max_V = 200;
 	}
 
 	public boolean takeControl() {
     	if(exit == true){
     		return false;
     	}
-		average.fetchSample(values, 0);
-		robot.writeBehaviorNameToDisplay("AvoidObstacle tC");
-		LCD.drawString("Values:"+values[0], 0, 2);
-		if (values[0] < Constants.ULTRASONIC_DISTANCE_ACTIVE) {
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	public void suppress() {
@@ -43,9 +45,26 @@ public class AvoidObstacle extends RobotBehavior {
 	public void action() {
 		suppressed = false;
 		
-		robot.setLEDPattern(5);
-		robot.writeBehaviorNameToDisplay("AvoidObstacle a");		
-		
+		while(!exit && !suppressed){
+			sonar.fetchSample(values, 0);
+			
+			//sample.fetchSample(values, 0);
+			
+			float distance = values[0];
+			if(distance > Constants.ULTRASONIC_DISTANCE_MAX)
+				distance = (float)Constants.ULTRASONIC_DISTANCE_MAX;
+			
+			float error = (float) (distance - Constants.ULTRASONIC_DISTANCE_TARGET);
+			
+			float Turn   = P * error;
+			
+			Turn = (float) Math.max(0.1*max_V,Turn);
+			
+			float powerA = max_V +  Turn;         
+			float powerB = max_V -  Turn;         
+					
+			this.robot.driveWithSpeed(powerA, powerB);	
+		/*		
 		average.fetchSample(values, 0);
 		if(Constants.ULTRASONIC_SENSOR_ON_RIGHT_SIDE){
 			// turn left
@@ -73,7 +92,7 @@ public class AvoidObstacle extends RobotBehavior {
 			}else{
 				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
 			}
+		}*/
 		}
-		
 	}
 }
