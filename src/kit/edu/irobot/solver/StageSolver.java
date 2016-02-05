@@ -5,7 +5,7 @@ import lejos.robotics.subsumption.Arbitrator;
 
 public abstract class StageSolver extends Thread{
 	private String name;
-	public Arbitrator arby;
+	public BetterArbitrator arby;
 	private Robot robot;
 	
 	private boolean abort;
@@ -16,7 +16,7 @@ public abstract class StageSolver extends Thread{
 		this.abort = false;
 	}
 	
-	public Arbitrator getArbitrator(){
+	public BetterArbitrator getArbitrator(){
 		return this.arby;
 	}
 	

@@ -17,7 +17,7 @@ public class BridgeStageSolver extends StageSolver{
 		Behavior b1 = new DriveForward(super.getRobot());
 
 		Behavior[] bArray = {b1};
-		super.arby = new Arbitrator(bArray);
+		super.arby = new BetterArbitrator(bArray);
 		super.arby.start();
 		// TODO Auto-generated constructor stub
 	}

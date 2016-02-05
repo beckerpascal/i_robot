@@ -76,7 +76,5 @@ public class AvoidObstacle extends RobotBehavior {
 			}
 		}
 		
-		Delay.msDelay(1000);
-		
 	}
 }

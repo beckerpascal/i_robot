@@ -9,7 +9,7 @@ import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import kit.edu.irobot.solver.*;
 
-public class RobotTest {
+public class RobotTest2 {
 	
 	public static void main(String[] args) 
     {

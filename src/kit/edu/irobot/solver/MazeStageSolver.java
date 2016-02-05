@@ -5,7 +5,6 @@ import kit.edu.irobot.behaviors.DriveForward;
 import kit.edu.irobot.behaviors.HitObstacle;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
-import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 
@@ -28,8 +27,8 @@ public class MazeStageSolver extends StageSolver{
 		avoidObstacle = new AvoidObstacle(super.getRobot());
 		hitObstacle  = new HitObstacle(super.getRobot());
 		
-		Behavior[] bArray = {driveForward, hitObstacle};
-		super.arby = new Arbitrator(bArray,true);
+		Behavior[] bArray = {driveForward, avoidObstacle, hitObstacle};
+		super.arby = new BetterArbitrator(bArray);
 	}
 
 	@Override
@@ -39,10 +38,13 @@ public class MazeStageSolver extends StageSolver{
 	
 	@Override
 	public void stopSolver() {
-		driveForward.terminate();
+
 		hitObstacle.terminate();
+		driveForward.terminate();
 		avoidObstacle.terminate();
+		
 		super.getRobot().stopMotion();
+		super.arby.stop();
 		LCD.drawString("stop motion...", 1, 0);
 		 
 	}
@@ -55,6 +57,4 @@ public class MazeStageSolver extends StageSolver{
 		}
 		solver.stopSolver();
 	}
-
-	
 }
