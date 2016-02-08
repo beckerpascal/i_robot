@@ -229,7 +229,7 @@ public class Robot {
 	}
 
 	public void setMotorSpeed(float speed, RegulatedMotor motor) {
-		speed = Math.abs(speed);
+		//speed = Math.abs(speed);
 		speed = Math.min(speed, 1.0f);
 
 		float max_speed = motor.getMaxSpeed();

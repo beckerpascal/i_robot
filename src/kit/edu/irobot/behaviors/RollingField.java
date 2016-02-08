@@ -34,7 +34,7 @@ public class RollingField  implements Behavior {
 		{
 			robot.driveWithSpeed(1000, 1000);
 		    robot.moveRobotForward();
-		    Delay.msDelay(2000);
+		    Delay.msDelay(3000);
 			robot.driveWithSpeed(0, 0);
 		    robot.moveRobotForward();
 		}

@@ -32,10 +32,10 @@ public final class Constants {
 	public static Port TOUCH_BACK_SENSOR = SensorPort.S2;
 	public static Port GYROSCOP_SENSOR = null;// SensorPort.S2;
 
-	public static float PID_KP = 300;
-	public static float PID_KI = 2.5f;
-	public static float PID_KD = 50;
-	public static float PID_OFFSET = 0.45f;
+	public static float PID_KP = 580;
+	public static float PID_KI = 276;
+	public static float PID_KD = 3588;
+	public static float PID_OFFSET = 0.4f;
 	public static float PID_KI_MAX = 100f;
 
 	public static boolean ULTRASONIC_SENSOR_ON_RIGHT_SIDE = true;
@@ -49,6 +49,8 @@ public final class Constants {
 
 	public static float LIGHT_VALUE_WHITE = 0.7f;
 	public static float LIGHT_VALUE_BLACK = 0.05f;
+	public static float WHITE_AREA_FACTOR = 0.2f; 
+	public static float BLACK_AREA_FACTOR = 1.f; 
 	public static int LIGHT_AVERAGE_AMOUNT = 100;
 
 }
