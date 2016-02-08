@@ -4,8 +4,9 @@ import kit.edu.irobot.robot.Robot;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.filter.MeanFilter;
 
-public class LineCodeBehavior extends RobotBehavior {
+public class LineCodeBehavior {
 
+	private Robot robot = null;
 	private EV3ColorSensor sensor = null;
 	private float[] curVal;
 	private MeanFilter meanF = null;
@@ -16,7 +17,7 @@ public class LineCodeBehavior extends RobotBehavior {
 	private boolean wasBlack = true;
 	private boolean wasWhite = false;
 	private long lastTime = System.currentTimeMillis();
-	private long maxTime = 3000; // in ms
+	private long maxTime = 500; // in ms //TODO good time?
 	private boolean foundCode = false;
 
 	public LineCodeBehavior(Robot robot) {
@@ -28,20 +29,9 @@ public class LineCodeBehavior extends RobotBehavior {
 		lastTime = System.currentTimeMillis();
 	}
 
-	public boolean takeControl() {
-		// TODO: Improve?!
-		// Maybe in separate Thread?
-		return true;
-	}
-
-	public void suppress() {
-		suppressed = true;
-	}
-
-	public void action() {
-
+	public int search() {
 		lastTime = System.currentTimeMillis();
-		while (!suppressed && !foundCode) {
+		while (!foundCode) {
 			robot.moveRobotForward();
 			fetchSamples();
 			if (wasWhite && curVal[0] < curVal[sampleSize] - delta) {
@@ -55,15 +45,21 @@ public class LineCodeBehavior extends RobotBehavior {
 				stage++;
 				robot.writeErrorToDisplay("Increased Stage", "now: " + stage);
 				robot.beep();
+				foundCode = true;
 			} else if (lastTime < System.currentTimeMillis() - maxTime) {
 				robot.writeErrorToDisplay("No Line found...", "");
 				foundCode = true;
 			}
 		}
+		if(foundCode){
+			return stage;
+		}else{
+			return -1;
+		}
 	}
 
 	private void fetchSamples() {
-		// curVal[0] - current value
+		// curVal[0] 		  - current value
 		// curVal[sampleSize] - filtered value
 		sensor.fetchSample(curVal, 0);
 		meanF.fetchSample(curVal, sampleSize);
