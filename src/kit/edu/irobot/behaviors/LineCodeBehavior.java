@@ -61,6 +61,7 @@ public class LineCodeBehavior extends RobotBehavior {
 				wasWhite = true;
 				lineCounter++;
 				robot.writeErrorToDisplay("Increased LineCounter", "now: " + lineCounter);
+				robot.beep();
 			} else if (lastTime < System.currentTimeMillis() - maxTime) {
 				switch (lineCounter) {
 				case MAZE_LINES:
