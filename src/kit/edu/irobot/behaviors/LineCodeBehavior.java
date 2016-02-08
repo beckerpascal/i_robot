@@ -12,20 +12,12 @@ public class LineCodeBehavior extends RobotBehavior {
 	private int amountMeans = 10;
 	private int sampleSize = -1;
 	private double delta = 0.5;
-	private int lineCounter = 0;
+	private int stage = 0;
 	private boolean wasBlack = true;
 	private boolean wasWhite = false;
 	private long lastTime = System.currentTimeMillis();
 	private long maxTime = 3000; // in ms
 	private boolean foundCode = false;
-
-	private final int MAZE_LINES = 1;
-	private final int LINE_LINES = 2;
-	private final int BRIDGE_LINES = 3;
-	private final int ELEVATOR_LINES = 4;
-	private final int HANGING_BRIDGE_LINES = 5;
-	private final int SWAMP_LINES = 6;
-	private final int ENDBOSS_LINES = 7;
 
 	public LineCodeBehavior(Robot robot) {
 		this.robot = robot;
@@ -38,6 +30,7 @@ public class LineCodeBehavior extends RobotBehavior {
 
 	public boolean takeControl() {
 		// TODO: Improve?!
+		// Maybe in separate Thread?
 		return true;
 	}
 
@@ -59,33 +52,11 @@ public class LineCodeBehavior extends RobotBehavior {
 				// rising edge
 				wasBlack = false;
 				wasWhite = true;
-				lineCounter++;
-				robot.writeErrorToDisplay("Increased LineCounter", "now: " + lineCounter);
+				stage++;
+				robot.writeErrorToDisplay("Increased Stage", "now: " + stage);
 				robot.beep();
 			} else if (lastTime < System.currentTimeMillis() - maxTime) {
-				switch (lineCounter) {
-				case MAZE_LINES:
-					// maze arb
-					break;
-				case LINE_LINES:
-					// line arb
-					break;
-				case BRIDGE_LINES:
-					// bridge arb
-					break;
-				case ELEVATOR_LINES:
-					// elevator arb
-					break;
-				case HANGING_BRIDGE_LINES:
-					// haning bridge arb
-					break;
-				case SWAMP_LINES:
-					// swamp arb
-					break;
-				case ENDBOSS_LINES:
-					// endboss arb
-					break;
-				}
+				robot.writeErrorToDisplay("No Line found...", "");
 				foundCode = true;
 			}
 		}
