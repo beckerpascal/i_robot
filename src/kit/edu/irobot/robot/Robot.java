@@ -137,7 +137,7 @@ public class Robot {
 		if (this.curActSens[touchSensor2]) {
 			sensorTouch_2 = new EV3TouchSensor(Constants.TOUCH_BACK_SENSOR);
 		}
-		if (this.curActSens[motorA]) {
+		if (this.curActSens[gyroSensor]) {
 			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
 		}
 
