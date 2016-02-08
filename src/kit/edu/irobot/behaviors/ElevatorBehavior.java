@@ -20,6 +20,7 @@ public class ElevatorBehavior extends RobotBehavior {
 	}
 	
 	public boolean takeControl() {
+		this.sensor.setFloodlight(false);
 		this.sensor.fetchSample(color, 0);
 		if(color[0] == 2 || color[0] == 3 || color[0] == 5){ // blue, green or red
 			return true;
