@@ -1,13 +1,13 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
-import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 
 public class LineCodeBehavior {
 
 	private Robot robot = null;
-	private EV3ColorSensor sensor = null;
+	private SampleProvider prov = null;
 	private float[] curVal;
 	private MeanFilter meanF = null;
 	private int amountMeans = 10;
@@ -17,16 +17,18 @@ public class LineCodeBehavior {
 	private boolean wasBlack = true;
 	private boolean wasWhite = false;
 	private long lastTime = System.currentTimeMillis();
-	private long maxTime = 500; // in ms //TODO good time?
+	private long maxTime = 1000; // in ms //TODO good time?
 	private boolean foundCode = false;
 
 	public LineCodeBehavior(Robot robot) {
 		this.robot = robot;
-		sensor = robot.getSensorLight();
-		sampleSize = sensor.sampleSize();
+		prov = this.robot.getSensorLight().getRedMode();
+		sampleSize = prov.sampleSize();
 		curVal = new float[2 * sampleSize];
-		meanF = new MeanFilter(sensor, amountMeans);
+		meanF = new MeanFilter(prov, amountMeans);
 		lastTime = System.currentTimeMillis();
+		
+		robot.beep();
 	}
 
 	public int search() {
@@ -61,7 +63,7 @@ public class LineCodeBehavior {
 	private void fetchSamples() {
 		// curVal[0] 		  - current value
 		// curVal[sampleSize] - filtered value
-		sensor.fetchSample(curVal, 0);
+		prov.fetchSample(curVal, 0);
 		meanF.fetchSample(curVal, sampleSize);
 		robot.writeErrorToDisplay("Current mean: " + curVal[sampleSize], "");
 	}
