@@ -41,7 +41,7 @@ public class HitObstacle extends RobotBehavior {
 
 		robot.setRobotSpeed(0.2f);
 		robot.moveRobotBackward();
-		Delay.msDelay(1000);
+		Delay.msDelay(1200);
 		
 		robot.stopMotion();
 		robot.setRobotSpeed(0.2f);

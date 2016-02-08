@@ -14,31 +14,35 @@ public class AvoidObstacle extends RobotBehavior {
 	private SampleProvider average;
 	private float[] values;
 
-	private float P,I,D,max_V,distance,integral;
+	private float P,I,D,distance,integral,last_error;
+	
+	private final float distance_max = 200.f;
+	private final float distance_target = 85.f;
+	private final float max_V = 0.75f;
+	private final float reg_V = 0.5f;
+	
+	private SampleProvider provider;
 	
 	public AvoidObstacle(Robot robot) {
 		
 		this.robot = robot;
 		sonar = robot.getSensorUltrasonic();
-		sonar.getDistanceMode();
+		provider = sonar.getDistanceMode();
+	
 		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
 		values = new float[average.sampleSize()];
 		
-		P = 250.f;
-		I = 15.f;
-		D = 0.f;
-	
-		max_V = 350.f;
+		P = 0.00300f;
+		I = 0.f;
+		D = 0.0300f;
+		last_error = Float.MAX_VALUE;
+		integral   = 0.f;
 	}
 
 	public boolean takeControl() {
     	if(super.exit == true){
     		return false;
     	}
-		if(distance > Constants.ULTRASONIC_DISTANCE_MAX){
-			integral = 0.0f;
-			return false;
-		}
 		
 		return true;
 	}
@@ -50,75 +54,52 @@ public class AvoidObstacle extends RobotBehavior {
 	public void action() {
 		suppressed = false;
 		
+		last_error = Float.MAX_VALUE;
 		while(!exit && !suppressed){
 			//sonar.fetchSample(values, 0);
-			average.fetchSample(values, 0);
+			provider.fetchSample(values, 0);
 			
 			//sample.fetchSample(values, 0);
-			float distance = values[0];
-			if(distance > Constants.ULTRASONIC_DISTANCE_MAX)
-				distance = (float)Constants.ULTRASONIC_DISTANCE_MAX;
+			float distance = values[0]*1000.0f;
+			if(distance > distance_max)
+				distance = distance_max;
 			
-			float error = (float) (distance - Constants.ULTRASONIC_DISTANCE_TARGET);
+			//error distance from -100 - 100
+			float error = (float) (distance - distance_target);
 			
 			if(Math.abs(error)<= 0.01){
 				integral = 0.0f;
 			}
 			integral = integral + error;
 			
-			float Turn   = P * error + I * integral;
+			if(last_error == Float.MAX_VALUE){
+				last_error = error;
+			}
 			
+			float Turn   = P * error + I * integral + D * (error - last_error);
+			
+			/*
 			if(Turn  > 0.00f){
 				Turn = (float) Math.min(0.3*max_V,Turn);
 			}else{
 				Turn = (float) Math.max(-0.3*max_V,Turn);
 			}
+			*/
 			float powerA = max_V -  Turn;         
 			float powerB = max_V +  Turn;         
-					
-			this.robot.driveWithSpeed(powerA, powerB);	
+
+			this.robot.setMotorSpeed(powerA, this.robot.getMotorLeft());
+			this.robot.setMotorSpeed(powerB, this.robot.getMotorRight());
+			this.robot.moveRobotForward();
 			
-			LCD.drawString("P" + P , 1, 1);
-			LCD.drawString("Distance: " + values[0], 1, 2);  
+			last_error = error;
+			/*
+			LCD.drawString("Distance: " + distance, 1, 2);  
 			LCD.drawString("Error: " + error, 1, 3);
 			LCD.drawString("Turn: " + Turn, 1, 4);
 			LCD.drawString("Power A: " + powerA, 1, 5);
 			LCD.drawString("Power B: " + powerB, 1, 6);
-			
-			/*leftMotor.setSpeed(powerA);
-			leftMotor.forward(); 		
-
-			rightMotor.setSpeed(powerB);
-			rightMotor.forward(); 	*/
-		/*		
-		average.fetchSample(values, 0);
-		if(Constants.ULTRASONIC_SENSOR_ON_RIGHT_SIDE){
-			// turn left
-			if(values[0] < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE, 
-									 Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			// turn right
-			}else if(values[0] > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE, 
-						 			 Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			// forward
-			}else{
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
-			}
-		}else{
-			// turn right
-			if(values[0] < Constants.ULTRASONIC_DISTANCE_TARGET - Constants.ULTRASONIC_DISTANCE_DELTA){
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE, 
-									 Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			// turn left
-			}else if(values[0] > Constants.ULTRASONIC_DISTANCE_TARGET + Constants.ULTRASONIC_DISTANCE_DELTA){
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET - Constants.ULTRASONIC_SPEED_DIFFERENCE, 
-						 			 Constants.ULTRASONIC_SPEED_TARGET + Constants.ULTRASONIC_SPEED_DIFFERENCE);
-			// forward
-			}else{
-				robot.driveWithSpeed(Constants.ULTRASONIC_SPEED_TARGET, Constants.ULTRASONIC_SPEED_TARGET);
-			}
-		}*/
+			*/
 		}
 	}
 }

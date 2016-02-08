@@ -38,10 +38,10 @@ public final class Constants {
 
 	public static boolean ULTRASONIC_SENSOR_ON_RIGHT_SIDE = true;
 	public static int ULTRASONIC_AVERAGE_AMOUNT = 5;
-	public static double ULTRASONIC_DISTANCE_TARGET = 0.07;
+	public static double ULTRASONIC_DISTANCE_TARGET = 0.11;
 	public static double ULTRASONIC_DISTANCE_ACTIVE = 0.25;
 	public static double ULTRASONIC_DISTANCE_DELTA = 0.02;
-	public static double ULTRASONIC_DISTANCE_MAX = 1;
+	public static double ULTRASONIC_DISTANCE_MAX = 0.5;
 	public static double ULTRASONIC_SPEED_TARGET = 0.5;
 	public static double ULTRASONIC_SPEED_DIFFERENCE = 0.1;
 

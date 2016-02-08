@@ -58,8 +58,13 @@ public class MazeStageSolver extends StageSolver{
 	public static void main(String[] args) 
 	{
 		MazeStageSolver solver = new MazeStageSolver();
+		
+		LCD.drawString("Starte MazeSolver mit UP", 0, 1);
+		while (!Button.UP.isDown()) {	    	
+			Delay.msDelay(100);
+		}
 		solver.start();
-		while (!Button.DOWN.isDown()) {	    	
+		while (!Button.ESCAPE.isDown()) {	    	
 			Delay.msDelay(100);
 		}
 		solver.stopSolver();
