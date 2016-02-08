@@ -1,8 +1,14 @@
 package kit.edu.irobot.solver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kit.edu.irobot.behaviors.AvoidObstacle;
 import kit.edu.irobot.behaviors.DriveForward;
+import kit.edu.irobot.behaviors.ElevatorBehavior;
+import kit.edu.irobot.behaviors.GrindtheCrack;
 import kit.edu.irobot.behaviors.HitObstacle;
+import kit.edu.irobot.behaviors.RobotBehavior;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.subsumption.Behavior;
@@ -16,21 +22,25 @@ import lejos.utility.Delay;
 public class MazeStageSolver extends StageSolver{	
 	
 	/*behaviours*/
-	public DriveForward driveForward;
-	public HitObstacle hitObstacle;
-	public AvoidObstacle avoidObstacle;
 	
-	public boolean run = true;
+	private List<RobotBehavior> behaviors;
 	
 	public MazeStageSolver() {
 		super("MazeStageSolver");
+
+		RobotBehavior b1 = new DriveForward(super.getRobot());
+		RobotBehavior b2 = new AvoidObstacle(super.getRobot());
+		RobotBehavior b3 = new ElevatorBehavior(super.getRobot());
+
+		behaviors = new ArrayList<RobotBehavior>();
+		behaviors.add(b1);
+		behaviors.add(b2);
+		behaviors.add(b3);
+		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
+		behaviors.toArray(temp);
+		super.arby = new BetterArbitrator(temp);
 		
-		driveForward = new DriveForward(super.getRobot());
-		avoidObstacle = new AvoidObstacle(super.getRobot());
-		hitObstacle  = new HitObstacle(super.getRobot());
-		
-		Behavior[] bArray = {driveForward, avoidObstacle, hitObstacle};
-		super.arby = new BetterArbitrator(bArray);
+		super.arby.start();
 	}
 
 	@Override
@@ -40,18 +50,13 @@ public class MazeStageSolver extends StageSolver{
 	
 	@Override
 	public void stopSolver() {
-
-		run = false;
-		hitObstacle.terminate();
-		driveForward.terminate();
-		avoidObstacle.terminate();
+		for( int i = 0; i < behaviors.size(); i++)
+			behaviors.get(i).terminate();
 		
-		for( int i = 0; i< 10;i++) {
+		for( int i = 0; i< 10; i++){
 			super.arby.stop();
-			Delay.msDelay(100);
 		}
 		super.getRobot().stopMotion();
-		
 		LCD.drawString("stop motion...", 1, 0);
 		 
 	}

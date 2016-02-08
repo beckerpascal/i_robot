@@ -29,8 +29,7 @@ public class AvoidObstacle extends RobotBehavior {
 		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();
 	
-		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
-		values = new float[average.sampleSize()];
+		values = new float[provider.sampleSize()];
 		
 		P = 0.00300f;
 		I = 0.f;

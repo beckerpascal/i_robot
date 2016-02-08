@@ -24,6 +24,9 @@ public class ElevatorBehavior extends RobotBehavior {
 	}
 
 	public boolean takeControl() {
+    	if(super.exit == true){
+    		return false;
+    	}
 		// line crossed
 		if (true) {
 			return true;
