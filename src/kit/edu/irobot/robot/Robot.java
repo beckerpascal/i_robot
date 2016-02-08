@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -317,5 +318,9 @@ public class Robot {
 	public void writeErrorToDisplay(String error1, String error2){
 		LCD.drawString(error1, 0, 6);
 		LCD.drawString(error2, 0, 7);
+	}
+	
+	public void beep(){
+		Sound.playTone(4000,333);
 	}
 }
