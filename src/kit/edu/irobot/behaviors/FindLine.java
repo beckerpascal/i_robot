@@ -3,14 +3,12 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
+import lejos.robotics.filter.MeanFilter;
 import lejos.robotics.subsumption.Behavior;
+import kit.edu.irobot.utils.Constants;
 
 public class FindLine  implements Behavior {
 	private boolean exit = false; 
-
-	private int arraySize = 50;
-	private float[] history = new float[arraySize];
-	private int calls = 0;
 
 	private boolean suppressed = false;
 	private Robot robot;
@@ -24,27 +22,14 @@ public class FindLine  implements Behavior {
 			return false;
 		} 
 		
-		return false;
+		SampleProvider average = new MeanFilter(robot.getSensorLight().getRedMode(), 100);
+		float[] values = new float[average.sampleSize()];
 		
-		/*
-		SampleProvider sample = robot.getSensorLight().getRedMode();
-
-		float[] values = new float[sample.sampleSize()];
-		sample.fetchSample(values, 0);
-
-		history[calls % arraySize] = values[0];
-
-		float errorSum = 0;
-		for (int index = 0; index < arraySize; index++) {
-			errorSum = errorSum + history[index];
-		}
-
-		if ((errorSum / arraySize) < 0.12) {
-			return true;
-		}
+//		if (values[0] < Constants.LIGHT_VALUE_BLACK) {
+//			return true;
+//		}
 
 		return false;
-		*/
 	}
 
 	public void suppress() {
@@ -55,7 +40,11 @@ public class FindLine  implements Behavior {
 		suppressed = false;
 		
 	    LCD.clear();
-	    LCD.drawString("Running Follow Line: ", 1, 0);
+	    LCD.drawString("Mode: Find Line: ", 1, 0);
+	    
+	    robot.getMotorLeft().setSpeed(0);
+	    robot.getMotorRight().setSpeed(100);
+	    robot.moveRobotForward();
 	}
 
 	public void terminate() {
