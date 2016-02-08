@@ -67,7 +67,7 @@ public class LineCodeBehavior extends RobotBehavior {
 		// curVal[sampleSize] - filtered value
 		sensor.fetchSample(curVal, 0);
 		meanF.fetchSample(curVal, sampleSize);
-
+		robot.writeErrorToDisplay("Current mean: " + curVal[sampleSize], "");
 	}
 
 }
