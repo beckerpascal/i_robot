@@ -11,6 +11,8 @@ import lejos.hardware.port.SensorPort;
  *
  */
 public final class Constants {
+	
+	public enum STAGE_ORDER {Start, Maze, Line1, ElevatorBridge, Line2, HangingBridge, Line3, Maze2, Endboss};
 
 	public static float TARGET_SPEED = 250;
 
