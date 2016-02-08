@@ -20,6 +20,8 @@ public class MazeStageSolver extends StageSolver{
 	public HitObstacle hitObstacle;
 	public AvoidObstacle avoidObstacle;
 	
+	public boolean run = true;
+	
 	public MazeStageSolver() {
 		super("MazeStageSolver");
 		
@@ -39,12 +41,17 @@ public class MazeStageSolver extends StageSolver{
 	@Override
 	public void stopSolver() {
 
+		run = false;
 		hitObstacle.terminate();
 		driveForward.terminate();
 		avoidObstacle.terminate();
 		
+		for( int i = 0; i< 10;i++) {
+			super.arby.stop();
+			Delay.msDelay(100);
+		}
 		super.getRobot().stopMotion();
-		super.arby.stop();
+		
 		LCD.drawString("stop motion...", 1, 0);
 		 
 	}
@@ -52,8 +59,8 @@ public class MazeStageSolver extends StageSolver{
 	{
 		MazeStageSolver solver = new MazeStageSolver();
 		solver.start();
-		while (!Button.ESCAPE.isDown()) {	    	
-			Delay.msDelay(500);
+		while (!Button.DOWN.isDown()) {	    	
+			Delay.msDelay(100);
 		}
 		solver.stopSolver();
 	}

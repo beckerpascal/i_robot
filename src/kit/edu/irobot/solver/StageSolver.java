@@ -12,7 +12,7 @@ public abstract class StageSolver extends Thread{
 	
 	public StageSolver(String name){
 		this.name = name;
-		this.robot = Robot.getInstance(new boolean[]{true, true, true, false, false, false, false, false});
+		this.robot = Robot.getInstance();
 		this.abort = false;
 	}
 	

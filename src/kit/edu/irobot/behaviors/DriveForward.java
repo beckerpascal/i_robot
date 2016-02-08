@@ -4,6 +4,7 @@ import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
 public class DriveForward extends RobotBehavior {
 
+	
 	public DriveForward(Robot robot) {
 		this.robot = robot;
 	}

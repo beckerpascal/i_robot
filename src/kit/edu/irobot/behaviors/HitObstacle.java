@@ -20,7 +20,7 @@ public class HitObstacle extends RobotBehavior {
 
 	public boolean takeControl() {
 		//robot.writeBehaviorNameToDisplay("HitObstacle tC");
-		if (this.exit == true){
+		if (super.exit == true){
 			return false;
 		}
 		
