@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.kit.mindstorms.communication.ComModule;
 import edu.kit.mindstorms.communication.Communication;
-import kit.edu.irobot.behaviors.ElevatorBehavior;
+import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.GrindtheCrack;
 import kit.edu.irobot.behaviors.RobotBehavior;
 import kit.edu.irobot.utils.UnregulatedPilot;
@@ -28,7 +28,7 @@ public class BridgeStageSolver extends StageSolver{
 		
 		//RobotBehavior b1 = new DriveForward(super.getRobot());
 		RobotBehavior b2 = new GrindtheCrack(super.getRobot());
-		RobotBehavior b3 = new ElevatorBehavior(super.getRobot(), super.exitCallback);
+		RobotBehavior b3 = new ExitOnLight(super.getRobot(), super.exitCallback);
 
 		behaviors = new ArrayList<RobotBehavior>();
 		behaviors.add(b2);

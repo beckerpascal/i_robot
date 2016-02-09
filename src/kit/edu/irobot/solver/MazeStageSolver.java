@@ -5,6 +5,7 @@ import java.util.List;
 
 import kit.edu.irobot.behaviors.AvoidObstacle;
 import kit.edu.irobot.behaviors.DriveForward;
+import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.HitObstacle;
 import kit.edu.irobot.behaviors.RobotBehavior;
 import lejos.hardware.Button;
@@ -30,11 +31,13 @@ public class MazeStageSolver extends StageSolver{
 		RobotBehavior b1 = new DriveForward(super.getRobot());
 		RobotBehavior b2 = new AvoidObstacle(super.getRobot());
 		RobotBehavior b3 = new HitObstacle(super.getRobot());
+		RobotBehavior b4 = new ExitOnLight(super.getRobot(),super.exitCallback);
 
 		behaviors = new ArrayList<RobotBehavior>();
 		behaviors.add(b1);
 		behaviors.add(b2);
 		behaviors.add(b3);
+		behaviors.add(b4);
 		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
 		behaviors.toArray(temp);
 		super.arby = new BetterArbitrator(temp);

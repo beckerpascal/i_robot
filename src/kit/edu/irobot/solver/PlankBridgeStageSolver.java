@@ -6,7 +6,7 @@ import java.util.List;
 import kit.edu.irobot.behaviors.AvoidObstacle;
 import kit.edu.irobot.behaviors.DriveForward;
 import kit.edu.irobot.behaviors.DrivePlankBridge;
-import kit.edu.irobot.behaviors.ElevatorBehavior;
+import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.GrindtheCrack;
 import kit.edu.irobot.behaviors.PlankBridgeGetInPosition;
 import kit.edu.irobot.behaviors.RobotBehavior;

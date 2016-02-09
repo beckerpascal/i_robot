@@ -7,14 +7,14 @@ import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 
-public class ElevatorBehavior extends RobotBehavior {
+public class ExitOnLight extends RobotBehavior {
 	private EV3ColorSensor sensor = null;
 	private SampleProvider lightProv = null;
 	private SampleProvider touchProv = null;
 	private EV3TouchSensor touch = null;
 	private float[] lightValue;
 
-	public ElevatorBehavior(Robot robot, ExitCallback callback) {
+	public ExitOnLight(Robot robot, ExitCallback callback) {
 		this.robot = robot;
 		this.sensor = this.robot.getSensorLight();
 		this.lightProv = sensor.getRedMode();
