@@ -6,7 +6,6 @@ import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
 
 public class LineCodeBehavior {
 
@@ -15,14 +14,14 @@ public class LineCodeBehavior {
 	private float[] curVal;
 	private Buffer buffer = null;
 	private float avg = 0;
-	private int amountMeans = 100;
+	private int amountMeans = 5;
 	private int sampleSize = -1;
 	private double delta = 0.3;
 	private int stage = 0;
 	private boolean wasBlack = true;
 	private boolean wasWhite = false;
 	private long lastTime = System.currentTimeMillis();
-	private long maxTime = 1000; // in ms //TODO good time?
+	private long maxTime = 2000; // in ms //TODO good time?
 	private boolean foundCode = false;
 
 	public LineCodeBehavior(Robot robot) {
@@ -32,52 +31,60 @@ public class LineCodeBehavior {
 		curVal = new float[sampleSize];
 		buffer = new Buffer(amountMeans);
 		lastTime = System.currentTimeMillis();
-		
+
 		robot.beep();
 		robot.setLEDPattern(3);
 	}
 
 	public int search(int button) {
-		lastTime = System.currentTimeMillis();
 		while (!foundCode && button != Button.ID_ESCAPE) {
 			button = Button.getButtons();
 			robot.moveRobotForward();
 			fetchSamples();
-			//LCD.drawString("CurVal" + curVal[0], 3,0);
+			// LCD.drawString("CurVal" + curVal[0], 3,0);
+			long curTime = System.currentTimeMillis();
 			if (wasBlack && curVal[0] > avg + delta) {
-				// falling edge
-				LCD.drawString("WasWhite, now IsBlack", 0,1);
+				// rising edge
+				LCD.drawString("WasWhite, now IsBlack", 0, 1);
 				robot.setLEDPattern(3);
 				wasBlack = false;
 				wasWhite = true;
-			} else if (wasWhite && avg - delta > curVal[0]) {
-				// rising edge
-				LCD.drawString("WasBlack, now IsWhite", 0,1);
+				lastTime = System.currentTimeMillis();
+				buffer.reset();
+			} else if (wasWhite && curVal[0] < avg && curTime < lastTime + maxTime) {
+				// falling edge
+				LCD.drawString("WasBlack, now IsWhite", 0, 1);
 				robot.setLEDPattern(4);
 				wasBlack = true;
 				wasWhite = false;
-				
+
 				stage++;
 				robot.beep();
 				Sound.beepSequenceUp();
 				buffer.reset();
 				LCD.drawString("Stage: " + stage, 0, 3);
-				//foundCode = true;
+				// foundCode = true;
+			} else if (lastTime + maxTime < curTime) {
+				LCD.drawString("Resetting...", 0, 1);
+				wasBlack = true;
+				wasWhite = false;
+				lastTime = System.currentTimeMillis();
+				buffer.reset();
 			}
-//			} else if (lastTime < System.currentTimeMillis() - maxTime) {
-//				//robot.writeErrorToDisplay("No Line found...", "");
-//				foundCode = true;
-//			}
+			// } else if (lastTime < System.currentTimeMillis() - maxTime) {
+			// //robot.writeErrorToDisplay("No Line found...", "");
+			// foundCode = true;
+			// }
 		}
-		if(foundCode){
+		if (foundCode) {
 			return stage;
-		}else{
+		} else {
 			return -1;
 		}
 	}
 
 	private void fetchSamples() {
-		// curVal[0] 		  - current value
+		// curVal[0] - current value
 		// curVal[sampleSize] - filtered value
 		prov.fetchSample(curVal, 0);
 		buffer.add(curVal[0]);
