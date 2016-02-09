@@ -25,6 +25,7 @@ public class AvoidObstacle extends RobotBehavior {
 	
 	public AvoidObstacle(Robot robot) {
 		
+		
 		this.robot = robot;
 		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();

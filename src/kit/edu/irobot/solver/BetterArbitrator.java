@@ -1,5 +1,6 @@
 package kit.edu.irobot.solver;
 
+import kit.edu.irobot.behaviors.RobotBehavior;
 import lejos.robotics.subsumption.Behavior;
 
 
@@ -60,7 +61,7 @@ public class BetterArbitrator
    * Same as Arbitrator(behaviorList, false) Arbitrator start() never exits
    * @param behaviorList An array of Behavior objects.
    */
-  public BetterArbitrator(Behavior[] behaviorList)
+  public BetterArbitrator(RobotBehavior[] behaviorList)
   {
     this(behaviorList, false);
   }
@@ -103,7 +104,10 @@ public class BetterArbitrator
   }
 
   public void stop() {
-	  this.terminate = true;
+	  synchronized (this)
+	  {
+			this.terminate = true;
+	  }
 	  monitor.terminate();
 	  // TODO: Method stops the Monitor thread and exits the start() loop.
   }
@@ -118,7 +122,10 @@ public class BetterArbitrator
     private boolean terminate = false;
 	  
     public void terminate(){
-    	this.terminate = true;
+    	synchronized (this)
+        {
+    		this.terminate = true;
+        }
     }
     
     boolean more = true;
