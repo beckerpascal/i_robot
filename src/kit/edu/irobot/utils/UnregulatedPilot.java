@@ -10,6 +10,7 @@ import lejos.robotics.EncoderMotor;
 import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.MoveController;
 import lejos.robotics.navigation.MoveListener;
+import lejos.utility.Delay;
 import lejos.hardware.ev3.LocalEV3;
 
 public class UnregulatedPilot {
@@ -22,6 +23,7 @@ public class UnregulatedPilot {
 	private boolean isStopped = false;
 	
 	private int basePWM = 50;
+	private int basePWM_rotate = 50;
 	private int lastSteer = 0;
 
 	private final int initialLeftTachoCount;
@@ -72,13 +74,6 @@ public class UnregulatedPilot {
 		this.lastRightTachoCount = this.right.getTachoCount();
 	}
 
-	public float getDegreeSinceLastDirectionChange() {
-		int leftDiff = this.left.getTachoCount() - this.lastLeftTachoCount;
-		int rightDiff = this.right.getTachoCount() - this.lastRightTachoCount;
-
-		return ((float) (leftDiff - rightDiff)) * this.abstand_in_degree_inv;
-	}
-
 	public void forward() {
 		this.isStopped = false;
 		left.setPower(basePWM);
@@ -105,9 +100,8 @@ public class UnregulatedPilot {
 	}
 
 	/**
-	 * Return a number, that gets bigger, the longer you go forward. In mm
-	 * 
-	 * @return
+	 * Return the driven distance in mm since relative to START
+	 * @return distance in mm (backwards is negative)
 	 */
 	public int getDistance() {
 		int tmp = this.left.getTachoCount() - this.initialLeftTachoCount;
@@ -120,6 +114,10 @@ public class UnregulatedPilot {
 		return tmp;
 	}
 	
+	/**
+	 * Return the driven distance in mm since last reset()
+	 * @return distance in mm (backwards is negative)
+	 */
 	public int getDistanceIncrement() {
 		int tmp = this.left.getTachoCount() - this.lastLeftTachoCount;
 		tmp += this.right.getTachoCount() - this.lastRightTachoCount;
@@ -215,16 +213,26 @@ public class UnregulatedPilot {
 	}*/
 
 	/**
-	 * Returns an estimate of the heading of the robot, relativ to the start
-	 * position
-	 * 
-	 * @return
+	 * Returns the angle of the robot relativ to the START
+	 * @return angle in degrees (anticlockwise > 0)
 	 */
-	public float getAngleIncrement() {
+	public float getAngle() {
 		int leftDiff = this.left.getTachoCount() - this.initialLeftTachoCount;
 		int rightDiff = this.right.getTachoCount() - this.initialRightTachoCount;
 
-		return ((float) (leftDiff - rightDiff)) * this.abstand_in_degree_inv;
+		return ((float) (-leftDiff + rightDiff)) * this.abstand_in_degree_inv;
+	}
+
+
+	/**
+	 * Returns the angle of the robot relative to last reset()
+	 * @return angle in degrees (anticlockwise > 0)
+	 */
+	public float getAngleIncrement() {
+		int leftDiff = this.left.getTachoCount() - this.lastLeftTachoCount;
+		int rightDiff = this.right.getTachoCount() - this.lastRightTachoCount;
+
+		return ((float) (-leftDiff + rightDiff)) * this.abstand_in_degree_inv;
 	}
 
 	public void setBackwardPower(int power) {
@@ -266,11 +274,11 @@ public class UnregulatedPilot {
 	public void setPowerLeft(int power) {
 		this.isStopped = false;
 		if (power < 0) {
-			this.right.setPower(-power);
-			this.right.backward();
+			this.left.setPower(-power);
+			this.left.backward();
 		} else {
-			this.right.setPower(power);
-			this.right.forward();
+			this.left.setPower(power);
+			this.left.forward();
 		}
 	}
 	
@@ -289,4 +297,92 @@ public class UnregulatedPilot {
 	public boolean isMoving() {
 		return !isStopped;
 	}
+	
+	
+	/** Rotate the robot with the given power on the motors.
+	 * Note: Resets the AngleIncrement and DistanceIncrement!
+	 * 
+	 * @param degrees angle in degrees (anticlockwise > 0)
+	 * @param power [-100...100] (if power is negative degree is inverted!)
+	 */
+	public void rotate(int degrees, int power) {
+		reset();
+		isStopped = false;
+		if (degrees < 0) {
+			// clockwise
+			setPower(power, -power);
+			while (!isStopped && getAngleIncrement() > degrees) {
+				Delay.msDelay(50);
+			}	
+		} else {
+			// anticlockwise
+			setPower(-power, power);
+			while (!isStopped && getAngleIncrement() < degrees) {
+				Delay.msDelay(50);
+			}	
+		}
+		stop();
+		reset();
+	}
+	
+	/** Rotate the robot using baseRotatePower on the motors.
+	 * Note: Resets the AngleIncrement and DistanceIncrement!
+	 * 
+	 * @param degrees angle in degrees (anticlockwise > 0)
+	 */
+	public void rotate(int degrees) {
+		rotate(degrees, basePWM_rotate);
+	}
+	
+	/**
+	 * 
+	 * @param power [0..100]
+	 */
+	public void setBaseRotatePower(int power) {
+		if (power < 0) power = 0;
+		if (power > 100) power = 100;
+		
+		basePWM_rotate = power;
+	}
+	
+	/**
+	 * Moves the robot for a specified distance with specified power.
+	 * If distance or power is negative, the robot drives backwards.
+	 * @param distance travel distance in mm
+	 * @param power [-100..100]
+	 */
+	public void travel(int distance, int power) {
+		reset();
+		isStopped = false;
+		if (distance < 0 || power < 0) {
+			// backwards
+			distance = -Math.abs(distance);
+			power = -Math.abs(power);
+			setPower(power, power);
+			while (!isStopped && getDistanceIncrement() > distance) {
+				Delay.msDelay(50);
+			}	
+		} else {
+			// forward
+			distance = Math.abs(distance);
+			power = Math.abs(power);
+			setPower(power, power);
+			while (!isStopped && getDistanceIncrement() < distance) {
+				Delay.msDelay(50);
+			}	
+		}
+		stop();
+		reset();
+	}
+	
+	/**
+	 * Moves the robot for a specified distance with BasePower power.
+	 * If distance or power is negative, the robot drives backwards.
+	 * @param distance travel distance in mm
+	 */
+	public void travel(int distance) {
+		travel(distance, basePWM);
+	}
+	
+	
 }
