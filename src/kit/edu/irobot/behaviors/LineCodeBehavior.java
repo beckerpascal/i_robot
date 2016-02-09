@@ -17,7 +17,6 @@ public class LineCodeBehavior {
 	private int sampleSize = -1;
 	private double delta = 0.4;
 	private boolean wasBlack = true;
-	private boolean wasWhite = false;
 	private long lastTime = System.currentTimeMillis();
 	private long maxTime = 1000; // in ms //TODO good time?
 	private boolean foundCode = false;
@@ -28,7 +27,6 @@ public class LineCodeBehavior {
 		sampleSize = prov.sampleSize();
 		curVal = new float[sampleSize];
 		buffer = new Buffer(amountMeans);
-		lastTime = System.currentTimeMillis();
 
 		robot.beep();
 		robot.setLEDPattern(3);
@@ -44,24 +42,20 @@ public class LineCodeBehavior {
 			LCD.drawString("WasWhite, now IsBlack", 0, 1);
 			robot.setLEDPattern(3);
 			wasBlack = false;
-			wasWhite = true;
 			lastTime = System.currentTimeMillis();
 			buffer.reset();
-		} else if (wasWhite && curVal[0] < avg - delta && curTime < lastTime + maxTime) {
+		} else if (!wasBlack && curVal[0] < avg - delta && curTime < lastTime + maxTime) {
 			// falling edge
 			LCD.drawString("WasBlack, now IsWhite", 0, 1);
 			robot.setLEDPattern(4);
 			wasBlack = true;
-			wasWhite = false;
 
-			robot.beep();
 			Sound.beepSequenceUp();
 			buffer.reset();
 			foundCode = true;
 		} else if (lastTime + maxTime < curTime) {
 			LCD.drawString("Resetting...", 0, 1);
 			wasBlack = true;
-			wasWhite = false;
 			lastTime = System.currentTimeMillis();
 			buffer.reset();
 		}
