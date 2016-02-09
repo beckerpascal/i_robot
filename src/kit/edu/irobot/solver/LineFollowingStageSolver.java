@@ -1,7 +1,6 @@
 package kit.edu.irobot.solver;
 
 import lejos.robotics.subsumption.Behavior;
-import lejos.robotics.subsumption.Arbitrator;
 
 import kit.edu.irobot.behaviors.FindLine;
 import kit.edu.irobot.behaviors.FollowLine;
@@ -27,7 +26,7 @@ public class LineFollowingStageSolver  extends StageSolver {
 		
 		Behavior [] behaviorPriority = {findLine, followLine};
 	
-	    Arbitrator arbitrator = new Arbitrator(behaviorPriority, true);
+	    BetterArbitrator arbitrator = new BetterArbitrator(behaviorPriority, true);
 	    arbitrator.start();
 	}
 

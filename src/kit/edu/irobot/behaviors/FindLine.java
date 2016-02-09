@@ -22,12 +22,12 @@ public class FindLine  implements Behavior {
 			return false;
 		} 
 		
-		SampleProvider average = new MeanFilter(robot.getSensorLight().getRedMode(), 100);
+		SampleProvider average = new MeanFilter(robot.getSensorLight().getRedMode(), 200);
 		float[] values = new float[average.sampleSize()];
 		
-//		if (values[0] < Constants.LIGHT_VALUE_BLACK) {
-//			return true;
-//		}
+		if (values[0] < Constants.PID_OFFSET) {
+			return false;
+		}
 
 		return false;
 	}
@@ -40,11 +40,59 @@ public class FindLine  implements Behavior {
 		suppressed = false;
 		
 	    LCD.clear();
-	    LCD.drawString("Mode: Find Line: ", 1, 0);
+	    LCD.drawString("Mode: Find Line", 1, 0);
 	    
-	    robot.getMotorLeft().setSpeed(0);
-	    robot.getMotorRight().setSpeed(100);
-	    robot.moveRobotForward();
+	    SampleProvider sample = robot.getSensorLight().getRedMode();
+	    
+	    boolean foundLine = false; 
+	    
+	    int degree_to_right = 90; 
+	    int degree_to_left  = -90;
+	    
+	    while(!suppressed && !foundLine)
+	    {
+	    	float[] values = new float[sample.sampleSize()];
+			sample.fetchSample(values, 0);
+			
+			if(values[0] < Constants.PID_OFFSET)
+			{
+				robot.getPilot().stop();
+				foundLine = true; 
+			}
+			
+			for (float degree = 0; degree < degree_to_right; degree = degree + 5)
+			{
+		    	robot.getPilot().rotate(degree, false);
+				
+				values = new float[sample.sampleSize()];
+				sample.fetchSample(values, 0);
+				
+				if(values[0] < Constants.PID_OFFSET)
+				{
+					robot.getPilot().stop();
+					foundLine = true; 
+				}
+			}
+			
+			for (float degree = degree_to_right; degree < degree_to_left; degree = degree + 5)
+			{
+				robot.getPilot().rotate(degree, false);
+		    	
+				values = new float[sample.sampleSize()];
+				sample.fetchSample(values, 0);
+				
+				if(values[0] < Constants.PID_OFFSET)
+				{
+					robot.getPilot().stop();
+					foundLine = true; 
+				}
+			}
+			
+			if(!foundLine)
+			{
+				robot.getPilot().travel(10);
+			}
+	    }
 	}
 
 	public void terminate() {
