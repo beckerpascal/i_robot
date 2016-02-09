@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.solver.StageSolver.ExitCallback;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.robotics.SampleProvider;
@@ -13,7 +14,7 @@ public class ElevatorBehavior extends RobotBehavior {
 	private EV3TouchSensor touch = null;
 	private float[] lightValue;
 
-	public ElevatorBehavior(Robot robot) {
+	public ElevatorBehavior(Robot robot, ExitCallback callback) {
 		this.robot = robot;
 		this.sensor = this.robot.getSensorLight();
 		this.lightProv = sensor.getRedMode();
@@ -21,6 +22,7 @@ public class ElevatorBehavior extends RobotBehavior {
 		this.touchProv = this.touch.getTouchMode();
 		this.sensor.setFloodlight(false);
 		this.lightValue = new float[this.lightProv.sampleSize()];
+		super.exitCallback = callback;
 	}
 
 	public boolean takeControl() {
@@ -43,6 +45,12 @@ public class ElevatorBehavior extends RobotBehavior {
 	}
 
 	public void action() {
+		// end arby
+		this.robot.stopMotion();
+		requestArbitratorExit();
+		/*
+		
+		
 		// call elevator with given api
 		// elevator.blabla()
 

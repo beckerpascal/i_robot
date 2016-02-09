@@ -112,6 +112,10 @@ public class BetterArbitrator
 	  // TODO: Method stops the Monitor thread and exits the start() loop.
   }
   
+  public boolean isRunning() {
+	  return !this.terminate;
+  }
+  
   /**
    * Finds the highest priority behavior that returns <B>true </B> to takeControl();
    * If this priority is higher than the active behavior, it calls active.suppress().

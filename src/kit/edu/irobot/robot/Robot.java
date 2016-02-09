@@ -173,7 +173,7 @@ public class Robot {
 		}
 	}
 	
-	/*
+	/**
 	 * Creates a new instance of a differential pilot.
 	 * 
 	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
@@ -193,7 +193,7 @@ public class Robot {
 		return diffPilot;
 	}
 	
-	/*
+	/**
 	 * Creates a new instance of a unregulated pilot.
 	 * 
 	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
@@ -210,6 +210,21 @@ public class Robot {
 		
 		unregPilot = new UnregulatedPilot(143, 43);
 		return unregPilot;
+	}
+	
+	public void HeadUp() {
+		if (motorSpecial != null) {
+			motorSpecial.rotate(-90);
+			motorSpecial.flt();
+		}
+	}
+	
+	public void HeadDown() {
+		if (motorSpecial != null) {
+			motorSpecial.rotate(90);
+			motorSpecial.flt();
+		}
+		
 	}
 	
 	public ArcRotateMoveController getPilot() {

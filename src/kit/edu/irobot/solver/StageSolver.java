@@ -6,9 +6,9 @@ import lejos.robotics.subsumption.Arbitrator;
 public abstract class StageSolver extends Thread{
 	private String name;
 	public BetterArbitrator arby;
-	private Robot robot;
+	protected Robot robot;
 	
-	private boolean abort;
+	protected boolean abort;
 	
 	public StageSolver(String name){
 		this.name = name;
@@ -30,4 +30,17 @@ public abstract class StageSolver extends Thread{
 
 	abstract public void stopSolver();
 	abstract public void run();
+	
+	
+	public interface ExitCallback {
+		void exitArby();
+	}
+
+	protected ExitCallback exitCallback = new ExitCallback() {
+		
+		@Override
+		public void exitArby() {
+			StageSolver.this.arby.stop();
+		}
+	};
 }

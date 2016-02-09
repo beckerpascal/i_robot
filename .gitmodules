@@ -1,0 +1,6 @@
+[submodule "lego-elevator"]
+	path = lego-elevator
+	url = https://github.com/matthiasplappert/lego-elevator.git
+[submodule "mindstorms_com_module"]
+	path = mindstorms_com_module
+	url = https://github.com/mbe24/mindstorms_com_module.git

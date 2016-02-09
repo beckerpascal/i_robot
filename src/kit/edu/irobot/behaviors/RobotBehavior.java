@@ -1,12 +1,16 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.solver.BetterArbitrator;
+import kit.edu.irobot.solver.StageSolver;
 import lejos.robotics.subsumption.Behavior;
 
-public class RobotBehavior implements Behavior{
+public abstract class RobotBehavior implements Behavior{
 	public boolean suppressed = false;
 	public boolean exit = false;
 	public Robot robot;
+	
+	protected StageSolver.ExitCallback exitCallback;
 	
 	public void terminate(){
 		this.exit = true;
@@ -19,22 +23,17 @@ public class RobotBehavior implements Behavior{
 
 		robot.stopMotion();
 	}
-
-	@Override
-	public boolean takeControl() {
-		// TODO Auto-generated method stub
-		return false;
+	
+	protected void requestArbitratorExit() {
+		if (exitCallback != null) exitCallback.exitArby();
 	}
 
 	@Override
-	public void action() {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract boolean takeControl();
 
 	@Override
-	public void suppress() {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract void action();
+
+	@Override
+	public abstract void suppress();
 }
