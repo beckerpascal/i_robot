@@ -92,10 +92,12 @@ public class BridgeStageSolver extends StageSolver{
 			provider.fetchSample(values, 0);
 			float ambient = values[0];
 			
-			if (ambient > 0.2f && ambient < 1.0f) {
+			if (ambient > 0.2f && ambient < 0.5f) {
+				LCD.clear(1);
 				LCD.drawString("Green! " + ambient, 0, 1);
 				break;
 			} else {
+				LCD.clear(1);
 				LCD.drawString("Ambient:" + ambient, 0, 1);
 				Delay.msDelay(50);
 			}

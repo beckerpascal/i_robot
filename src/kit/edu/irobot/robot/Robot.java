@@ -206,8 +206,14 @@ public class Robot {
 		if (diffPilot != null) {
 			diffPilot = null;
 		}
-		if (motorLeft != null) motorLeft.close();
-		if (motorRight != null) motorRight.close();
+		if (motorLeft != null) {
+			motorLeft.close();
+			motorLeft = null;
+		}
+		if (motorRight != null) {
+			motorRight.close();
+			motorRight = null;
+		}
 		
 		unregPilot = new UnregulatedPilot(143, 43);
 		return unregPilot;
@@ -259,10 +265,16 @@ public class Robot {
 	}
 
 	public EV3LargeRegulatedMotor getMotorLeft() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		return motorLeft;
 	}
 
 	public EV3LargeRegulatedMotor getMotorRight() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		return motorRight;
 	}
 
@@ -277,6 +289,9 @@ public class Robot {
 	 * @param motorB
 	 */
 	public void driveWithSpeed(double motorLeft, double motorRight) {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.setSpeed((float) motorLeft);
 		this.motorRight.setSpeed((float) motorRight);
 
@@ -299,9 +314,9 @@ public class Robot {
 	}
 
 	public void moveRobotForward() {
-		// RegulatedMotor[] motors = {this.motorRight};
-		// this.motorLeft.synchronizeWith(motors);
-		// this.motorLeft.startSynchronization();
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
@@ -314,6 +329,9 @@ public class Robot {
 	}
 
 	public void moveRobotBackward() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
@@ -326,6 +344,9 @@ public class Robot {
 	}
 
 	public void rotateRobotLeft() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
@@ -338,6 +359,9 @@ public class Robot {
 	}
 
 	public void rotateRobotRight() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
@@ -350,7 +374,9 @@ public class Robot {
 	}
 
 	public void stopMotion() {
-
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		this.motorLeft.startSynchronization();
 		this.motorLeft.stop();
 		this.motorRight.stop();
@@ -358,6 +384,9 @@ public class Robot {
 	}
 
 	public void rotateRobot(float angle) {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		float ang_vel = this.motorLeft.getSpeed();
 		float rotation_time = angle / ang_vel;
 
@@ -371,6 +400,9 @@ public class Robot {
 	}
 
 	public void turnAround() {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		rotateRobot(180.f);
 	}
 
