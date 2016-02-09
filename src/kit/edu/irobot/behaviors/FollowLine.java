@@ -3,6 +3,7 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 
 import kit.edu.irobot.utils.Constants;
+import kit.edu.irobot.utils.Buffer;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
@@ -19,7 +20,9 @@ public class FollowLine  implements Behavior {
 	   private boolean suppressed = false;
 	   private Robot robot;
 	   
-		private float distance,integral,last_error;
+	   
+	   
+		private float integral,last_error;
 		
 		private static final float IntegralBackoffLine = 0.2f;
 		private static final float IntegralBackoffBlack = 1.f;
@@ -33,6 +36,8 @@ public class FollowLine  implements Behavior {
 		
 		private final float max_V = 0.45f;
 		
+		private Buffer buffer =  new Buffer(50);
+		
 		private SampleProvider provider;
 	   
 	   public FollowLine(Robot robot) {
@@ -43,16 +48,31 @@ public class FollowLine  implements Behavior {
 			if (this.exit == true) {
 				return false;
 			} 
+						
+			SampleProvider sample = robot.getSensorLight().getRedMode(); 
+			float[] values = new float[sample.sampleSize()];
 			
-			return true;
+			this.buffer.add(values[0]);
+			
+			LCD.drawString("FOL A" + this.buffer.average(), 1, 4);
+			
+			if (this.buffer.average() > Constants.PID_OFFSET) {
+				return true;
+			}
+			
+			return false;
 	   }
 
 	   public void suppress() {
+		  LCD.clear();
 	      suppressed = true;
 	   }
 
 	   public void action() {
 		    suppressed = false; 
+		    
+			LCD.drawString("Follow Line", 1, 5);
+		    
 		    this.robot.getMotorRight().suspendRegulation();
 		    this.robot.getMotorLeft().suspendRegulation();
 			   
@@ -61,7 +81,7 @@ public class FollowLine  implements Behavior {
 //		    LCD.clear();
 //		    LCD.drawString("Setup - Follow Line: ", 1, 0);
 		    
-		    SampleProvider sample = robot.getSensorLight().getRedMode();
+//		    SampleProvider sample = robot.getSensorLight().getRedMode();
 		    
 //		    boolean setupDone = false; 
 //		    while(!setupDone)
@@ -98,12 +118,11 @@ public class FollowLine  implements Behavior {
 //				Delay.msDelay(100);
 //		    }
 		 
-		    
-		    
 		    provider = robot.getSensorLight().getRedMode();
 		    float[] values = new float[provider.sampleSize()];
 			
 			last_error = Float.MAX_VALUE;
+			
 			while(!exit && !suppressed ){
 				provider.fetchSample(values, 0);
 
@@ -128,7 +147,6 @@ public class FollowLine  implements Behavior {
 				/* add error to integral */
 				if (error >= 0.f /* line */) {
 					integral += error * IntegralFactorLine;
-					LCD.drawString("Reset line " + integral, 1, 3);
 				} else /* black */ {
 					integral += error * IntegralFactorBlack;
 				}
