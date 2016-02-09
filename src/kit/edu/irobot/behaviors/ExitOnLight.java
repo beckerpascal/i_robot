@@ -38,9 +38,9 @@ public class ExitOnLight extends RobotBehavior {
 
 	public void action() {
 		// end arby
-		this.robot.getUnregulatedPilot().stop();
+//		this.robot.getUnregulatedPilot().stop();
 		requestArbitratorExit();
-		this.robot.stopMotion();
+//		this.robot.stopMotion();
 	}
 
 }

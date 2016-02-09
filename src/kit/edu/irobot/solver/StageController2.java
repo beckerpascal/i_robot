@@ -73,6 +73,9 @@ public class StageController2{
 			button = Button.getButtons();
 			Delay.msDelay(2000);
 		}
+		
+		stopAll(solver);
+		lcb.stop();
 
 	}
 

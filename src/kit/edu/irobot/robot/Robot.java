@@ -221,7 +221,7 @@ public class Robot {
 	
 	public void HeadUp() {
 		if (motorSpecial != null) {
-			motorSpecial.rotate(-90);
+			motorSpecial.rotate(-80);
 			//Delay.msDelay(500);
 			//motorSpecial.flt();
 		}

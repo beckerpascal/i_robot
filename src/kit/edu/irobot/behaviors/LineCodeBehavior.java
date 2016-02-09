@@ -2,39 +2,39 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
-import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.Button;
+import lejos.hardware.Sound;
+import lejos.robotics.SampleProvider;
 
 public class LineCodeBehavior extends Thread {
-	private EV3ColorSensor light = null;
+	private SampleProvider light = null;
 	private Robot robot = null;
 	private float[] val = null;
 	private int count = 0;
 
 	public LineCodeBehavior(Robot robot) {
 		this.robot = robot;
-		light = robot.getSensorLight();
+		light = robot.getSensorLight().getRedMode();
 		val = new float[light.sampleSize()];
 	}
 	
-	public int getCurrentStage(){
-		
+	public int getCurrentStage(){		
 		return count;
 	}
 
 	public void run() {
 
-		System.out.println("reading barcodes");
 		light.fetchSample(val, 0);
 		boolean onBar = false;
 		long tLastSensorRead = System.currentTimeMillis();
 		long tLastScanSecs = tLastSensorRead;
-		int delay = 1000 / Constants.SCAN_FREQUENCY_HZ;
-		while (true) {
+		while (!Button.ESCAPE.isDown()) {
 
 			light.fetchSample(val, 0);
 			if (!onBar) {
 				if (val[0] > Constants.BAR_MIN) {
 					onBar = true;
+					Sound.beepSequenceUp();
 					count++;
 					// listener.onBarRead(count);
 					try {

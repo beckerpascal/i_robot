@@ -16,9 +16,9 @@ public class AvoidObstacle extends RobotBehavior {
 
 	private float P,I,D,distance,integral,last_error;
 	
-	private final float distance_max = 270.f;
+	private final float distance_max = 200.f;
 	private final float distance_target = 135.f;
-	private final float max_V = 0.5f;
+	private final float max_V = 0.75f;
 	private final float reg_V = 0.5f;
 	
 	private SampleProvider provider;
@@ -31,9 +31,9 @@ public class AvoidObstacle extends RobotBehavior {
 		provider = sonar.getDistanceMode();
 		values = new float[provider.sampleSize()];
 		
-		P = 0.003f;
+		P = 0.004f;
 		I = 0.f;
-		D = 0.03f;
+		D = 0.04f;
 		last_error = Float.MAX_VALUE;
 		integral   = 0.f;
 	}

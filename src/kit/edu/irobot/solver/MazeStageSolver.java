@@ -46,6 +46,8 @@ public class MazeStageSolver extends StageSolver{
 
 	@Override
 	public void run() {
+		
+		super.robot.getUnregulatedPilot().close();
 		super.getRobot().HeadUp();
 		super.arby.start();
 		
@@ -64,13 +66,17 @@ public class MazeStageSolver extends StageSolver{
 			Delay.msDelay(100);
 		}
 		super.getRobot().stopMotion();
+		super.getRobot().getSensorUltrasonic().close();
 		LCD.drawString("stop motion...", 1, 0);
 	}
 	public static void main(String[] args) 
 	{
 		MazeStageSolver solver = new MazeStageSolver();
-		
-		LCD.drawString("Starte MazeSolver", 0, 1);
+
+		LCD.drawString("Starte MazeSolver mit UP", 0, 1);
+		while (!Button.UP.isDown()) {	    	
+			Delay.msDelay(100);
+		}
 		
 		Button.waitForAnyPress();
 		solver.start();

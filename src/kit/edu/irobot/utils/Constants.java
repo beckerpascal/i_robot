@@ -55,8 +55,8 @@ public final class Constants {
 	
 	public static final int SCAN_FREQUENCY_HZ = 20; // 3 hertz
 	public static final int SCAN_SECS = 2; // forget count after seconds
-	public static final int MIN_DIFF = 50;
-	public static final int BAR_MIN = 400;
+	public static final double MIN_DIFF = 0.4;
+	public static final double BAR_MIN = 0.8;
 	public static final int BARS = 1; // bars in a barcode
 
 }
