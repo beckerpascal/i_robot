@@ -309,6 +309,9 @@ public class Robot {
 
 	// speed = [0-1]
 	public void setRobotSpeed(float speed) {
+		// close unregulatedPilot if needed
+		getDifferentialPilot();
+		
 		setMotorSpeed(speed, this.motorLeft);
 		setMotorSpeed(speed, this.motorRight);
 	}
