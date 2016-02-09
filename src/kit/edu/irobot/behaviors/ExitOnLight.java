@@ -46,47 +46,9 @@ public class ExitOnLight extends RobotBehavior {
 
 	public void action() {
 		// end arby
-		this.robot.stopMotion();
+		this.robot.getUnregulatedPilot().stop();
 		requestArbitratorExit();
-		/*
-		
-		
-		// call elevator with given api
-		// elevator.blabla()
-
-		// center robot on platform depending on side of sonic sensor
-		robot.stopMotion();
-		Delay.msDelay(500);
-		robot.setRobotSpeed(0.2f);
-		robot.rotateRobotLeft();
-		Delay.msDelay(2000);
-		robot.setRobotSpeed(0.1f);
-		robot.moveRobotForward();
-		Delay.msDelay(2000);
-		robot.setRobotSpeed(0.2f);
-		robot.rotateRobotRight();
-		/*
-		this.lightProv.fetchSample(color, 0);		
-		while(color[0] <= 0.5){
-			this.lightProv.fetchSample(color, 0);		
-		}
-
-		// drive forward until bumper reacts
-		float[] bumperVal = new float[this.touch.sampleSize()];
-		this.touch.fetchSample(bumperVal, 0);
-		while (!(bumperVal[0] == 1)) {
-			this.robot.getPilot().travel(3);
-			this.touchProv.fetchSample(bumperVal, 0);
-		}
-
-		// call elevator to drive downstairs
-		// elevater.blabla()
-
-		// wait x seconds
-		Delay.msDelay(15000);
-
-		// drive forward and detect barcode
-		this.robot.getPilot().travel(15);*/
+		this.robot.stopMotion();
 	}
 
 }
