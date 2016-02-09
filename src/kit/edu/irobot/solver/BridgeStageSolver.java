@@ -28,12 +28,12 @@ public class BridgeStageSolver extends StageSolver{
 		
 		RobotBehavior b1 = new DriveForward(super.getRobot());
 		RobotBehavior b2 = new GrindtheCrack(super.getRobot());
-		//RobotBehavior b3 = new ElevatorBehavior(super.getRobot());
+		RobotBehavior b3 = new ElevatorBehavior(super.getRobot());
 
 		behaviors = new ArrayList<RobotBehavior>();
 		behaviors.add(b1);
 		behaviors.add(b2);
-		//behaviors.add(b3);
+		behaviors.add(b3);
 		
 		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
 		behaviors.toArray(temp);

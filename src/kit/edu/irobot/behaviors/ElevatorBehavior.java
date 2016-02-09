@@ -11,7 +11,7 @@ public class ElevatorBehavior extends RobotBehavior {
 	private SampleProvider lightProv = null;
 	private SampleProvider touchProv = null;
 	private EV3TouchSensor touch = null;
-	private float[] color;
+	private float[] lightValue;
 
 	public ElevatorBehavior(Robot robot) {
 		this.robot = robot;
@@ -20,15 +20,17 @@ public class ElevatorBehavior extends RobotBehavior {
 		this.touch = this.robot.getSensorTouchFront();
 		this.touchProv = this.touch.getTouchMode();
 		this.sensor.setFloodlight(false);
-		this.color = new float[this.sensor.sampleSize()];
+		this.lightValue = new float[this.lightProv.sampleSize()];
 	}
 
 	public boolean takeControl() {
     	if(super.exit == true){
     		return false;
     	}
+    	this.lightProv.fetchSample(lightValue, 0);
+    	
 		// line crossed
-		if (true) {
+		if (lightValue[0] > 0.8f) {
 			return true;
 		} else {
 			return false;
@@ -45,10 +47,17 @@ public class ElevatorBehavior extends RobotBehavior {
 		// elevator.blabla()
 
 		// center robot on platform depending on side of sonic sensor
-		robot.getPilot().rotate(-90);
-		robot.getPilot().travel(15); // close to center of platform
-		robot.getPilot().rotate(90);
-		
+		robot.stopMotion();
+		Delay.msDelay(500);
+		robot.setRobotSpeed(0.2f);
+		robot.rotateRobotLeft();
+		Delay.msDelay(2000);
+		robot.setRobotSpeed(0.1f);
+		robot.moveRobotForward();
+		Delay.msDelay(2000);
+		robot.setRobotSpeed(0.2f);
+		robot.rotateRobotRight();
+		/*
 		this.lightProv.fetchSample(color, 0);		
 		while(color[0] <= 0.5){
 			this.lightProv.fetchSample(color, 0);		
@@ -69,7 +78,7 @@ public class ElevatorBehavior extends RobotBehavior {
 		Delay.msDelay(15000);
 
 		// drive forward and detect barcode
-		this.robot.getPilot().travel(15);
+		this.robot.getPilot().travel(15);*/
 	}
 
 }
