@@ -8,7 +8,7 @@ import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
 import lejos.utility.Delay;
 
-public class AvoidObstacle extends RobotBehavior {
+public class PlankBridge extends RobotBehavior {
 
 	private EV3UltrasonicSensor sonar;
 	private SampleProvider average;
@@ -16,14 +16,14 @@ public class AvoidObstacle extends RobotBehavior {
 
 	private float P,I,D,distance,integral,last_error;
 	
-	private final float distance_max = 200.f;
+	private final float distance_max = 170.f;
 	private final float distance_target = 135.f;
-	private final float max_V = 0.75f;
+	private final float max_V = 0.25f;
 	private final float reg_V = 0.5f;
 	
 	private SampleProvider provider;
 	
-	public AvoidObstacle(Robot robot) {
+	public PlankBridge(Robot robot) {
 		
 		this.robot = robot;
 		sonar = robot.getSensorUltrasonic();
