@@ -2,12 +2,10 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
-import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
-import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 public class GrindtheCrack extends RobotBehavior {
@@ -55,8 +53,6 @@ public class GrindtheCrack extends RobotBehavior {
 	}
 
 	public void action() {
-		final UnregulatedPilot pilot = robot.getUnregulatedPilot();
-		
 		suppressed = false;
 		
 		last_error = Float.MAX_VALUE;
@@ -93,7 +89,9 @@ public class GrindtheCrack extends RobotBehavior {
 			float powerA = max_V -  Turn;         
 			float powerB = max_V +  Turn;         
 
-			pilot.setPower((int)powerA*100, (int)powerB * 100);
+			this.robot.setMotorSpeed(powerA, this.robot.getMotorLeft());
+			this.robot.setMotorSpeed(powerB, this.robot.getMotorRight());
+			this.robot.moveRobotForward();
 			
 			last_error = error;
 			
@@ -104,6 +102,6 @@ public class GrindtheCrack extends RobotBehavior {
 			LCD.drawString("Power B: " + powerB, 1, 6);
 			
 		}
-		pilot.stop();
+		this.robot.stopMotion();
 	}
 }

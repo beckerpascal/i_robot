@@ -28,7 +28,10 @@ public abstract class StageSolver extends Thread{
 		this.robot = robot;
 	}
 
-	abstract public void stopSolver();
+	public void stopSolver() {
+		abort = true;
+	}
+	
 	abstract public void run();
 	
 	
