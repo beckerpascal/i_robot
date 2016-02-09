@@ -58,4 +58,9 @@ public class Buffer {
 		
 		return min; 
 	}
+	
+	public void reset(){
+		this.buffer = new float[this.size];
+		this.count = 0;
+	}
 }
