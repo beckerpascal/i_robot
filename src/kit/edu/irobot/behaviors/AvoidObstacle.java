@@ -16,8 +16,8 @@ public class AvoidObstacle extends RobotBehavior {
 
 	private float P,I,D,distance,integral,last_error;
 	
-	private final float distance_max = 200.f;
-	private final float distance_target = 85.f;
+	private final float distance_max = 270.f;
+	private final float distance_target = 135.f;
 	private final float max_V = 0.75f;
 	private final float reg_V = 0.5f;
 	
@@ -28,11 +28,9 @@ public class AvoidObstacle extends RobotBehavior {
 		this.robot = robot;
 		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();
-	
-		average = new MeanFilter(sonar, Constants.ULTRASONIC_AVERAGE_AMOUNT);
-		values = new float[average.sampleSize()];
+		values = new float[provider.sampleSize()];
 		
-		P = 0.00300f;
+		P = 0.00350f;
 		I = 0.f;
 		D = 0.0300f;
 		last_error = Float.MAX_VALUE;
