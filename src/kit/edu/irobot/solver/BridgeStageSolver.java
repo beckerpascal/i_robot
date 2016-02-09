@@ -26,13 +26,13 @@ public class BridgeStageSolver extends StageSolver{
 	public BridgeStageSolver() {
 		super("BridgeStageSolver");
 		
-		RobotBehavior b1 = new DriveForward(super.getRobot());
+		//RobotBehavior b1 = new DriveForward(super.getRobot());
 		RobotBehavior b2 = new GrindtheCrack(super.getRobot());
-		//RobotBehavior b3 = new ElevatorBehavior(super.getRobot());
+		RobotBehavior b3 = new ElevatorBehavior(super.getRobot());
 
 		behaviors = new ArrayList<RobotBehavior>();
-		behaviors.add(b1);
 		behaviors.add(b2);
+		behaviors.add(b3);
 		//behaviors.add(b3);
 		
 		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
@@ -43,6 +43,12 @@ public class BridgeStageSolver extends StageSolver{
 
 	@Override
 	public void run() {
+		super.getRobot().setRobotSpeed(0.3f);
+		super.getRobot().moveRobotForward();
+		Delay.msDelay(1000);
+		super.getRobot().getMotorSpecial();
+		
+		super.getRobot().stopMotion();
 		super.arby.start();
 	}
 	
