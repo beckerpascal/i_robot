@@ -92,7 +92,7 @@ public class BridgeStageSolver extends StageSolver{
 			provider.fetchSample(values, 0);
 			float ambient = values[0];
 			
-			if (ambient > 0.2f) {
+			if (ambient > 0.2f && ambient < 1.0f) {
 				LCD.drawString("Green! " + ambient, 0, 1);
 				break;
 			} else {
@@ -104,17 +104,19 @@ public class BridgeStageSolver extends StageSolver{
 
 	@Override
 	public void run() {
+		super.robot.getUnregulatedPilot().close();
 		DifferentialPilot pilot = super.robot.getDifferentialPilot();
 		
 		pilot.stop();
 		pilot.setTravelSpeed(0.8*pilot.getMaxTravelSpeed());
-		pilot.travel(25);
+		pilot.travel(45);
 		
 		super.robot.HeadDown();
 		
 		Delay.msDelay(100);
 		
 		super.arby.start();
+		pilot.stop();
 		
 		LCD.clear();
 		LCD.drawString("JUHU, arby ended", 0, 0);
