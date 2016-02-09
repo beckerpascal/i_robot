@@ -14,7 +14,8 @@ public class LineCodeBehavior {
 	private SampleProvider prov = null;
 	private float[] curVal;
 	private Buffer buffer = null;
-	private int amountMeans = 10;
+	private float avg = 0;
+	private int amountMeans = 100;
 	private int sampleSize = -1;
 	private double delta = 0.3;
 	private int stage = 0;
@@ -28,7 +29,7 @@ public class LineCodeBehavior {
 		this.robot = robot;
 		prov = this.robot.getSensorLight().getRedMode();
 		sampleSize = prov.sampleSize();
-		curVal = new float[2 * sampleSize];
+		curVal = new float[sampleSize];
 		buffer = new Buffer(amountMeans);
 		lastTime = System.currentTimeMillis();
 		
@@ -43,22 +44,24 @@ public class LineCodeBehavior {
 			robot.moveRobotForward();
 			fetchSamples();
 			//LCD.drawString("CurVal" + curVal[0], 3,0);
-			if (wasWhite && curVal[0] < curVal[sampleSize] - delta) {
+			if (wasBlack && curVal[0] > avg + delta) {
 				// falling edge
-				wasBlack = true;
-				wasWhite = false;
-				robot.setLEDPattern(3);
 				LCD.drawString("WasWhite, now IsBlack", 0,1);
-			} else if (wasBlack && curVal[sampleSize] + delta < curVal[0]) {
-				LCD.drawString("WasBlack, now IsWhite", 0,2);
-
-				// rising edge
+				robot.setLEDPattern(3);
 				wasBlack = false;
 				wasWhite = true;
+			} else if (wasWhite && avg - delta > curVal[0]) {
+				// rising edge
+				LCD.drawString("WasBlack, now IsWhite", 0,1);
+				robot.setLEDPattern(4);
+				wasBlack = true;
+				wasWhite = false;
+				
 				stage++;
 				robot.beep();
 				Sound.beepSequenceUp();
-				robot.setLEDPattern(4);
+				buffer.reset();
+				LCD.drawString("Stage: " + stage, 0, 3);
 				//foundCode = true;
 			}
 //			} else if (lastTime < System.currentTimeMillis() - maxTime) {
@@ -78,7 +81,8 @@ public class LineCodeBehavior {
 		// curVal[sampleSize] - filtered value
 		prov.fetchSample(curVal, 0);
 		buffer.add(curVal[0]);
-		robot.writeErrorToDisplay("Cur mean: " + curVal[sampleSize], "");
+		avg = buffer.average();
+		robot.writeErrorToDisplay("Cur avg: " + avg, "");
 	}
 
 }

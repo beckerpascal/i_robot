@@ -9,13 +9,13 @@ import lejos.utility.Delay;
 public class StageController2 {
 
 	public static void main(String[] args) {
-		StageSolver bossStage         = new BossStageSolver();
-		StageSolver bridgeStage       = new BridgeStageSolver();
-		StageSolver lineFollwingStage = new LineFollowingStageSolver();
-		StageSolver mazeStage         = new MazeStageSolver();
-		StageSolver rollingFieldStage = new RollingFieldStageSolver();
-		StageSolver SeesawStage		  = new SeesawStageSolver();
-		
+//		StageSolver bossStage         = new BossStageSolver();
+//		StageSolver bridgeStage       = new BridgeStageSolver();
+//		StageSolver lineFollwingStage = new LineFollowingStageSolver();
+//		StageSolver mazeStage         = new MazeStageSolver();
+//		StageSolver rollingFieldStage = new RollingFieldStageSolver();
+//		StageSolver SeesawStage		  = new SeesawStageSolver();
+//		
 		/*
 		 * StageSolver bossStage = new BossStageSolver(); StageSolver
 		 * bridgeStage = new BridgeStageSolver(); StageSolver lineFollwingStage
