@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.utils.Buffer;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -28,7 +29,7 @@ public class LineCodeBehavior {
 		prov = this.robot.getSensorLight().getRedMode();
 		sampleSize = prov.sampleSize();
 		curVal = new float[2 * sampleSize];
-		buffer = new MeanFilter(prov, amountMeans);
+		buffer = new Buffer(amountMeans);
 		lastTime = System.currentTimeMillis();
 		
 		robot.beep();
@@ -58,7 +59,6 @@ public class LineCodeBehavior {
 				robot.beep();
 				Sound.beepSequenceUp();
 				robot.setLEDPattern(4);
-				meanF = new MeanFilter(prov, amountMeans);
 				//foundCode = true;
 			}
 //			} else if (lastTime < System.currentTimeMillis() - maxTime) {
@@ -77,7 +77,7 @@ public class LineCodeBehavior {
 		// curVal[0] 		  - current value
 		// curVal[sampleSize] - filtered value
 		prov.fetchSample(curVal, 0);
-		meanF.fetchSample(curVal, sampleSize);
+		buffer.add(curVal[0]);
 		robot.writeErrorToDisplay("Cur mean: " + curVal[sampleSize], "");
 	}
 
