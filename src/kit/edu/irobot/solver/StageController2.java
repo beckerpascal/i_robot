@@ -10,11 +10,14 @@ import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 
 
-	public static void main(String[] args) {
 
+public class StageController2{
+	
+	public static void main(String [] args){
 		StageSolver bossStage = new BossStageSolver();
 		StageSolver bridgeStage = new BridgeStageSolver();
 		StageSolver mazeStage = new MazeStageSolver();
+		//StageSolver lineFollwingStage = new LineFollowingStageSolver();
 		StageSolver rollingFieldStage = new RollingFieldStageSolver();
 		StageSolver SeesawStage = new SeesawStageSolver();
 

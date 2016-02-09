@@ -2,11 +2,10 @@ package kit.edu.irobot.solver;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
-import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 import kit.edu.irobot.behaviors.FindLine;
 import kit.edu.irobot.behaviors.FollowLine;
-import kit.edu.irobot.behaviors.AvoidObstacle;
+import kit.edu.irobot.behaviors.RobotBehavior;
 
 /**
  * Behavior for the line following during the challenge
@@ -17,29 +16,26 @@ public class LineFollowingStageSolver  extends StageSolver {
 	
 	private FindLine findLine;
 	private FollowLine followLine; 
-	private AvoidObstacle avoidObstacle;
 	
 	public LineFollowingStageSolver() {
 		super("LineFollowingStageSolver");
+		findLine = new FindLine(super.getRobot(), super.exitCallback);
+		followLine = new FollowLine(super.getRobot());
+		
+		RobotBehavior[] behaviorPriority = {followLine, findLine};
+	
+	    super.arby = new BetterArbitrator(behaviorPriority, false);	
 	}
 
 	@Override
 	public void run() {
-		findLine = new FindLine(super.getRobot());
-		followLine = new FollowLine(super.getRobot());
-		//avoidObstacle = new AvoidObstacle(super.getRobot());
-		
-		Behavior [] behaviorPriority = {followLine, findLine};
-	
-	    BetterArbitrator arbitrator = new BetterArbitrator(behaviorPriority, true);
-	    arbitrator.start();
-	}
+		super.arby.start();
+		}
 
 	@Override
 	public void stopSolver() {
-		followLine.terminate();
 		findLine.terminate();
-		avoidObstacle.terminate();
+		followLine.terminate();
 		
 		for( int i = 0; i< 10;i++) {
 			super.arby.stop();
@@ -50,17 +46,15 @@ public class LineFollowingStageSolver  extends StageSolver {
 	
 	public static void main(String[] args) 
 	{
-		LineFollowingStageSolver solver =  new LineFollowingStageSolver();
+		LineFollowingStageSolver solver = new LineFollowingStageSolver();
 		
-		LCD.drawString("Start with UP", 0, 1);
+		LCD.drawString("Start Solver with UP", 0, 1);
 		while (!Button.UP.isDown()) {	    	
 			Delay.msDelay(100);
 		}
-		solver.start();
 		
-		while (!Button.ESCAPE.isDown()) {	    	
-			Delay.msDelay(100);
-		}
+		solver.start();
+		Button.waitForAnyPress();
 		solver.stopSolver();
 	}
 }

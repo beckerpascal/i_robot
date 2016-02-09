@@ -63,4 +63,12 @@ public class Buffer {
 		this.buffer = new float[this.size];
 		this.count = 0;
 	}
+	
+	public void reset(float value) {
+		this.reset();
+		
+		for(int index = 0; index < this.size; index++) {
+			this.add(value);
+		}
+	}
 }

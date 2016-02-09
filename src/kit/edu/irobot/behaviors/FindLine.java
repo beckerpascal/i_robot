@@ -1,23 +1,25 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.solver.StageSolver.ExitCallback;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
 import lejos.robotics.subsumption.Behavior;
 import kit.edu.irobot.utils.Constants;
 import kit.edu.irobot.utils.Buffer;
+import kit.edu.irobot.utils.UnregulatedPilot;
 
-public class FindLine  implements Behavior {
+public class FindLine  extends RobotBehavior {
 	private boolean exit = false; 
 
 	private boolean suppressed = false;
 	private Robot robot;
 	
-	private Buffer buffer = new Buffer(100);
+	private Buffer buffer = new Buffer(200);
 
-	public FindLine(Robot robot) {
+	public FindLine(Robot robot, ExitCallback callback) {
 		this.robot = robot;
+		super.exitCallback = callback;
 	}
 
 	public boolean takeControl() {
@@ -27,12 +29,13 @@ public class FindLine  implements Behavior {
 		
 		SampleProvider sample =  robot.getSensorLight().getRedMode();
 		float[] values = new float[sample.sampleSize()];
+		sample.fetchSample(values, 0);
 		
 		this.buffer.add(values[0]);
 		
-		LCD.drawString("FIL A: " + buffer.average(), 1, 6);
+		LCD.drawString("FIL: " + this.buffer.average(), 1, 6);
 		
-		if (buffer.average() < Constants.PID_OFFSET) {
+		if (buffer.average() < 0.3f) {
 			return true;
 		}
 
@@ -49,62 +52,86 @@ public class FindLine  implements Behavior {
 		LCD.drawString("Find Line", 1, 5);
 	    
 	    SampleProvider sample = robot.getSensorLight().getRedMode();
+	    UnregulatedPilot pilot =  robot.getUnregulatedPilot();
 	    
-	    int degree_to_right = -90; 
-	    int degree_to_left  = 180;
+	    int degree_to_right = -110; 
+	    int degree_to_left  = 110;
+	    
+	    int robot_speed = 90; 
 	    
 	    float[] values; 
-	    
 	    boolean foundLine  = false; 
 	    
-	    boolean turn_left  = false;
-	    boolean turn_right = true; 
 	    
+//	    while(!suppressed && !exit && !foundLine)
+//	    {	
+	    	pilot.reset();
+	    	
+	    	// Turn right 
+	    	pilot.setPower(robot_speed, -robot_speed);
+	    	while(pilot.getAngleIncrement() >= degree_to_right && !foundLine && !exit && !suppressed)
+	    	{
+				values = new float[sample.sampleSize()];
+				sample.fetchSample(values, 0);
+				
+				if(values[0] > Constants.PID_OFFSET){
+					pilot.stop();
+					foundLine = true; 
+				}
+	    	}
+	    	pilot.stop();
+	
+	    	// Turn left
+	    	pilot.setPower(-robot_speed, robot_speed);
+	    	while(pilot.getAngleIncrement() <= degree_to_left && !foundLine && !exit && !suppressed)
+	    	{
+				values = new float[sample.sampleSize()];
+				sample.fetchSample(values, 0);
+				
+				if(values[0] > Constants.PID_OFFSET){
+					pilot.stop();
+					foundLine = true; 
+				}
+	    	}
+	    	pilot.stop();
+	    	
+	    	// Turn back. 
+	    	pilot.setPower(robot_speed, -robot_speed);
+	    	while(pilot.getAngleIncrement() > 0 && !foundLine && !exit && !suppressed) {}
+	    	pilot.stop();
+	    	pilot.reset();
+	    	
 	    
-	    while(!suppressed && !exit && !foundLine)
-	    {	
-	    	// Turn right - 90 degrees 
-	    	if(turn_right && !turn_left && !foundLine) { 
-	    		robot.getPilot().rotate(degree_to_right, false);
-	    		
-	    		if(!robot.getPilot().isMoving()) {
-	    			turn_right = false; 
-	    			turn_left = true;
-	    		}
-	    	}
 	    	
-	    	// Turn left - 90 degrees 
-	    	if(!turn_right && turn_left && !foundLine) { 
-	    		robot.getPilot().rotate(degree_to_left, false);
-	    		
-	    		if(!robot.getPilot().isMoving()) {
-	    			turn_right = false; 
-	    			turn_left = false;
-	    		}
-	    	}
+	    	// Distance in mm 
+//	    	pilot.setPower(robot_speed, robot_speed);
+//	    	float distance =  100;
+//	    	while(pilot.getDistanceIncrement() < distance && !foundLine && !exit && !suppressed) {
+//		    	// Search for line 
+//				values = new float[sample.sampleSize()];
+//				sample.fetchSample(values, 0);
+//				
+//				if(values[0] > Constants.PID_OFFSET){
+//					pilot.stop();
+//					foundLine = true; 
+//				}
+//	    	}
+//	    	pilot.stop();
+//	    	pilot.reset();
 	    	
-	    	// Move forward
-	    	if(!turn_right && !turn_left && !foundLine) {
-	    		robot.getPilot().travel(10);
-	    		
-	    		if(!robot.getPilot().isMoving()) {
-	    			turn_right = true; 
-	    			turn_left = false;
-	    		}
+	    	if(foundLine) {
+	    		this.buffer.reset(1.f);
+	    		LCD.drawString("Found Line !", 1, 5);
 	    	}
-	    	
-	    	// Search for line 
-			values = new float[sample.sampleSize()];
-			sample.fetchSample(values, 0);
-			
-			if(values[0] > Constants.PID_OFFSET){
-				robot.getPilot().stop();
-				LCD.drawString("Found Line !", 1, 5);
-				foundLine = true; 
-			}
-	    }
+	    	else 
+	    	{
+	    		pilot.stop();
+	    		pilot.reset();
+	    		super.requestArbitratorExit();
+	    	}
+//	    }
 	}
-
+	
 	public void terminate() {
 		this.exit = true;
 	}

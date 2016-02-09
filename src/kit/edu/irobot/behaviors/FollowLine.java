@@ -5,22 +5,16 @@ import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
 import kit.edu.irobot.utils.Buffer;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.SensorPort;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 import lejos.hardware.Button;
+import kit.edu.irobot.utils.UnregulatedPilot;
 
-public class FollowLine  implements Behavior {
+public class FollowLine extends RobotBehavior {
 	   private boolean exit = false; 
 	   private boolean suppressed = false;
 	   private Robot robot;
-	   
-	   
 	   
 		private float integral,last_error;
 		
@@ -30,18 +24,20 @@ public class FollowLine  implements Behavior {
 		private static final float IntegralFactorLine = 8.f;
 		private static final float IntegralFactorBlack = 1.f;
 		
-		private static final float P = 0.002f;
-		private static final float I = 0.0005f;
-		private static final float D = 0.010f; 
+		// SEHR GUT: V = 0.65, P = 0.006
+		private static final float P = 0.005f;//0.002f;
+		private static final float I = 0.f;//0.0005f;
+		private static final float D = 0.f;//0.010f; 
 		
 		private final float max_V = 0.45f;
 		
-		private Buffer buffer =  new Buffer(50);
-		
+	
 		private SampleProvider provider;
+		private UnregulatedPilot pilot;
 	   
 	   public FollowLine(Robot robot) {
 		   		this.robot = robot;
+		   		this.pilot = robot.getUnregulatedPilot();
 	   }
 	   	   
 	   public boolean takeControl() {
@@ -49,33 +45,29 @@ public class FollowLine  implements Behavior {
 				return false;
 			} 
 						
-			SampleProvider sample = robot.getSensorLight().getRedMode(); 
-			float[] values = new float[sample.sampleSize()];
-			
-			this.buffer.add(values[0]);
-			
-			LCD.drawString("FOL A" + this.buffer.average(), 1, 4);
-			
-			if (this.buffer.average() > Constants.PID_OFFSET) {
-				return true;
-			}
-			
-			return false;
+//			SampleProvider sample = robot.getSensorLight().getRedMode(); 
+//			float[] values = new float[sample.sampleSize()];
+//			
+//			this.buffer.add(values[0]);
+//			
+//			LCD.drawString("FOL A" + this.buffer.average(), 1, 4);
+//			
+//			if (this.buffer.average() > Constants.PID_OFFSET) {
+//				return true;
+//			}
+//			
+			return true;
 	   }
 
-	   public void suppress() {
+	   public void suppress() {	   
 		  LCD.clear();
 	      suppressed = true;
 	   }
 
 	   public void action() {
 		    suppressed = false; 
-		    
-			LCD.drawString("Follow Line", 1, 5);
-		    
-		    this.robot.getMotorRight().suspendRegulation();
-		    this.robot.getMotorLeft().suspendRegulation();
-			   
+			LCD.clear();
+		    		   
 //		    int button = -1; 
 		    
 //		    LCD.clear();
@@ -118,6 +110,8 @@ public class FollowLine  implements Behavior {
 //				Delay.msDelay(100);
 //		    }
 		 
+			pilot.reset();
+			
 		    provider = robot.getSensorLight().getRedMode();
 		    float[] values = new float[provider.sampleSize()];
 			
@@ -161,37 +155,21 @@ public class FollowLine  implements Behavior {
 				float Turn   = P * error + I * integral + D * (error - last_error);
 				
 				// power is in range -100 (full back) to 100 (full forward)
-				float powerA = max_V -  Turn;         
-				float powerB = max_V +  Turn;         
-
-				if (powerA < 0) {
-					powerA *= -1;
-					this.robot.getMotorLeft().setSpeed(this.robot.getMotorLeft().getMaxSpeed() * powerA);
-					this.robot.getMotorLeft().backward();
-				} else {
-					this.robot.getMotorLeft().setSpeed(this.robot.getMotorLeft().getMaxSpeed() * powerA);
-					this.robot.getMotorLeft().forward();
-				}
-				
-				if (powerB < 0) {
-					powerB *= -1;
-					this.robot.getMotorRight().setSpeed(this.robot.getMotorRight().getMaxSpeed() * powerB);
-					this.robot.getMotorRight().backward();
-				} else {
-					this.robot.getMotorRight().setSpeed(this.robot.getMotorRight().getMaxSpeed() * powerB);
-					this.robot.getMotorRight().forward();
-				}
-				
+				int powerA = (int)((max_V -  Turn) * 100);         
+			    int powerB = (int)((max_V +  Turn) * 100);         
+			    
+				pilot.setPower(powerA, powerB);
+								
 				last_error = error;
 				
-//				LCD.drawString("LightV: " + lightValue, 1, 2);  
-//				LCD.drawString("Error: " + error, 1, 3);
-//				LCD.drawString("Turn: " + Turn, 1, 4);
-//				LCD.drawString("Power A: " + powerA, 1, 5);
-//				LCD.drawString("Power B: " + powerB, 1, 6);
-				
-			}
-			robot.stopMotion();
+				LCD.drawString("LightV: " + lightValue, 1, 2);  
+				LCD.drawString("Error: " + error, 1, 3);
+				LCD.drawString("Turn: " + Turn, 1, 4);
+				LCD.drawString("Power A: " + powerA, 1, 5);
+				LCD.drawString("Power B: " + powerB, 1, 6);
+			}	
+			
+			pilot.stop();
 		}
 	   
 
