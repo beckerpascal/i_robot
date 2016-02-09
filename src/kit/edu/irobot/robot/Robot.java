@@ -188,6 +188,7 @@ public class Robot {
 		}
 		if (motorLeft == null) motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
 		if (motorRight == null) motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+		motorLeft.synchronizeWith(new RegulatedMotor[]{ motorRight });
 		
 		diffPilot = new DifferentialPilot(4.275, 14.315, motorLeft, motorRight);
 		return diffPilot;
@@ -215,14 +216,16 @@ public class Robot {
 	public void HeadUp() {
 		if (motorSpecial != null) {
 			motorSpecial.rotate(-90);
-			motorSpecial.flt();
+			//Delay.msDelay(500);
+			//motorSpecial.flt();
 		}
 	}
 	
 	public void HeadDown() {
 		if (motorSpecial != null) {
 			motorSpecial.rotate(90);
-			motorSpecial.flt();
+			//Delay.msDelay(500);
+			//motorSpecial.flt();
 		}
 		
 	}
@@ -299,6 +302,7 @@ public class Robot {
 		// RegulatedMotor[] motors = {this.motorRight};
 		// this.motorLeft.synchronizeWith(motors);
 		// this.motorLeft.startSynchronization();
+		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
 			this.motorRight.backward();
@@ -306,9 +310,11 @@ public class Robot {
 			this.motorLeft.forward();
 			this.motorRight.forward();
 		}
+		this.motorLeft.endSynchronization();
 	}
 
 	public void moveRobotBackward() {
+		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
 			this.motorRight.forward();
@@ -316,9 +322,11 @@ public class Robot {
 			this.motorLeft.backward();
 			this.motorRight.backward();
 		}
+		this.motorLeft.endSynchronization();
 	}
 
 	public void rotateRobotLeft() {
+		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
 			this.motorRight.forward();
@@ -326,9 +334,11 @@ public class Robot {
 			this.motorLeft.forward();
 			this.motorRight.backward();
 		}
+		this.motorLeft.endSynchronization();
 	}
 
 	public void rotateRobotRight() {
+		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
 			this.motorRight.backward();
@@ -336,13 +346,14 @@ public class Robot {
 			this.motorLeft.backward();
 			this.motorRight.forward();
 		}
+		this.motorLeft.endSynchronization();
 	}
 
 	public void stopMotion() {
 
+		this.motorLeft.startSynchronization();
 		this.motorLeft.stop();
 		this.motorRight.stop();
-
 		this.motorLeft.endSynchronization();
 	}
 

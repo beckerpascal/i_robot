@@ -12,6 +12,7 @@ import kit.edu.irobot.behaviors.RobotBehavior;
 import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 /**
@@ -43,20 +44,21 @@ public class BridgeStageSolver extends StageSolver{
 
 	@Override
 	public void run() {
-		UnregulatedPilot pilot = super.robot.getUnregulatedPilot();
+		DifferentialPilot pilot = super.robot.getDifferentialPilot();
 		
 		pilot.stop();
-		pilot.travel(200, 70);
+		pilot.setTravelSpeed(0.8*pilot.getMaxTravelSpeed());
+		pilot.travel(20);
 		
 		super.robot.HeadDown();
 		
-		Delay.msDelay(1000);
+		Delay.msDelay(100);
 		
 		super.arby.start();
 		
 		LCD.clear();
 		LCD.drawString("JUHU, arby ended", 0, 0);
-		Delay.msDelay(1000);
+		Delay.msDelay(100);
 		
 		
 		/* calling elevator */
@@ -70,11 +72,11 @@ public class BridgeStageSolver extends StageSolver{
 				LCD.clear(1);
 				while (!module.requestStatus() && !abort) {
 					LCD.drawString("Waiting" + tries, 0, 1);
-					Delay.msDelay(5000);
+					Delay.msDelay(1000);
 					tries += ".";
 				}
-			
-				if (module.requestElevator()) {
+				
+				if (!abort && module.requestElevator()) {
 					LCD.drawString("Requested Elevator", 0, 1);
 					reservated = true;
 				} else {
@@ -82,18 +84,9 @@ public class BridgeStageSolver extends StageSolver{
 				}
 			}
 			
-			
-			while (!module.requestStatus() && !abort) {
-				LCD.drawString("Waiting...", 0, 2);
-				Delay.msDelay(500);
-			}
-			
-			LCD.drawString("Got State RDY", 0, 2);
-			Delay.msDelay(5000);
-			
 		} catch (IOException e) {
 			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 4);
-			Delay.msDelay(5000);
+			Delay.msDelay(1000);
 		}
 
 		Button.ENTER.waitForPressAndRelease();
@@ -101,7 +94,7 @@ public class BridgeStageSolver extends StageSolver{
 		/* navigate into elevator*/
 		
 		try {
-			if (module.moveElevatorDown()) {
+			if (!abort && module.moveElevatorDown()) {
 				LCD.drawString("Requested Down", 0, 3);
 			} else {
 				LCD.drawString("Down Failed", 0, 3);	
@@ -110,35 +103,37 @@ public class BridgeStageSolver extends StageSolver{
 			
 		} catch (IOException e) {
 			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 4);
-			Delay.msDelay(5000);
+			Delay.msDelay(1000);
 		}
 
 		
 		// waiting for elevator to travel down
-		for (int secs = 5; secs >= 0; secs--) {
+		for (int secs = 5; !abort && secs >= 0; secs--) {
 			LCD.drawString("Waiting " + secs, 0, 4);
 			Delay.msDelay(1000);
 		}
 		
-		LCD.drawString("Complete!", 0, 5);
-		Delay.msDelay(2000);
+		pilot.travel(30);
 		
+		LCD.drawString("Complete!", 0, 5);
+		if (!abort) Delay.msDelay(1000);
+		
+		pilot.stop();
 	}
 	
 	@Override
 	public void stopSolver() {
-		abort = true;
+		super.stopSolver();
+		
 		for( int i = 0; i < behaviors.size(); i++)		
 			behaviors.get(i).terminate();
 		
-		for( int i = 0; i < 10; i++){
+		for( int i = 0; i < 5; i++){
 			super.arby.stop();
-			Delay.msDelay(100);
+			Delay.msDelay(10);
 		}
+		
 		super.getRobot().stopMotion();
-
-		LCD.drawString("stop motion...", 1, 0);
-		 
 	}
 	
 	public static void main(String[] args) 
