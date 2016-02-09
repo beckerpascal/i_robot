@@ -3,6 +3,7 @@ package kit.edu.irobot.robot;
 import java.util.Arrays;
 
 import kit.edu.irobot.utils.Constants;
+import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
@@ -68,7 +69,8 @@ public class Robot {
 
 	int direction = FORWARD;
 	
-	private ArcRotateMoveController pilot;
+	private DifferentialPilot diffPilot;
+	private UnregulatedPilot unregPilot;
 	
 
 	/**
@@ -169,14 +171,49 @@ public class Robot {
 		if ((flags & SENSOR_GYRO) != 0) {
 			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
 		}
-
-		pilot = new DifferentialPilot(14.275, 4.315, motorLeft, motorRight);
-		pilot.setRotateSpeed(Constants.ROTATE_SPEED);
-		pilot.setTravelSpeed(Constants.TRAVEL_SPEED);
+	}
+	
+	/*
+	 * Creates a new instance of a differential pilot.
+	 * 
+	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
+	 * the DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
+	 */
+	public DifferentialPilot getDifferentialPilot() {
+		if (diffPilot != null) return diffPilot;
+		
+		if (unregPilot != null) {
+			unregPilot.close();
+			unregPilot = null;
+		}
+		if (motorLeft == null) motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
+		if (motorRight == null) motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+		
+		diffPilot = new DifferentialPilot(4.275, 14.315, motorLeft, motorRight);
+		return diffPilot;
+	}
+	
+	/*
+	 * Creates a new instance of a unregulated pilot.
+	 * 
+	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
+	 * the DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
+	 */
+	public UnregulatedPilot getUnregulatedPilot() {
+		if (unregPilot != null) return unregPilot;
+		
+		if (diffPilot != null) {
+			diffPilot = null;
+		}
+		if (motorLeft != null) motorLeft.close();
+		if (motorRight != null) motorRight.close();
+		
+		unregPilot = new UnregulatedPilot(143, 43);
+		return unregPilot;
 	}
 	
 	public ArcRotateMoveController getPilot() {
-		return pilot;
+		return getDifferentialPilot();
 	}
 
 	public EV3MediumRegulatedMotor getMotorSpecial() {
