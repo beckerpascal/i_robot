@@ -12,6 +12,7 @@ import kit.edu.irobot.behaviors.RobotBehavior;
 import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
@@ -41,6 +42,65 @@ public class BridgeStageSolver extends StageSolver{
 		super.arby = new BetterArbitrator(temp);
 		// TODO Auto-generated constructor stub
 	}
+	
+	private void findEntry(DifferentialPilot pilot) {
+		boolean found = false;
+		while (!found && !abort) {
+			pilot.reset();
+			pilot.forward();
+			waitBounced();
+			float distance = pilot.getMovementIncrement(); //in cm
+			if (distance > 25) {
+				LCD.drawString("Should be in Elevator " + distance, 0, 2);
+				found = true;
+				pilot.travel(-2.f);
+				pilot.stop();
+				
+			} else {
+				LCD.drawString("Bounced after " + distance, 0, 2);
+				pilot.travel(-4.f);
+				pilot.rotate(15.f);
+			}
+			
+		}
+	}
+	
+	private void waitBounced() {
+		SampleProvider provider = robot.getSensorTouchFront().getTouchMode();
+		float[] values = new float[provider.sampleSize()];
+		
+		while (!abort) {
+			provider.fetchSample(values, 0);
+			float touched = values[0];
+			
+			if (touched >= 1.0f) {
+				return;
+			} else {
+				Delay.msDelay(10);
+			}
+		}
+	}
+	
+	private void waitForGreen() {
+		LCD.clear();
+		LCD.drawString("Wait for Green", 0, 0);
+		
+		SampleProvider provider = robot.getSensorLight().getAmbientMode();
+		float[] values = new float[provider.sampleSize()];
+		
+		while (!abort) {
+			provider.fetchSample(values, 0);
+			float ambient = values[0];
+			
+			if (ambient > 0.2f) {
+				LCD.drawString("Green! " + ambient, 0, 1);
+				break;
+			} else {
+				LCD.drawString("Ambient:" + ambient, 0, 1);
+				Delay.msDelay(50);
+			}
+		}
+	}
 
 	@Override
 	public void run() {
@@ -48,7 +108,7 @@ public class BridgeStageSolver extends StageSolver{
 		
 		pilot.stop();
 		pilot.setTravelSpeed(0.8*pilot.getMaxTravelSpeed());
-		pilot.travel(20);
+		pilot.travel(25);
 		
 		super.robot.HeadDown();
 		
@@ -89,7 +149,14 @@ public class BridgeStageSolver extends StageSolver{
 			Delay.msDelay(1000);
 		}
 
-		Button.ENTER.waitForPressAndRelease();
+		
+		pilot.rotate(-19);
+		pilot.travel(35);
+		
+		waitForGreen();
+		findEntry(pilot);
+		
+		//Button.ENTER.waitForPressAndRelease();
 		
 		/* navigate into elevator*/
 		
@@ -113,7 +180,7 @@ public class BridgeStageSolver extends StageSolver{
 			Delay.msDelay(1000);
 		}
 		
-		pilot.travel(30);
+		pilot.travel(33);
 		
 		LCD.drawString("Complete!", 0, 5);
 		if (!abort) Delay.msDelay(1000);
