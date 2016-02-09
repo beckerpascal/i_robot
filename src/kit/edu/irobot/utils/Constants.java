@@ -52,5 +52,11 @@ public final class Constants {
 	public static float WHITE_AREA_FACTOR = 0.2f; 
 	public static float BLACK_AREA_FACTOR = 1.f; 
 	public static int LIGHT_AVERAGE_AMOUNT = 100;
+	
+	public static final int SCAN_FREQUENCY_HZ = 20; // 3 hertz
+	public static final int SCAN_SECS = 2; // forget count after seconds
+	public static final int MIN_DIFF = 50;
+	public static final int BAR_MIN = 400;
+	public static final int BARS = 1; // bars in a barcode
 
 }
