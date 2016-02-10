@@ -11,21 +11,6 @@ import lejos.utility.Delay;
 public class StageControllerQuali {
 
 	public static void main(String[] args) {
-
-		// StageSolver bossStage = new BossStageSolver();
-		StageSolver bridgeStage = new BridgeStageSolver();
-		StageSolver lineFollowingStage = new LineFollowingStageSolver();
-		StageSolver mazeStage = new MazeStageSolver();
-		// StageSolver rollingFieldStage = new RollingFieldStageSolver();
-		// StageSolver SeesawStage = new SeesawStageSolver();
-
-		List<StageSolver> solver = new ArrayList<StageSolver>();
-		solver.add(mazeStage);
-		solver.add(bridgeStage);
-		// solver.add(lineFollwingStage);
-		// solver.add(SeesawStage);
-		// solver.add(rollingFieldStage);
-		// solver.add(bossStage);
 		
 		int distanceBetweenStages = 300;
 		
