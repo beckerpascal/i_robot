@@ -26,12 +26,11 @@ public class StageControllerQuali {
 		// solver.add(SeesawStage);
 		// solver.add(rollingFieldStage);
 		// solver.add(bossStage);
-
-		Robot robot = Robot.getInstance();
 		
 		int distanceBetweenStages = 300;
 		
 		int mode = 0;
+		LCD.drawString("Press LEFT Button to continue!", 0, 0, true);
 		int button = Button.waitForAnyEvent();
 		
 		List<String> modes = new ArrayList<String>();
@@ -43,17 +42,19 @@ public class StageControllerQuali {
 		modes.add("Hanging Bridge");
 		modes.add("Swamp");
 		modes.add("Endboss");
+		modes.add("EndbossPowerMode");
+		
+		Robot.getInstance().HeadUp();
+
 
 		while (!Button.ESCAPE.isDown()) {
 			
 			if( button == Button.ID_UP){
 				mode = mode +1;
 				if(mode >= modes.size())mode = 0;
-				robot.stopMotion();	
 			}else if( button == Button.ID_DOWN){
 				mode = mode -1;
 				if(mode < 0)mode = modes.size()-1;
-				robot.stopMotion();
 			}else if( button == Button.ID_ENTER){
 				switch(modes.get(mode)){
 				case "Maze":
@@ -72,6 +73,10 @@ public class StageControllerQuali {
 				case "Seesaw": 
 					solveSeesaw(distanceBetweenStages);
 					break;
+				case "SeesawPowerMode": 
+					Robot.getInstance().getUnregulatedPilot().travel(1000, 100);
+					solveSeesaw(distanceBetweenStages);
+					break;
 				case "Hanging Bridge": 
 					solveHangingBridge(distanceBetweenStages);
 					break;
@@ -79,6 +84,10 @@ public class StageControllerQuali {
 					solveSwamp(distanceBetweenStages);
 					break;
 				case "Endboss":
+					solveMaze(distanceBetweenStages);
+					break;	
+				case "EndbossPowerMode":
+					Robot.getInstance().getUnregulatedPilot().travel(4500, 100);
 					solveMaze(distanceBetweenStages);
 					break;	
 				}
@@ -225,8 +234,7 @@ public class StageControllerQuali {
 		Robot r = Robot.getInstance();
 		LCD.clear();
 		LCD.drawString("swamp", 0, 0);
-		r.getUnregulatedPilot().setForwardPower(100);
-		r.getUnregulatedPilot().travel(1000);
+		r.getUnregulatedPilot().travel(2000, 100);
 		r.stopAndCloseEverything();
 	}
 
