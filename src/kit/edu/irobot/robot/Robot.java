@@ -41,19 +41,19 @@ public class Robot {
 
 	final int BACKWARD = -1;
 	final int FORWARD = 1;
-	
-	public static final int MOTOR_L = 		 1 << 0;
-	public static final int MOTOR_R = 		 1 << 1;
-	public static final int MOTOR_H = 		 1 << 2;
-	public static final int SENSOR_LIGHT =  1 << 3;
-	public static final int SENSOR_SONIC =  1 << 4;
+
+	public static final int MOTOR_L = 1 << 0;
+	public static final int MOTOR_R = 1 << 1;
+	public static final int MOTOR_H = 1 << 2;
+	public static final int SENSOR_LIGHT = 1 << 3;
+	public static final int SENSOR_SONIC = 1 << 4;
 	public static final int SENSOR_TOUCH_FRONT = 1 << 5;
 	public static final int SENSOR_TOUCH_BACK = 1 << 6;
-	public static final int SENSOR_GYRO =   1 << 7;
-	
+	public static final int SENSOR_GYRO = 1 << 7;
+
 	public static final int MOTORS = MOTOR_R | MOTOR_L;
 	public static final int LINE = SENSOR_LIGHT | MOTORS;
-	public static final int ALL = ~SENSOR_GYRO;
+	public static final int ALL = ~(SENSOR_GYRO | SENSOR_TOUCH_BACK);
 
 	private int motorA = 0;
 	private int motorB = 1;
@@ -68,19 +68,24 @@ public class Robot {
 	private boolean[] curActSens = new boolean[8];
 
 	int direction = FORWARD;
-	
+
 	private DifferentialPilot diffPilot;
 	private UnregulatedPilot unregPilot;
-	
 
 	/**
 	 * Returns an instance of the robot as a Singleton</br>
 	 * Init like this:</br>
-	 * robot = Robot.getInstance(new boolean[]{true,true,true,false,false,false,false,false});</br> 
-	 * Current assignment enables 3 motors, no sensors</br> 
-	 * Bools stands for: motorLeft, motorRight, motorC, lightSensor, sonicSensor, touchSensor1, touchSensor2, gyroSensor.</br></br> 
-	 * If size of given array does not match size of sensor and actuator, all will be set to true
-	 * @param enableArr Array for enabling/disabling actuators and sensors
+	 * robot = Robot.getInstance(new
+	 * boolean[]{true,true,true,false,false,false,false,false});</br>
+	 * Current assignment enables 3 motors, no sensors</br>
+	 * Bools stands for: motorLeft, motorRight, motorC, lightSensor,
+	 * sonicSensor, touchSensor1, touchSensor2, gyroSensor.</br>
+	 * </br>
+	 * If size of given array does not match size of sensor and actuator, all
+	 * will be set to true
+	 * 
+	 * @param enableArr
+	 *            Array for enabling/disabling actuators and sensors
 	 * @return instance of robot
 	 */
 	public static Robot getInstance(boolean[] enableArr) {
@@ -89,13 +94,15 @@ public class Robot {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Returns an instance of the robot as a Singleton.
 	 * 
 	 * Use like this:</br>
 	 * robot = Robot.getInstance(MOTOR_R | MOROT_L | SENSOR_LIGHT);
-	 * @param flags bitflags for sensors and actors to enable
+	 * 
+	 * @param flags
+	 *            bitflags for sensors and actors to enable
 	 * @return instance of robot
 	 */
 	public static Robot getInstance(int flags) {
@@ -104,7 +111,7 @@ public class Robot {
 		}
 		return instance;
 	}
-	
+
 	public static Robot getInstance() {
 		return getInstance(ALL);
 	}
@@ -114,7 +121,7 @@ public class Robot {
 		if (curActSens.length == actSens.length) {
 			curActSens = actSens;
 		} else {
-			writeErrorToDisplay("Error! Not all sensors defined!","Setting all to true!");
+			writeErrorToDisplay("Error! Not all sensors defined!", "Setting all to true!");
 			Arrays.fill(curActSens, Boolean.TRUE);
 		}
 
@@ -144,7 +151,7 @@ public class Robot {
 		}
 
 	}
-	
+
 	private Robot(int flags) {
 
 		if ((flags & MOTOR_L) != 0) {
@@ -172,37 +179,41 @@ public class Robot {
 			sensorGyro = new EV3GyroSensor(Constants.GYROSCOP_SENSOR);
 		}
 	}
-	
+
 	/**
 	 * Creates a new instance of a differential pilot.
 	 * 
-	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
-	 * the DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
+	 * ATTENTION: Since the unregulated pilot needs to reopen the ports the
+	 * DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
 	 */
 	public DifferentialPilot getDifferentialPilot() {
-		if (diffPilot != null) return diffPilot;
-		
+		if (diffPilot != null)
+			return diffPilot;
+
 		if (unregPilot != null) {
 			unregPilot.close();
 			unregPilot = null;
 		}
-		if (motorLeft == null) motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
-		if (motorRight == null) motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
-		motorLeft.synchronizeWith(new RegulatedMotor[]{ motorRight });
-		
+		if (motorLeft == null)
+			motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
+		if (motorRight == null)
+			motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+		motorLeft.synchronizeWith(new RegulatedMotor[] { motorRight });
+
 		diffPilot = new DifferentialPilot(4.275, 14.315, motorLeft, motorRight);
 		return diffPilot;
 	}
-	
+
 	/**
 	 * Creates a new instance of a unregulated pilot.
 	 * 
-	 * ATTENTION: Since the unregulated pilot needs to reopen the ports 
-	 * the DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
+	 * ATTENTION: Since the unregulated pilot needs to reopen the ports the
+	 * DifferentialPilot and the UnregulatedPilot cannot be used simultaneously!
 	 */
 	public UnregulatedPilot getUnregulatedPilot() {
-		if (unregPilot != null) return unregPilot;
-		
+		if (unregPilot != null)
+			return unregPilot;
+
 		if (diffPilot != null) {
 			diffPilot = null;
 		}
@@ -214,31 +225,27 @@ public class Robot {
 			motorRight.close();
 			motorRight = null;
 		}
-		
+
 		unregPilot = new UnregulatedPilot(143, 43);
 		return unregPilot;
 	}
-	
+
 	public void HeadUp() {
 		if (motorSpecial != null) {
 			motorSpecial.rotate(-50);
-			Delay.msDelay(500);
-			motorSpecial.stop();
-			//motorSpecial.flt();
+			// motorSpecial.flt();
 		}
-		LCD.drawString("Headup", 1, 1);
 	}
-	
+
 	public void HeadDown() {
 		if (motorSpecial != null) {
 			motorSpecial.rotate(90);
-			//Delay.msDelay(500);
-			//motorSpecial.flt();
-		
+			// Delay.msDelay(500);
+			// motorSpecial.flt();
 		}
-		
+
 	}
-	
+
 	public ArcRotateMoveController getPilot() {
 		return getDifferentialPilot();
 	}
@@ -262,22 +269,22 @@ public class Robot {
 	public EV3TouchSensor getSensorTouchBack() {
 		return sensorTouch_2;
 	}
-	
-	public EV3GyroSensor getGyroSensor(){
+
+	public EV3GyroSensor getGyroSensor() {
 		return sensorGyro;
 	}
 
 	public EV3LargeRegulatedMotor getMotorLeft() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		return motorLeft;
 	}
 
 	public EV3LargeRegulatedMotor getMotorRight() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		return motorRight;
 	}
 
@@ -294,7 +301,7 @@ public class Robot {
 	public void driveWithSpeed(double motorLeft, double motorRight) {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.setSpeed((float) motorLeft);
 		this.motorRight.setSpeed((float) motorRight);
 
@@ -302,7 +309,7 @@ public class Robot {
 	}
 
 	public void setMotorSpeed(float speed, RegulatedMotor motor) {
-		//speed = Math.abs(speed);
+		// speed = Math.abs(speed);
 		speed = Math.min(speed, 1.0f);
 
 		float max_speed = motor.getMaxSpeed();
@@ -314,7 +321,7 @@ public class Robot {
 	public void setRobotSpeed(float speed) {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		setMotorSpeed(speed, this.motorLeft);
 		setMotorSpeed(speed, this.motorRight);
 	}
@@ -322,7 +329,7 @@ public class Robot {
 	public void moveRobotForward() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
@@ -337,7 +344,7 @@ public class Robot {
 	public void moveRobotBackward() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
@@ -352,7 +359,7 @@ public class Robot {
 	public void rotateRobotLeft() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.backward();
@@ -367,7 +374,7 @@ public class Robot {
 	public void rotateRobotRight() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.startSynchronization();
 		if (direction == BACKWARD) {
 			this.motorLeft.forward();
@@ -382,7 +389,7 @@ public class Robot {
 	public void stopMotion() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		this.motorLeft.startSynchronization();
 		this.motorLeft.stop();
 		this.motorRight.stop();
@@ -392,7 +399,7 @@ public class Robot {
 	public void rotateRobot(float angle) {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		float ang_vel = this.motorLeft.getSpeed();
 		float rotation_time = angle / ang_vel;
 
@@ -408,47 +415,47 @@ public class Robot {
 	public void turnAround() {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
-		
+
 		rotateRobot(180.f);
 	}
 
 	public void writeBehaviorNameToDisplay(String name) {
 		LCD.drawString("I am in " + name, 1, 5);
 	}
-	
-	public void writeErrorToDisplay(String error1, String error2){
+
+	public void writeErrorToDisplay(String error1, String error2) {
 		LCD.drawString(error1, 0, 6);
 		LCD.drawString(error2, 0, 7);
 	}
-	
-	public void beep(){
-		Sound.playTone(4000,333);
+
+	public void beep() {
+		Sound.playTone(4000, 333);
 	}
-	
-	public void stopAndCloseEverything(){
-		if(this.diffPilot != null) {
+
+	public void stopAndCloseEverything() {
+		if (this.diffPilot != null) {
 			this.diffPilot.stop();
 		}
-		if(this.unregPilot != null){
+		if (this.unregPilot != null) {
 			this.unregPilot.stop();
 		}
-		if(this.motorLeft != null){
-			this.motorLeft.stop();	
+		if (this.motorLeft != null) {
+			this.motorLeft.stop();
 		}
-		if(this.motorRight != null){
+		if (this.motorRight != null) {
 			this.motorRight.stop();
 		}
-		if(this.sensorLight != null){
-//			this.sensorLight.close();
+		if (this.sensorLight != null) {
+			// this.sensorLight.close();
 		}
-		if(this.sensorSonic != null){
-//			this.sensorSonic.close();
+		if (this.sensorSonic != null) {
+			// this.sensorSonic.close();
 		}
-		if(this.sensorTouch_1 != null){
-//			this.sensorTouch_1.close();
+		if (this.sensorTouch_1 != null) {
+			// this.sensorTouch_1.close();
 		}
-		if(this.sensorTouch_2 != null){
-//			this.sensorTouch_2.close();
+		if (this.sensorTouch_2 != null) {
+			// this.sensorTouch_2.close();
 		}
 	}
 }
