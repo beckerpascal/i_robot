@@ -22,6 +22,10 @@ public class ExitOnLight extends RobotBehavior {
     	if(super.exit == true){
     		return false;
     	}
+    	if(lightValue.length > 0){
+    	}else{
+    		this.lightValue = new float[this.lightProv.sampleSize()];
+    	}
     	this.lightProv.fetchSample(lightValue, 0);
     	
 		// line crossed
