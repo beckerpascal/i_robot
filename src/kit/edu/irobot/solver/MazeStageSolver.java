@@ -49,18 +49,8 @@ public class MazeStageSolver extends StageSolver{
 	public void run() {
 		
 		//super.robot.getUnregulatedPilot().close();
-		
-		
 		super.getRobot().HeadUp();
-		
-		DifferentialPilot pilot = robot.getDifferentialPilot();
-		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
-		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
-		pilot.rotate(90);
-		pilot.forward();
-		
-		waitForBounce();
-		pilot.stop();
+		Delay.msDelay(100);
 		
 		super.arby.start();
 		
