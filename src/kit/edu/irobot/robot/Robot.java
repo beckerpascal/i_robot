@@ -221,10 +221,12 @@ public class Robot {
 	
 	public void HeadUp() {
 		if (motorSpecial != null) {
-			motorSpecial.rotate(-70);
-			//Delay.msDelay(500);
+			motorSpecial.rotate(-50);
+			Delay.msDelay(500);
+			motorSpecial.stop();
 			//motorSpecial.flt();
 		}
+		LCD.drawString("Headup", 1, 1);
 	}
 	
 	public void HeadDown() {
@@ -232,6 +234,7 @@ public class Robot {
 			motorSpecial.rotate(90);
 			//Delay.msDelay(500);
 			//motorSpecial.flt();
+		
 		}
 		
 	}
@@ -430,22 +433,22 @@ public class Robot {
 			this.unregPilot.stop();
 		}
 		if(this.motorLeft != null){
-			this.motorLeft.stop();		
+			this.motorLeft.stop();	
 		}
 		if(this.motorRight != null){
 			this.motorRight.stop();
 		}
 		if(this.sensorLight != null){
-			this.sensorLight.close();
+//			this.sensorLight.close();
 		}
 		if(this.sensorSonic != null){
-			this.sensorSonic.close();
+//			this.sensorSonic.close();
 		}
 		if(this.sensorTouch_1 != null){
-			this.sensorTouch_1.close();
+//			this.sensorTouch_1.close();
 		}
 		if(this.sensorTouch_2 != null){
-			this.sensorTouch_2.close();
+//			this.sensorTouch_2.close();
 		}
 	}
 }

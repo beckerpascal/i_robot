@@ -19,11 +19,12 @@ public class ExitOnLight extends RobotBehavior {
 	}
 
 	public boolean takeControl() {
+		this.sensor = this.robot.getSensorLight();
+		this.lightProv = sensor.getRedMode();
     	if(super.exit == true){
     		return false;
     	}
-    	if(lightValue.length > 0){
-    	}else{
+    	if(lightValue.length <= 0){
     		this.lightValue = new float[this.lightProv.sampleSize()];
     	}
     	this.lightProv.fetchSample(lightValue, 0);
