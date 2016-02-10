@@ -43,7 +43,6 @@ public class StageControllerQuali {
 		modes.add("Hanging Bridge");
 		modes.add("Swamp");
 		modes.add("Endboss");
-		modes.add("EndbossPowerMode");
 
 		while (!Button.ESCAPE.isDown()) {
 			
@@ -83,8 +82,7 @@ public class StageControllerQuali {
 					break;
 				case "Endboss":
 					solveBoss(distanceBetweenStages);
-					break;	
-				
+					break;					
 				}
 			}
 			button = -1;
