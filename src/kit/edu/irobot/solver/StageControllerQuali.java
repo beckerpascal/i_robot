@@ -39,13 +39,11 @@ public class StageControllerQuali {
 		modes.add("Bridge");
 		modes.add("Line");
 		modes.add("Seesaw");
+		modes.add("SeesawPowerMode");
 		modes.add("Hanging Bridge");
 		modes.add("Swamp");
 		modes.add("Endboss");
 		modes.add("EndbossPowerMode");
-		
-		Robot.getInstance().HeadUp();
-
 
 		while (!Button.ESCAPE.isDown()) {
 			
@@ -168,8 +166,11 @@ public class StageControllerQuali {
 
 	}
 
-	public static void waitForThreadAndDriveAfterwards(Thread t, Robot r, int distance) {
+	public static void waitForThreadAndDriveAfterwards(StageSolver t, Robot r, int distance) {
 		while (t.isAlive()) {
+			if(Button.UP.isDown()){
+				t.stopSolver();				
+			}
 			Delay.msDelay(1);
 		}
 		r.getUnregulatedPilot().travel(distance);

@@ -239,7 +239,7 @@ public class Robot {
 
 	public void HeadDown() {
 		if (motorSpecial != null) {
-			motorSpecial.rotate(90);
+			motorSpecial.rotate(120);
 			// Delay.msDelay(500);
 			// motorSpecial.flt();
 		}
