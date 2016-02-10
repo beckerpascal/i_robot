@@ -82,12 +82,9 @@ public class StageControllerQuali {
 					solveSwamp(distanceBetweenStages);
 					break;
 				case "Endboss":
-					solveMaze(distanceBetweenStages);
+					solveBoss(distanceBetweenStages);
 					break;	
-				case "EndbossPowerMode":
-					Robot.getInstance().getUnregulatedPilot().travel(4500, 100);
-					solveMaze(distanceBetweenStages);
-					break;	
+				
 				}
 			}
 			button = -1;
@@ -174,16 +171,25 @@ public class StageControllerQuali {
 			Delay.msDelay(1);
 		}
 		r.getUnregulatedPilot().travel(distance);
-	}
+		r.stopAndCloseEverything();
+}
 	
 	public static void solveMaze(int distance){
 		Robot r = Robot.getInstance();
-		MazeStageSolver mazeStage = new MazeStageSolver();
+		StartMazeStageSolver mazeStage = new StartMazeStageSolver();
 		mazeStage.start();
 		LCD.clear();
 		LCD.drawString("Maze", 0, 0);
 		waitForThreadAndDriveAfterwards(mazeStage, r, distance);
-		r.stopAndCloseEverything();
+	}
+	
+	public static void solveBoss(int distance){
+		Robot r = Robot.getInstance();
+		BossStageSolver boss = new BossStageSolver();
+		boss.start();
+		LCD.clear();
+		LCD.drawString("Boss", 0, 0);
+		waitForThreadAndDriveAfterwards(boss, r, distance);
 	}
 	
 	public static void solveBridge(int distance){
@@ -193,7 +199,6 @@ public class StageControllerQuali {
 		LCD.clear();
 		LCD.drawString("bridge", 0, 0);
 		waitForThreadAndDriveAfterwards(bridgeStage, r, distance);
-		r.stopAndCloseEverything();
 	}
 	
 	public static void solveLine(int distance){
@@ -203,7 +208,6 @@ public class StageControllerQuali {
 		LCD.clear();
 		LCD.drawString("line2", 0, 0);
 		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
-		r.stopAndCloseEverything();
 	}
 	
 	public static void solveSeesaw(int distance){
@@ -213,7 +217,6 @@ public class StageControllerQuali {
 		LCD.clear();
 		LCD.drawString("seesaw", 0, 0);
 		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
-		r.stopAndCloseEverything();
 	}
 	
 	public static void solveHangingBridge(int distance){

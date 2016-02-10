@@ -1,7 +1,6 @@
 package kit.edu.irobot.solver;
 
-import kit.edu.irobot.behaviors.DriveForward;
-import lejos.robotics.subsumption.Behavior;
+import lejos.robotics.navigation.DifferentialPilot;
 
 /**
  * Behavior for the final enemy!
@@ -9,28 +8,19 @@ import lejos.robotics.subsumption.Behavior;
  * @author Pascal Becker
  *
  */
-public class BossStageSolver extends StageSolver {
-
-	public BossStageSolver() {
-		super("BossStageSolver");
-
-		Behavior b1 = new DriveForward(super.getRobot());
-
-		Behavior[] bArray = { b1 };
-		super.arby = new BetterArbitrator(bArray, false);
-		// TODO Auto-generated constructor stub
-	}
+public class BossStageSolver extends MazeStageSolver {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		DifferentialPilot pilot = robot.getDifferentialPilot();
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
+		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
+		pilot.forward();
+		
+		waitForBounce();
+		pilot.stop();
+		
+		super.run();
 
 	}
-
-	@Override
-	public void stopSolver() {
-		// TODO Auto-generated method stub
-
-	}
-
 }
