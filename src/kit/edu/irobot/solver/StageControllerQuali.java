@@ -28,78 +28,133 @@ public class StageControllerQuali {
 		// solver.add(bossStage);
 
 		Robot robot = Robot.getInstance();
+		
+		int distanceBetweenStages = 300;
+		
+		int mode = 0;
+		int button = Button.waitForAnyEvent();
+		
+		List<String> modes = new ArrayList<String>();
+		modes.add("Maze");
+		modes.add("MazePowerMode");
+		modes.add("Bridge");
+		modes.add("Line");
+		modes.add("Seesaw");
+		modes.add("Hanging Bridge");
+		modes.add("Swamp");
+		modes.add("Endboss");
 
 		while (!Button.ESCAPE.isDown()) {
-
-			// maze
-			mazeStage.start();
+			
+			if( button == Button.ID_UP){
+				mode = mode +1;
+				if(mode >= modes.size())mode = 0;
+				robot.stopMotion();	
+			}else if( button == Button.ID_DOWN){
+				mode = mode -1;
+				if(mode < 0)mode = modes.size()-1;
+				robot.stopMotion();
+			}else if( button == Button.ID_ENTER){
+				switch(modes.get(mode)){
+				case "Maze":
+					solveMaze(distanceBetweenStages);
+					break;
+				case "MazePowerMode":
+					Robot.getInstance().getUnregulatedPilot().travel(4000, 100);
+					solveMaze(distanceBetweenStages);
+					break;
+				case "Bridge": 
+					solveBridge(0);
+					break;
+				case "Line": 
+					solveLine(distanceBetweenStages);
+					break;
+				case "Seesaw": 
+					solveSeesaw(distanceBetweenStages);
+					break;
+				case "Hanging Bridge": 
+					solveHangingBridge(distanceBetweenStages);
+					break;
+				case "Swamp":
+					solveSwamp(distanceBetweenStages);
+					break;
+				case "Endboss":
+					solveMaze(distanceBetweenStages);
+					break;	
+				}
+			}
+			button = -1;
+			
 			LCD.clear();
-			LCD.drawString("Maze", 0, 0);
-			waitForThreadAndDriveAfterwards(mazeStage, robot, 300);
+			LCD.drawString("Mode: "   + modes.get(mode), 0, 0);
+			button = Button.getButtons();
+			Delay.msDelay(100);
+			
+						
 
 			// line
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("line1", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 300);
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("line1", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 300);
 
 			// bridge
-			bridgeStage.start();
-			LCD.clear();
-			LCD.drawString("bridge", 0, 0);
-			waitForThreadAndDriveAfterwards(bridgeStage, robot, 0);
+//			bridgeStage.start();
+//			LCD.clear();
+//			LCD.drawString("bridge", 0, 0);
+//			waitForThreadAndDriveAfterwards(bridgeStage, robot, 0);
 			
 			// line
-			lineFollowingStage = new LineFollowingStageSolver();
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("line2", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 500);
+//			lineFollowingStage = new LineFollowingStageSolver();
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("line2", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 500);
 
 			// seesaw
-			lineFollowingStage = new LineFollowingStageSolver();
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("seesaw", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
+//			lineFollowingStage = new LineFollowingStageSolver();
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("seesaw", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
 
 			// line
-			lineFollowingStage = new LineFollowingStageSolver();
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("line3", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
-
-			// hanging bridge
-			LCD.clear();
-			LCD.drawString("hanging", 0, 0);
-			robot.getUnregulatedPilot().travel(2500);
+//			lineFollowingStage = new LineFollowingStageSolver();
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("line3", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
+//
+//			// hanging bridge
+//			LCD.clear();
+//			LCD.drawString("hanging", 0, 0);
+//			robot.getUnregulatedPilot().travel(2500);
 
 			// line
-			lineFollowingStage = new LineFollowingStageSolver();
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("line4", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
+//			lineFollowingStage = new LineFollowingStageSolver();
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("line4", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 250);
 
 			// swamp
-			LCD.clear();
-			LCD.drawString("swamp", 0, 0);
-			robot.getUnregulatedPilot().travel(1000);
+//			LCD.clear();
+//			LCD.drawString("swamp", 0, 0);
+//			robot.getUnregulatedPilot().travel(1000);
 
 			// line
-			lineFollowingStage = new LineFollowingStageSolver();
-			lineFollowingStage.start();
-			LCD.clear();
-			LCD.drawString("line5", 0, 0);
-			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 150);
+//			lineFollowingStage = new LineFollowingStageSolver();
+//			lineFollowingStage.start();
+//			LCD.clear();
+//			LCD.drawString("line5", 0, 0);
+//			waitForThreadAndDriveAfterwards(lineFollowingStage, robot, 150);
 
 			// maze
-			mazeStage = new MazeStageSolver();
-			mazeStage.start();
-			LCD.clear();
-			LCD.drawString("Maze2", 0, 0);
-			waitForThreadAndDriveAfterwards(mazeStage, robot,150);
+//			mazeStage = new MazeStageSolver();
+//			mazeStage.start();
+//			LCD.clear();
+//			LCD.drawString("Maze2", 0, 0);
+//			waitForThreadAndDriveAfterwards(mazeStage, robot,150);
 		}
 
 	}
@@ -109,6 +164,70 @@ public class StageControllerQuali {
 			Delay.msDelay(1);
 		}
 		r.getUnregulatedPilot().travel(distance);
+	}
+	
+	public static void solveMaze(int distance){
+		Robot r = Robot.getInstance();
+		MazeStageSolver mazeStage = new MazeStageSolver();
+		mazeStage.start();
+		LCD.clear();
+		LCD.drawString("Maze", 0, 0);
+		waitForThreadAndDriveAfterwards(mazeStage, r, distance);
+		r.stopAndCloseEverything();
+	}
+	
+	public static void solveBridge(int distance){
+		Robot r = Robot.getInstance();
+		BridgeStageSolver bridgeStage = new BridgeStageSolver();
+		bridgeStage.start();
+		LCD.clear();
+		LCD.drawString("bridge", 0, 0);
+		waitForThreadAndDriveAfterwards(bridgeStage, r, distance);
+		r.stopAndCloseEverything();
+	}
+	
+	public static void solveLine(int distance){
+		Robot r = Robot.getInstance();
+		LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
+		lineFollowingStage.start();
+		LCD.clear();
+		LCD.drawString("line2", 0, 0);
+		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
+		r.stopAndCloseEverything();
+	}
+	
+	public static void solveSeesaw(int distance){
+		Robot r = Robot.getInstance();
+		LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
+		lineFollowingStage.start();
+		LCD.clear();
+		LCD.drawString("seesaw", 0, 0);
+		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
+		r.stopAndCloseEverything();
+	}
+	
+	public static void solveHangingBridge(int distance){
+		Robot r = Robot.getInstance();
+		LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
+		lineFollowingStage.start();
+		LCD.clear();
+		LCD.drawString("line3", 0, 0);
+		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
+
+		// hanging bridge
+		LCD.clear();
+		LCD.drawString("hanging", 0, 0);
+		r.getUnregulatedPilot().travel(2500);
+		r.stopAndCloseEverything();
+	}
+	
+	public static void solveSwamp(int distance){
+		Robot r = Robot.getInstance();
+		LCD.clear();
+		LCD.drawString("swamp", 0, 0);
+		r.getUnregulatedPilot().setForwardPower(100);
+		r.getUnregulatedPilot().travel(1000);
+		r.stopAndCloseEverything();
 	}
 
 }
