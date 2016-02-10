@@ -39,8 +39,10 @@ public class HitObstacle extends RobotBehavior {
 		suppressed = false;
 		//robot.writeBehaviorNameToDisplay("HitObstacle");
 
-		this.robot.getUnregulatedPilot().travel(-125,75);
-		this.robot.getUnregulatedPilot().rotate(-90,75);
+		this.robot.getDifferentialPilot().travel(-5.0);
+		this.robot.getDifferentialPilot().rotate(-90.0);
+		//this.robot.getUnregulatedPilot().travel(-125,75);
+		//this.robot.getUnregulatedPilot().rotate(-90,75);
 		
 	}
 }

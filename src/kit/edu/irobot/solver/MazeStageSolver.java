@@ -11,6 +11,7 @@ import kit.edu.irobot.behaviors.RobotBehavior;
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
 
@@ -43,12 +44,24 @@ public class MazeStageSolver extends StageSolver{
 		behaviors.toArray(temp);
 		super.arby = new BetterArbitrator(temp);
 	}
-
+	
 	@Override
 	public void run() {
 		
-		super.robot.getUnregulatedPilot().close();
+		//super.robot.getUnregulatedPilot().close();
+		
+		
 		super.getRobot().HeadUp();
+		
+		DifferentialPilot pilot = robot.getDifferentialPilot();
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
+		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
+		pilot.rotate(90);
+		pilot.forward();
+		
+		waitForBounce();
+		pilot.stop();
+		
 		super.arby.start();
 		
 		LCD.clear();

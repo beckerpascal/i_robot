@@ -16,9 +16,9 @@ public class AvoidObstacle extends RobotBehavior {
 
 	private float P,I,D,distance,integral,last_error;
 	
-	private final float distance_max = 200.f;
-	private final float distance_target = 135.f;
-	private final float max_V = 0.75f;
+	private final float distance_max = 250.f;
+	private final float distance_target = 125.f;
+	private final float max_V = 0.85f;
 	private final float reg_V = 0.5f;
 	
 	private SampleProvider provider;

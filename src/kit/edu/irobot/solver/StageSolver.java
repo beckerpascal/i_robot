@@ -1,7 +1,9 @@
 package kit.edu.irobot.solver;
 
 import kit.edu.irobot.robot.Robot;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Arbitrator;
+import lejos.utility.Delay;
 
 public abstract class StageSolver extends Thread{
 	private String name;
@@ -46,4 +48,20 @@ public abstract class StageSolver extends Thread{
 			StageSolver.this.arby.stop();
 		}
 	};
+	
+	protected void waitForBounce() {
+		SampleProvider provider = robot.getSensorTouchFront().getTouchMode();
+		float[] values = new float[provider.sampleSize()];
+		
+		while (!abort) {
+			provider.fetchSample(values, 0);
+			float touched = values[0];
+			
+			if (touched >= 1.0f) {
+				return;
+			} else {
+				Delay.msDelay(5);
+			}
+		}
+	}
 }
