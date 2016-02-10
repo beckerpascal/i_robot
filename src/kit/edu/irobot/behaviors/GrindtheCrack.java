@@ -1,6 +1,7 @@
 package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
+import kit.edu.irobot.solver.StageSolver.ExitCallback;
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -21,11 +22,19 @@ public class GrindtheCrack extends RobotBehavior {
 	private final float max_V = 0.75f;
 	private final float reg_V = 0.5f;
 	
+	private final float travel_distance;
+	
 	private SampleProvider provider;
 	
 	public GrindtheCrack(Robot robot) {
-		
+		this(robot, Float.MAX_VALUE, null);
+	}
+	
+	public GrindtheCrack(Robot robot, float travel_distance, ExitCallback callback) {
 		this.robot = robot;
+		this.travel_distance = travel_distance;
+		this.exitCallback = callback;
+		
 		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();
 	
@@ -54,6 +63,7 @@ public class GrindtheCrack extends RobotBehavior {
 
 	public void action() {
 		suppressed = false;
+		robot.getDifferentialPilot().reset();
 		
 		last_error = Float.MAX_VALUE;
 		while(!exit && !suppressed){
@@ -95,11 +105,17 @@ public class GrindtheCrack extends RobotBehavior {
 			
 			last_error = error;
 			
-			LCD.drawString("Distance: " + distance, 1, 2);  
+			/*float traveled = robot.getDifferentialPilot().getMovementIncrement();
+			if (traveled > travel_distance) {
+				exitCallback.exitArby();
+			}*/
+			
+			/*LCD.drawString("Distance: " + distance, 1, 2);  
 			LCD.drawString("Error: " + error, 1, 3);
 			LCD.drawString("Turn: " + Turn, 1, 4);
 			LCD.drawString("Power A: " + powerA, 1, 5);
 			LCD.drawString("Power B: " + powerB, 1, 6);
+			LCD.drawString("Travel : " + traveled, 1, 0);*/
 			
 		}
 		this.robot.stopMotion();

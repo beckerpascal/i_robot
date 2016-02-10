@@ -1,21 +1,20 @@
 package kit.edu.irobot.solver;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import kit.edu.irobot.behaviors.AvoidObstacle;
-import kit.edu.irobot.behaviors.DriveForward;
-import kit.edu.irobot.behaviors.DrivePlankBridge;
+import edu.kit.mindstorms.communication.ComModule;
+import edu.kit.mindstorms.communication.Communication;
 import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.GrindtheCrack;
 import kit.edu.irobot.behaviors.PlankBridgeGetInPosition;
 import kit.edu.irobot.behaviors.RobotBehavior;
+import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
-import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.subsumption.Arbitrator;
-import lejos.robotics.subsumption.Behavior;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 /**
@@ -25,81 +24,79 @@ import lejos.utility.Delay;
  */
 
 public class PlankBridgeStageSolver extends StageSolver{	
-	private PlankBridgeGetInPosition getInPosition;
-
-	private EV3ColorSensor sensor = null;
-	private SampleProvider lightProv = null;
-	private float[] lightValue;
-	private boolean exit = false;
+	private RobotBehavior[] behaviors;
 	
-	private List<RobotBehavior> behaviors;
+	private RobotBehavior getInPosition;
+	
 	public PlankBridgeStageSolver() {
 		super("BridgeStageSolver");
-		this.sensor = super.getRobot().getSensorLight();
-		this.lightProv = sensor.getRedMode();
-		this.lightValue = new float[this.lightProv.sampleSize()];
-		
-		
-		RobotBehavior b1 = new DrivePlankBridge(super.getRobot());
-		RobotBehavior b2 = new PlankBridgeGetInPosition(super.getRobot());
 
-		behaviors = new ArrayList<RobotBehavior>();
-		behaviors.add(b2);
-		behaviors.add(b1);
-		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
-		behaviors.toArray(temp);
-		super.arby = new BetterArbitrator(temp);
+		getInPosition = new PlankBridgeGetInPosition(robot);
+		
+		//RobotBehavior b2 = new GrindtheCrack(super.getRobot());
+		RobotBehavior b3 = new ExitOnLight(robot, exitCallback);
+
+		behaviors = new RobotBehavior[] {b3};
+		super.arby = new BetterArbitrator(behaviors);
+		// TODO Auto-generated constructor stub
 	}
-
+	
+	
 	@Override
 	public void run() {
+		DifferentialPilot pilot = robot.getDifferentialPilot();
+		//getInPosition.action();
+		
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
+		/* in position and still on ramp */
+		
+
+		pilot.travel(-20);
+		pilot.rotate(-90);
+		pilot.forward();
 		
 		
-		//Tries to get robot in position
-		super.getRobot().setRobotSpeed(0.2f);
-		super.getRobot().moveRobotForward();
-		Delay.msDelay(1500);
-		super.getRobot().stopMotion();
-		/*getInPosition.action();
-		super.getRobot().setRobotSpeed(0.5f);
-		super.getRobot().moveRobotForward();
-		
-		this.lightProv.fetchSample(lightValue, 0);
-		while( lightValue[0] < 0.8f && !exit){
-			Delay.msDelay(10);
-			this.lightProv.fetchSample(lightValue, 0);
-		}
-		super.getRobot().stopMotion();
-		LCD.drawString("Finished Bridge", 0,4);
-		*/
-		super.arby.start();
+		//arby.start();
+		//pilot.quickStop();
+		waitForBounce();
+		pilot.travel(-20);
+		pilot.rotate(-90);
+		pilot.quickStop();
 	}
 	
 	@Override
 	public void stopSolver() {
-		for( int i = 0; i < behaviors.size(); i++)
-			behaviors.get(i).terminate();
+		super.stopSolver();
 		
-		for( int i = 0; i< 10; i++){
+		if (getInPosition != null) getInPosition.terminate();
+		
+		for( int i = 0; i < behaviors.length; i++)		
+			behaviors[i].terminate();
+		
+		for( int i = 0; i < 5; i++){
 			super.arby.stop();
+			Delay.msDelay(10);
 		}
-		super.getRobot().stopMotion();
 		
-		LCD.drawString("stop motion...", 1, 0); 
+		super.getRobot().stopMotion();
 	}
 	
 	public static void main(String[] args) 
 	{
-		PlankBridgeStageSolver solver = new PlankBridgeStageSolver();
+		BridgeStageSolver solver = new BridgeStageSolver();
 		
-		LCD.drawString("Starte BridgeStage", 0, 1);
-		LCD.drawString("-start with button", 0, 2);
-		LCD.drawString("-kill with button" , 0, 3);
+		LCD.drawString("Starte BridgeStageSolver mit UP", 0, 1);
+		if (Button.waitForAnyPress() == Button.ID_ESCAPE) return;
 		
-
-		Button.waitForAnyPress();
+		//solver.setDaemon(true);
 		solver.start();
-		Button.waitForAnyPress();
+		Button.ESCAPE.waitForPressAndRelease();
 		solver.stopSolver();
+		/*try {
+			solver.join();
+		} catch (InterruptedException e) {
+		}*/
+		LCD.drawString("solver finished :)", 0, 1);
+		Delay.msDelay(2000);
 	}
 }

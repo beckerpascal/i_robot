@@ -37,9 +37,9 @@ public class LineFollowingStageSolver  extends StageSolver {
 		findLine.terminate();
 		followLine.terminate();
 		
-		for( int i = 0; i< 10;i++) {
+		for( int i = 0; i< 3;i++) {
 			super.arby.stop();
-			Delay.msDelay(100);
+			Delay.msDelay(1);
 		}
 		super.getRobot().stopMotion();
 	}

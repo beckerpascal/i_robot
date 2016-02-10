@@ -82,7 +82,7 @@ public class StageControllerQuali {
 					break;
 				case "Endboss":
 					solveBoss(distanceBetweenStages);
-					break;					
+					break;		
 				}
 			}
 			button = -1;
@@ -168,7 +168,8 @@ public class StageControllerQuali {
 			}
 			Delay.msDelay(1);
 		}
-		r.getUnregulatedPilot().travel(distance);
+		r.stopMotion();
+		r.getDifferentialPilot().travel(distance/10.f);
 		r.stopAndCloseEverything();
 }
 	
@@ -210,26 +211,28 @@ public class StageControllerQuali {
 	
 	public static void solveSeesaw(int distance){
 		Robot r = Robot.getInstance();
-		LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
-		lineFollowingStage.start();
+		/*LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
+		lineFollowingStage.start();*/
+		SeesawStageSolver solver = new SeesawStageSolver();
+		solver.start();
 		LCD.clear();
 		LCD.drawString("seesaw", 0, 0);
-		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
+		waitForThreadAndDriveAfterwards(solver, r, distance);
 	}
 	
 	public static void solveHangingBridge(int distance){
 		Robot r = Robot.getInstance();
-		LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
+		/*LineFollowingStageSolver lineFollowingStage = new LineFollowingStageSolver();
 		lineFollowingStage.start();
 		LCD.clear();
 		LCD.drawString("line3", 0, 0);
-		waitForThreadAndDriveAfterwards(lineFollowingStage, r, distance);
+		waitForThreadAndDriveAfterwards(lineFollowingStage, r, 0);*/
 
-		// hanging bridge
+		PlankBridgeStageSolver plankStage = new PlankBridgeStageSolver();
+		plankStage.start();
 		LCD.clear();
-		LCD.drawString("hanging", 0, 0);
-		r.getUnregulatedPilot().travel(2500);
-		r.stopAndCloseEverything();
+		LCD.drawString("plank", 0, 0);
+		waitForThreadAndDriveAfterwards(plankStage, r, 0);
 	}
 	
 	public static void solveSwamp(int distance){

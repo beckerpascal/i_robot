@@ -1,5 +1,6 @@
 package kit.edu.irobot.solver;
 
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
 
 /**
@@ -16,8 +17,17 @@ public class SeesawStageSolver extends StageSolver{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		DifferentialPilot pilot = robot.getDifferentialPilot();
+		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
+		pilot.forward();
 		
+		waitForBounce();
+		
+		pilot.travel(-30);
+		pilot.rotate(-90);
+		pilot.forward();
+		waitForBounce();
+		pilot.stop();
 	}
 
 	@Override

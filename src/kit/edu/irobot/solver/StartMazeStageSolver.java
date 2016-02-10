@@ -8,7 +8,7 @@ public class StartMazeStageSolver extends MazeStageSolver {
 		DifferentialPilot pilot = robot.getDifferentialPilot();
 		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
 		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
-		pilot.rotate(90);
+		//pilot.rotate(90);
 		pilot.forward();
 		
 		waitForBounce();

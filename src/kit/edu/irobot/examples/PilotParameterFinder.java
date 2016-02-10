@@ -45,7 +45,7 @@ public class PilotParameterFinder {
 	double rotateSpeed = 50;
 	double moveSpeed = 50;
 	
-	Mode mode = Mode.TURN_90;
+	Mode mode = Mode.Normal;
 	State state = State.IDLE;
 	int selectedRow = 0;
 	int numRows = 5;
@@ -53,10 +53,10 @@ public class PilotParameterFinder {
 	String[] selector = new String[numRows];
 	
 	//Robot robot = Robot.getInstance(0);
-	UnregulatedPilot pilot;
+	//UnregulatedPilot pilot;
 	
 	public enum Mode {
-		TURN_90(   "T  90°"),
+		/*TURN_90(   "T  90°"),
 		TURN_C90(   "T -90°"),
 		//TURN_180(  "T 180°"),
 		//TURN_360(  "T 360°"),
@@ -66,6 +66,14 @@ public class PilotParameterFinder {
 		//CIRCLE_50( "C  50cm"),
 		//CIRCLE_100("C   1m"),
 		//EIGHT("Eight");
+		 * 
+		 */
+		DiffStop("Diff"),
+		UnregStop("Unreg"),
+		Sync("Sync"),
+		Normal("Normal"),
+		DiffFast("DiffFast"),
+		StopImediate("NonBlocking");
 		
 		String title;
 		Mode(String description) {
@@ -79,7 +87,7 @@ public class PilotParameterFinder {
 	}
 	
 	public PilotParameterFinder() {
-		pilot = new UnregulatedPilot((int)tracWidth*10, (int)wheelDiameter*10);
+		//pilot = new UnregulatedPilot((int)tracWidth*10, (int)wheelDiameter*10);
 		//pilot = new DifferentialPilot(wheelDiameter, tracWidth, robot.getMotorLeft(), robot.getMotorRight());
 		for (int i = 0; i < numRows; ++i) {
 			selector[i] = (i == selectedRow) ? "x " : "  ";
@@ -111,20 +119,50 @@ public class PilotParameterFinder {
 		if (state != State.IDLE) return;
 		state = State.ACTIVE;
 		updateDisplay();
+
+		Robot robot = Robot.getInstance();
+		robot.getDifferentialPilot().forward();
+		
+		Delay.msDelay(1000);
 		
 		switch (mode) {
-		case DRIVE_20:
-			/*pilot.reset();
+		case DiffFast:
+			robot.getDifferentialPilot().quickStop();
+			break;
+		case DiffStop:
+			robot.getDifferentialPilot().stop();
+			break;
+		case Normal:
+			robot.getMotorLeft().stop();
+			robot.getMotorRight().stop();
+			break;
+		case Sync:
+			robot.getMotorLeft().startSynchronization();
+			robot.getMotorLeft().stop();
+			robot.getMotorRight().stop();
+			robot.getMotorLeft().endSynchronization();
+			break;
+		case UnregStop:
+			robot.getUnregulatedPilot().stop();
+			break;
+		case StopImediate:
+			robot.getMotorLeft().stop(true);
+			robot.getMotorRight().stop(true);
+			break;
+		default:
+			break;
+		/*case DRIVE_20:
+			pilot.reset();
 			pilot.forward();
 			while (pilot.getDistanceIncrement() < 200 && pilot.isMoving()) {
 				LCD.drawString("dist: " + pilot.getDistanceIncrement(), 0, 6);
 				Delay.msDelay(50);
 			}
 			pilot.stop();
-			LCD.clear(6);*/
+			LCD.clear(6);
 			pilot.travel(200);
-			break;
-		case BACK_20:
+			break;*/
+		/*case BACK_20:
 			/*pilot.reset();
 			pilot.backward();
 			while (pilot.getDistanceIncrement() > -200 && pilot.isMoving()) {
@@ -132,7 +170,7 @@ public class PilotParameterFinder {
 				Delay.msDelay(50);
 			}
 			pilot.stop();
-			LCD.clear(6);*/
+			LCD.clear(6);
 			pilot.travel(-200);
 			break;
 			/*
@@ -157,7 +195,7 @@ public class PilotParameterFinder {
 		case TURN_360:
 			pilot.rotate(360);
 			break;*/
-		case TURN_90:
+		//case TURN_90:
 			/*pilot.reset();
 			pilot.setPower((int) rotateSpeed, (int) (-rotateSpeed));
 			while (pilot.getAngleIncrement() < 90 && pilot.isMoving()) {
@@ -166,12 +204,10 @@ public class PilotParameterFinder {
 			}
 			pilot.stop();
 			LCD.clear(6);*/
-			pilot.rotate(90);
-			break;
-		case TURN_C90:
-			pilot.rotate(-90);
-		default:
-			break;
+			//pilot.rotate(90);
+			//break;
+		//case TURN_C90:
+			//pilot.rotate(-90);
 		
 		}
 		state = State.IDLE;
@@ -182,7 +218,7 @@ public class PilotParameterFinder {
 		/*pilot = new DifferentialPilot(wheelDiameter, tracWidth, robot.getMotorLeft(), robot.getMotorRight());
 		pilot.setRotateSpeed(rotateSpeed);
 		pilot.setTravelSpeed(moveSpeed);*/
-		if (pilot != null) {
+		/*if (pilot != null) {
 			pilot.stop();
 			pilot.close();
 			pilot = null;
@@ -190,7 +226,7 @@ public class PilotParameterFinder {
 		
 		pilot = new UnregulatedPilot((int)tracWidth*10, (int)wheelDiameter*10);
 		pilot.setBasePower((int)moveSpeed);
-		pilot.setBaseRotatePower((int) rotateSpeed);
+		pilot.setBaseRotatePower((int) rotateSpeed);*/
 	}
 	
 	public void next() {

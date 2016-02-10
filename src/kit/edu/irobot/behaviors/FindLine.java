@@ -54,8 +54,8 @@ public class FindLine  extends RobotBehavior {
 	    SampleProvider sample = robot.getSensorLight().getRedMode();
 	    UnregulatedPilot pilot =  robot.getUnregulatedPilot();
 	    
-	    int degree_to_right = -110; 
-	    int degree_to_left  = 110;
+	    int degree_to_right = -120; 
+	    int degree_to_left  = 120;
 	    
 	    int robot_speed = 90; 
 	    

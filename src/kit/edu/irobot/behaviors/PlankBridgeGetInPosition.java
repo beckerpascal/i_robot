@@ -62,8 +62,10 @@ public class PlankBridgeGetInPosition extends RobotBehavior {
 			provider.fetchSample(values, 0);
 			
 			distance = values[0]*1000.0f;
-			if(distance > distance_max)
+			if(distance > distance_max) {
 				distance = distance_max;
+				break;
+			}
 			
 			//error distance from -100 - 100
 			float error = (float) (distance - distance_target);

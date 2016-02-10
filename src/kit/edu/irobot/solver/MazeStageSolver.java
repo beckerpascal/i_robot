@@ -50,7 +50,7 @@ public class MazeStageSolver extends StageSolver{
 		
 		//super.robot.getUnregulatedPilot().close();
 		super.getRobot().HeadUp();
-		Delay.msDelay(100);
+		Delay.msDelay(10);
 		
 		super.arby.start();
 		
@@ -66,7 +66,7 @@ public class MazeStageSolver extends StageSolver{
 		
 		for( int i = 0; i< 10;i++) {
 			super.arby.stop();
-			Delay.msDelay(100);
+			Delay.msDelay(1);
 		}
 		super.getRobot().stopMotion();
 		super.getRobot().getSensorUltrasonic().close();

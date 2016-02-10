@@ -169,7 +169,8 @@ public class FollowLine extends RobotBehavior {
 				LCD.drawString("Power B: " + powerB, 1, 6);
 			}	
 			
-			pilot.stop();
+			//pilot.stop();
+			robot.stopMotion();
 		}
 	   
 

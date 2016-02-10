@@ -48,7 +48,7 @@ public class BridgeStageSolver extends StageSolver{
 		while (!found && !abort) {
 			pilot.reset();
 			pilot.forward();
-			waitBounced();
+			waitForBounce();
 			float distance = pilot.getMovementIncrement(); //in cm
 			if (distance > 25) {
 				LCD.drawString("Should be in Elevator " + distance, 0, 2);
@@ -59,25 +59,9 @@ public class BridgeStageSolver extends StageSolver{
 			} else {
 				LCD.drawString("Bounced after " + distance, 0, 2);
 				pilot.travel(-4.f);
-				pilot.rotate(15.f);
+				pilot.rotate(17.f);
 			}
 			
-		}
-	}
-	
-	private void waitBounced() {
-		SampleProvider provider = robot.getSensorTouchFront().getTouchMode();
-		float[] values = new float[provider.sampleSize()];
-		
-		while (!abort) {
-			provider.fetchSample(values, 0);
-			float touched = values[0];
-			
-			if (touched >= 1.0f) {
-				return;
-			} else {
-				Delay.msDelay(10);
-			}
 		}
 	}
 	
@@ -92,7 +76,7 @@ public class BridgeStageSolver extends StageSolver{
 			provider.fetchSample(values, 0);
 			float ambient = values[0];
 			
-			if (ambient > 0.2f && ambient < 0.5f) {
+			if (ambient > 0.18f && ambient < 0.5f) {
 				LCD.clear(1);
 				LCD.drawString("Green! " + ambient, 0, 1);
 				break;
@@ -154,7 +138,7 @@ public class BridgeStageSolver extends StageSolver{
 		}
 
 		
-		pilot.rotate(-19);
+		pilot.rotate(-15);
 		pilot.travel(35);
 		
 		waitForGreen();

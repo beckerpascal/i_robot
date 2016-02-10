@@ -307,6 +307,19 @@ public class Robot {
 
 		this.moveRobotForward();
 	}
+	
+	public void setPower(double left, double right) {
+		getDifferentialPilot();
+		
+		this.motorLeft.startSynchronization();
+		this.motorLeft.setSpeed((float) Math.abs(left));
+		this.motorRight.setSpeed((float) Math.abs(right));
+		if (left > 0) this.motorLeft.forward();
+		else this.motorLeft.backward();
+		if (right >= 0) this.motorRight.forward();
+		else this.motorRight.backward();
+		this.motorLeft.endSynchronization();
+	}
 
 	public void setMotorSpeed(float speed, RegulatedMotor motor) {
 		// speed = Math.abs(speed);
@@ -322,8 +335,10 @@ public class Robot {
 		// close unregulatedPilot if needed
 		getDifferentialPilot();
 
+		this.motorLeft.startSynchronization();
 		setMotorSpeed(speed, this.motorLeft);
 		setMotorSpeed(speed, this.motorRight);
+		this.motorLeft.endSynchronization();
 	}
 
 	public void moveRobotForward() {
@@ -388,12 +403,12 @@ public class Robot {
 
 	public void stopMotion() {
 		// close unregulatedPilot if needed
-		getDifferentialPilot();
-
+		getDifferentialPilot().quickStop();//.stop();
+		/*
 		this.motorLeft.startSynchronization();
 		this.motorLeft.stop();
 		this.motorRight.stop();
-		this.motorLeft.endSynchronization();
+		this.motorLeft.endSynchronization();*/
 	}
 
 	public void rotateRobot(float angle) {

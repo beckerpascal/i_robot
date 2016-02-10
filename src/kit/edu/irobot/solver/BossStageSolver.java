@@ -15,8 +15,13 @@ public class BossStageSolver extends MazeStageSolver {
 		DifferentialPilot pilot = robot.getDifferentialPilot();
 		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
 		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
+		
 		pilot.forward();
 		
+		waitForBounce();
+		
+		pilot.rotate(90);
+		pilot.forward();
 		waitForBounce();
 		pilot.stop();
 		
