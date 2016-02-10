@@ -421,4 +421,31 @@ public class Robot {
 	public void beep(){
 		Sound.playTone(4000,333);
 	}
+	
+	public void stopAndCloseEverything(){
+		if(this.diffPilot != null) {
+			this.diffPilot.stop();
+		}
+		if(this.unregPilot != null){
+			this.unregPilot.stop();
+		}
+		if(this.motorLeft != null){
+			this.motorLeft.stop();		
+		}
+		if(this.motorRight != null){
+			this.motorRight.stop();
+		}
+		if(this.sensorLight != null){
+			this.sensorLight.close();
+		}
+		if(this.sensorSonic != null){
+			this.sensorSonic.close();
+		}
+		if(this.sensorTouch_1 != null){
+			this.sensorTouch_1.close();
+		}
+		if(this.sensorTouch_2 != null){
+			this.sensorTouch_2.close();
+		}
+	}
 }
