@@ -1,38 +1,38 @@
 package kit.edu.irobot.behaviors;
 
-import kit.edu.irobot.robot.Robot;
-import kit.edu.irobot.utils.Constants;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
-import lejos.robotics.filter.MeanFilter;
-import lejos.utility.Delay;
 
-public class PlankBridgeGetInPosition extends RobotBehavior {
+/**
+ * Attempt to level straight in the entry of the plank bridge.
+ * This didn't work that great, we coded that part hard.
+ * @author Andi
+ *
+ */
+public class PlankBridgeGetInPosition extends BaseBehavior {
+	private static final boolean DEBUG = false;
+	
+	private static final float P = 0.00600f;;
+	private static final float I = 0.f;
+	private static final float D = 0.0600f;
+	
+	private static final float distance_max = 180.f;
+	private static final float distance_target = 135.f;
+	private static final float max_V = 0.2f;
 
-	private EV3UltrasonicSensor sonar;
-	private float[] values;
+	private final RegulatedMotor left, right;
+	private final SampleProvider provider;
+	private final float[] values;
 
-	private float P,I,D,distance,integral,last_error,derivate;
+	private float distance, integral, last_error, derivate;
 	
-	private final float distance_max = 180.f;
-	private final float distance_target = 135.f;
-	private final float max_V = 0.2f;
-	
-	private SampleProvider provider;
-	
-	public PlankBridgeGetInPosition(Robot robot) {
-		
-		this.robot = robot;
-		sonar = robot.getSensorUltrasonic();
+	public PlankBridgeGetInPosition(EV3UltrasonicSensor sonar, RegulatedMotor left, RegulatedMotor right) {
+		this.left = left;
+		this.right = right;
 		provider = sonar.getDistanceMode();
 		values = new float[provider.sampleSize()];
-		
-		P = 0.00600f;
-		I = 0.f;
-		D = 0.0600f;
-		last_error = Float.MAX_VALUE;
-		integral   = 0.f;
 	}
 
 	public boolean takeControl() {
@@ -54,8 +54,9 @@ public class PlankBridgeGetInPosition extends RobotBehavior {
 
 	public void action() {
 		suppressed = false;
-		
+
 		last_error = Float.MAX_VALUE;
+		integral   = 0.f;
 		derivate   = Float.MAX_VALUE;
 		
 		while(!exit && !suppressed && ((Math.abs(last_error) > 1.f) || (Math.abs(derivate) > 0.1f))){
@@ -92,17 +93,20 @@ public class PlankBridgeGetInPosition extends RobotBehavior {
 			float powerA = max_V -  Turn;         
 			float powerB = max_V +  Turn;         
 
-			this.robot.setMotorSpeed(powerA, this.robot.getMotorLeft());
-			this.robot.setMotorSpeed(powerB, this.robot.getMotorRight());
-			this.robot.moveRobotForward();
+			this.setMotorSpeed(powerA, left);
+			this.setMotorSpeed(powerB, right);
+			left.forward();
+			right.forward();
 			
 			last_error = error;
 			
-			LCD.drawString("Distance: " + distance, 1, 2);  
-			LCD.drawString("Error: " + error, 1, 3);
-			LCD.drawString("Turn: " + Turn, 1, 4);
-			LCD.drawString("Power A: " + powerA, 1, 5);
-			LCD.drawString("Power B: " + powerB, 1, 6);
+			if (DEBUG) {
+				LCD.drawString("Distance: " + distance, 1, 2);  
+				LCD.drawString("Error: " + error, 1, 3);
+				LCD.drawString("Turn: " + Turn, 1, 4);
+				LCD.drawString("Power A: " + powerA, 1, 5);
+				LCD.drawString("Power B: " + powerB, 1, 6);
+			}
 			
 		}
 	}

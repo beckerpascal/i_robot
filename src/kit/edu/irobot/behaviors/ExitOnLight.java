@@ -1,34 +1,37 @@
 package kit.edu.irobot.behaviors;
 
-import kit.edu.irobot.robot.Robot;
-import kit.edu.irobot.solver.StageSolver.ExitCallback;
+import kit.edu.irobot.solver.BaseStageSolver.ExitCallback;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 
-public class ExitOnLight extends RobotBehavior {
-	private EV3ColorSensor sensor = null;
-	private SampleProvider lightProv = null;
-	private float[] lightValue;
+/**
+ * Behavior to exit the arbitrator when a line is found.
+ * NOTE: is buggy in latest version
+ * TODO fix bug
+ * 
+ * @author Fabian
+ *
+ */
+public class ExitOnLight extends BaseBehavior {
+	private final SampleProvider lightProvider;
+	private final float[] lightValue;
 
 	public ExitOnLight(EV3ColorSensor color, ExitCallback callback) {
-		this.sensor = color;
-		this.lightProv = sensor.getRedMode();
-		this.lightValue = new float[1];
+		this.lightProvider = color.getRedMode();
+		this.lightValue = new float[1]; //TODO why is there an error on if set to lightProvider.sampleSize()
 		super.exitCallback = callback;
 	}
 
 	public boolean takeControl() {
-		this.lightProv = sensor.getRedMode();
     	if(super.exit == true){
     		return false;
     	}
-    	if(lightValue.length <= 0){
-    		this.lightValue = new float[this.lightProv.sampleSize()];
-    	}
-    	this.lightProv.fetchSample(lightValue, 0);
+    	
+    	this.lightProvider.fetchSample(lightValue, 0);
     	
 		// line crossed
-		if (lightValue[0] > 0.7f) {
+    	// TODO look at more then one sample
+		if (lightValue[0] > 0.60f) {
 			return true;
 		} else {
 			return false;
@@ -40,10 +43,8 @@ public class ExitOnLight extends RobotBehavior {
 	}
 
 	public void action() {
-		// end arby
-//		this.robot.getUnregulatedPilot().stop();
 		requestArbitratorExit();
-//		this.robot.stopMotion();
+		//TODO stop the robot here?
 	}
 
 }

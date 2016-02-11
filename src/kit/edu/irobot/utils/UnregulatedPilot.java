@@ -2,31 +2,35 @@ package kit.edu.irobot.utils;
 
 import java.io.Closeable;
 
-import kit.edu.irobot.robot.Robot;
-import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.UnregulatedMotor;
 import lejos.hardware.port.MotorPort;
-import lejos.hardware.port.Port;
-import lejos.hardware.port.TachoMotorPort;
-import lejos.robotics.EncoderMotor;
-import lejos.robotics.navigation.Move;
-import lejos.robotics.navigation.MoveController;
-import lejos.robotics.navigation.MoveListener;
 import lejos.utility.Delay;
-import lejos.hardware.ev3.LocalEV3;
 
+/**
+ * Unregulated pilot
+ * 
+ * Use this instead of a differentialPilot, if you need to make motor speed adjustments really fast.
+ * We use this for followLine and it worked really well.
+ * 
+ * ATTENTION: You *cannot* use this class simultaneously with RegulatedMotors or other pilots.
+ * This makes it hard to maintain motors and pilot. So only use this if it is worth it for you!
+ * 
+ * NOTE: There can be problems with synchronization of the motors, which can cause the robot
+ * to drift or rotate when stopped!
+ * 
+ * @author Fabian
+ *
+ */
 public class UnregulatedPilot implements Closeable {
 
-	private final Port left_port, right_port;
 	private final UnregulatedMotor left, right;
-	private final int abstand;
-	private final int durchmesser;
+	private final int track_width;
+	private final int wheel_diameter;
 
 	private boolean isStopped = false;
 	
 	private int basePWM = 50;
 	private int basePWM_rotate = 50;
-	private int lastSteer = 0;
 
 	private final int initialLeftTachoCount;
 	private final int initialRightTachoCount;
@@ -34,11 +38,7 @@ public class UnregulatedPilot implements Closeable {
 	private int lastRightTachoCount;
 
 	private final float unit; // in mm
-	public final float abstand_in_degree_inv;
-
-	private int lastDistance;
-	private long lastMeasurementForHill = -1;
-	private int completeAngle = 0;
+	public final float track_width_in_degree_inv;
 
 	/**
 	 * 
@@ -52,13 +52,11 @@ public class UnregulatedPilot implements Closeable {
 	public UnregulatedPilot(int abstand, int durchmesser) {
 		this.left = new UnregulatedMotor(MotorPort.B);
 		this.right = new UnregulatedMotor(MotorPort.A);
-		this.left_port = MotorPort.B;
-		this.right_port = MotorPort.A;
-		this.abstand = abstand;
-		this.durchmesser = durchmesser;
+		this.track_width = abstand;
+		this.wheel_diameter = durchmesser;
 
-		this.unit = (float) Math.PI * this.durchmesser / 360.0f;
-		this.abstand_in_degree_inv = 360.0f / (2.0f * (float) Math.PI * this.abstand / this.unit);
+		this.unit = (float) Math.PI * this.wheel_diameter / 360.0f;
+		this.track_width_in_degree_inv = 360.0f / (2.0f * (float) Math.PI * this.track_width / this.unit);
 
 		this.initialLeftTachoCount = this.left.getTachoCount();
 		this.initialRightTachoCount = this.right.getTachoCount();
@@ -222,7 +220,7 @@ public class UnregulatedPilot implements Closeable {
 		int leftDiff = this.left.getTachoCount() - this.initialLeftTachoCount;
 		int rightDiff = this.right.getTachoCount() - this.initialRightTachoCount;
 
-		return ((float) (-leftDiff + rightDiff)) * this.abstand_in_degree_inv;
+		return ((float) (-leftDiff + rightDiff)) * this.track_width_in_degree_inv;
 	}
 
 
@@ -234,7 +232,7 @@ public class UnregulatedPilot implements Closeable {
 		int leftDiff = this.left.getTachoCount() - this.lastLeftTachoCount;
 		int rightDiff = this.right.getTachoCount() - this.lastRightTachoCount;
 
-		return ((float) (-leftDiff + rightDiff)) * this.abstand_in_degree_inv;
+		return ((float) (-leftDiff + rightDiff)) * this.track_width_in_degree_inv;
 	}
 
 	public void setBackwardPower(int power) {

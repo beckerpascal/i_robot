@@ -2,14 +2,14 @@ package kit.edu.irobot.solver;
 
 import kit.edu.irobot.behaviors.FindLine;
 import kit.edu.irobot.behaviors.FollowLine;
-import kit.edu.irobot.behaviors.RobotBehavior;
+import kit.edu.irobot.behaviors.BaseBehavior;
 
 /**
  * Behavior for the line following during the challenge
  * @author Pascal Becker
  *
  */
-public class LineFollowingStageSolver  extends StageSolver {
+public class LineFollowingStageSolver  extends BaseStageSolver {
 	
 	private FindLine findLine;
 	private FollowLine followLine; 
@@ -26,14 +26,17 @@ public class LineFollowingStageSolver  extends StageSolver {
 	}
 
 	@Override
-	public void solve() {
+	protected void initArbitrator() {
 		findLine = new FindLine(colorSensor, unregPilot, exitCallback);
 		followLine = new FollowLine(colorSensor, unregPilot);
 		
-		RobotBehavior[] behaviorPriority = {followLine, findLine};
-	
-		unregPilot.travel(((int)startOffset * 10));
+		BaseBehavior[] behaviorPriority = {followLine, findLine};
 	    super.arby = new BetterArbitrator(behaviorPriority, false);	
+	}
+	
+	@Override
+	public void solve() {
+		unregPilot.travel(((int)startOffset * 10));
 		
 		super.arby.start();
 		unregPilot.stop();
@@ -46,18 +49,4 @@ public class LineFollowingStageSolver  extends StageSolver {
 		findLine.terminate();
 		followLine.terminate();
 	}
-	
-	/*public static void main(String[] args) 
-	{
-		LineFollowingStageSolver solver = new LineFollowingStageSolver();
-		
-		LCD.drawString("Start Solver with UP", 0, 1);
-		while (!Button.UP.isDown()) {	    	
-			Delay.msDelay(100);
-		}
-		
-		solver.start();
-		Button.waitForAnyPress();
-		solver.stopSolver();
-	}*/
 }

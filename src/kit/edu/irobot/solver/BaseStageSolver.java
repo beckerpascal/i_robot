@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
 import kit.edu.irobot.utils.UnregulatedPilot;
 import lejos.hardware.lcd.LCD;
@@ -17,17 +16,30 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.navigation.DifferentialPilot;
 
-public abstract class StageSolver extends Thread {
+/**
+ * Abstract class for solving single stages.
+ * Subclass this for concrete stage implementations.
+ * 
+ * @author Fabian
+ *
+ */
+public abstract class BaseStageSolver extends Thread {
 	
 	protected static final boolean SYNCHRONIZE = false;
 	
-	/** Regulated Motors. Used with requestRessources() */
+	/** Regulated Motors.
+	 *  Used with requestRessources() 
+	 *  NOTE: Can't be used with unregulatedPilot */
 	protected static final int MOTORS = 1 << 0;
 	
-	/** DifferentialPilot. Used with requestRessources() */
+	/** DifferentialPilot. 
+	 * Used with requestRessources() 
+	 *  NOTE: Can't be used with unregulatedPilot */
 	protected static final int D_PILOT = 1 << 1;
 	
-	/** UnregulatedPilot. Used with requestRessources() */
+	/** UnregulatedPilot. 
+	 *  Used with requestRessources()
+	 *  NOTE: Can't be used with differentialPilot or motors */
 	protected static final int U_PILOT = 1 << 2;
 	
 	/** Light Sensor. Used with requestRessources() */
@@ -42,10 +54,12 @@ public abstract class StageSolver extends Thread {
 	/** Head Motor. Used with requestRessources()*/
 	protected static final int HEAD = 1 << 5;
 	
+	
+	private int requestedResourced;
+	
 	protected String name;
 	protected BetterArbitrator arby;
-	protected Robot robot;
-	
+
 	protected boolean abort;
 	
 	/* Ressources
@@ -61,18 +75,29 @@ public abstract class StageSolver extends Thread {
 	
 	private ArrayList<Closeable> ressources = new ArrayList<>();
 	
-	private int requestedResourced;
 	
-	public StageSolver(String name){
+	public BaseStageSolver(String name){
 		super(name);
 		this.name = name;
-		this.robot = Robot.getInstance();
 		this.abort = false;
 		this.requestedResourced = 0;
 	}
 	
+	/** 
+	 * Creates the behaviors and the arbitrator
+	 */
+	protected abstract void initArbitrator();
+	
 	/**
 	 * Sets abort and stops arbitrator
+	 */
+	public void stopSolver() {
+		stopSolver(false);
+	}
+	
+	/**
+	 * Sets abort and stops arbitrator. 
+	 * Also waits for this thread to finish.
 	 */
 	public void stopSolver(boolean join) {
 		abort = true;
@@ -84,12 +109,9 @@ public abstract class StageSolver extends Thread {
 		}
 	}
 	
-	public void stopSolver() {
-		stopSolver(false);
-	}
-	
+	@Override
 	public void start() {
-		createResources();
+		createResources(); //create it here or in run
 		super.start();
 	}
 	
@@ -99,14 +121,12 @@ public abstract class StageSolver extends Thread {
 	 */
 	protected void requestResources(int flags) {
 		if (this.isAlive()) throw new IllegalStateException("Ressources have to be reuqested befor start()");
-		
-		//if ((flags & MOTORS) != 0 && (flags & D_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
+
+		/* motors and differentialPilot *can* be used simultaneously (but should not) */
 		if ((flags & MOTORS) != 0 && (flags & U_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
 		if ((flags & D_PILOT) != 0 && (flags & U_PILOT) != 0) throw new IllegalArgumentException("Cant use unregulated and differential pilot");
 		
 		requestedResourced = flags;
-		
-		//createResources();
 	}
 	
 	private final void createResources() {
@@ -119,8 +139,7 @@ public abstract class StageSolver extends Thread {
 		}
 		
 		if ((requestedResourced & D_PILOT) != 0) {
-			/*EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
-			EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);*/
+			/* motors and differentialPilot *can* be used simultaneously (but should not) */
 			if (motorLeft == null) {
 				motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
 				motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
@@ -160,15 +179,17 @@ public abstract class StageSolver extends Thread {
 	@Override
 	public final void run() {
 		printName();
-		//createResources();
-		//try {
+		//createResources(); //create it here or in start()
+		
+		try {
 			solve();
-		/*} catch (Exception e) {
-			LCD.clearDisplay();
-			printName();
-			LCD.drawString("ERROR: " + e.getMessage(), 0, 1);
-		}*/
-		closeRessources();
+		} catch (Exception e) {
+			// make sure to close resources
+			closeRessources();
+			
+			// throw it anyways for debug
+			throw e;
+		}
 	}
 	
 	private void printName() {
@@ -197,14 +218,20 @@ public abstract class StageSolver extends Thread {
 		void exitArby();
 	}
 
+	/**
+	 * Callback Object to exit the arbitrator from inside a behavior
+	 */
 	protected ExitCallback exitCallback = new ExitCallback() {
 		
 		@Override
 		public void exitArby() {
-			StageSolver.this.stopArbitrator();
+			BaseStageSolver.this.stopArbitrator();
 		}
 	};
 	
+	/**
+	 * Spins the thread until the front touch sensor registers a touch
+	 */
 	protected void waitForBounce() {
 		SampleProvider provider = touchSensor.getTouchMode();
 		float[] values = new float[provider.sampleSize()];
@@ -229,14 +256,23 @@ public abstract class StageSolver extends Thread {
 		return !abort && !isInterrupted();
 	}
 	
+	/**
+	 * Moves the sensor head upwards (Labyrinth)
+	 */
 	protected void headUp() {
 		headMotor.rotate(-90);
 	}
 
+	/**
+	 * Moves the sensor head downwards (Bridge)
+	 */
 	protected void headDown() {
 		headMotor.rotate(90);
 	}
 	
+	/**
+	 * Stops the arbitrator (is used by the exitCallback)
+	 */
 	protected void stopArbitrator() {
 		if (arby != null && arby.isRunning()) {
 			// TODO: is this enough?

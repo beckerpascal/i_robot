@@ -1,18 +1,25 @@
 package kit.edu.irobot.behaviors;
 
-import kit.edu.irobot.robot.Robot;
-import kit.edu.irobot.solver.BetterArbitrator;
-import kit.edu.irobot.solver.StageSolver;
+import kit.edu.irobot.solver.BaseStageSolver;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.subsumption.Behavior;
 
-public abstract class RobotBehavior implements Behavior{
+/**
+ * Base class for custom Behaviors.
+ * Implements a way to exit the arbitrator.
+ * @author Fabian
+ *
+ */
+public abstract class BaseBehavior implements Behavior{
 	public boolean suppressed = false;
 	public boolean exit = false;
-	public Robot robot;
 	
-	protected StageSolver.ExitCallback exitCallback;
+	protected BaseStageSolver.ExitCallback exitCallback;
 	
+	/**
+	 * Can be used to terminate the arbitrator.
+	 * TODO: this should be unnecessary with the exit callback
+	 */
 	public void terminate(){
 		this.exit = true;
 	}
@@ -30,6 +37,12 @@ public abstract class RobotBehavior implements Behavior{
 	@Override
 	public abstract void suppress();
 	
+	/**
+	 * Helper method to set the motor speed in the scale of [0..1] TODO: is this [-1..1]
+	 * 
+	 * @param speed in scale [0..1]
+	 * @param motor motor to set the speed of
+	 */
 	public void setMotorSpeed(float speed, RegulatedMotor motor) {
 		// speed = Math.abs(speed);
 		speed = Math.min(speed, 1.0f);
@@ -39,7 +52,12 @@ public abstract class RobotBehavior implements Behavior{
 		motor.setSpeed((int) new_speed);
 	}
 
-	// speed = [0-1]
+	/**
+	 * Helper method to set the motor speeds in the scale of [0..1] TODO: is this [-1..1]
+	 * @param speed in scale [0..1]
+	 * @param left left motor to set the speed of
+	 * @param right right motor to set the speed of
+	 */
 	public void setRobotSpeed(float speed, RegulatedMotor left, RegulatedMotor right) {
 		setMotorSpeed(speed, left);
 		setMotorSpeed(speed, right);

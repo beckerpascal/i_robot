@@ -6,7 +6,7 @@ import edu.kit.mindstorms.communication.ComModule;
 import edu.kit.mindstorms.communication.Communication;
 import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.GrindtheCrack;
-import kit.edu.irobot.behaviors.RobotBehavior;
+import kit.edu.irobot.behaviors.BaseBehavior;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -18,8 +18,8 @@ import lejos.utility.Delay;
  *
  */
 
-public class BridgeStageSolver extends StageSolver{	
-	private RobotBehavior[] behaviors;
+public class BridgeStageSolver extends BaseStageSolver{	
+	private BaseBehavior[] behaviors;
 	
 	public BridgeStageSolver() {
 		super("Bridge");
@@ -30,6 +30,11 @@ public class BridgeStageSolver extends StageSolver{
 	
 	private void findEntry(DifferentialPilot pilot) {
 		boolean found = false;
+		if (active()) pilot.forward();
+		if (active()) waitForBounce();
+		if (active()) pilot.travel(-4.f);
+		if (active()) pilot.rotate(30);
+		
 		while (!found && active()) {
 			pilot.reset();
 			pilot.forward();
@@ -74,16 +79,16 @@ public class BridgeStageSolver extends StageSolver{
 	}
 
 	@Override
-	public void solve() {
-		//RobotBehavior b1 = new DriveForward(super.getRobot());
-		RobotBehavior b2 = new GrindtheCrack(distanceSensor, motorLeft, motorRight, exitCallback);
-		RobotBehavior b3 = new ExitOnLight(colorSensor, exitCallback);
+	protected void initArbitrator() {
+		BaseBehavior b2 = new GrindtheCrack(distanceSensor, motorLeft, motorRight, exitCallback);
+		BaseBehavior b3 = new ExitOnLight(colorSensor, exitCallback);
 
-		behaviors = new RobotBehavior[]{b2, b3};
+		behaviors = new BaseBehavior[]{b2, b3};
 		super.arby = new BetterArbitrator(behaviors);
-		
-		
-		
+	}
+	
+	@Override
+	public void solve() {
 		diffPilot.setTravelSpeed(0.8*diffPilot.getMaxTravelSpeed());
 		if (active()) diffPilot.travel(45);
 		
@@ -165,20 +170,4 @@ public class BridgeStageSolver extends StageSolver{
 		for( int i = 0; i < behaviors.length; i++)		
 			behaviors[i].terminate();
 	}
-	
-	
-	/*public static void main(String[] args) 
-	{
-		BridgeStageSolver solver = new BridgeStageSolver();
-		
-		LCD.drawString("Starte BridgeStageSolver mit UP", 0, 1);
-		if (Button.waitForAnyPress() == Button.ID_ESCAPE) return;
-		
-		//solver.setDaemon(true);
-		solver.start();
-		Button.ESCAPE.waitForPressAndRelease();
-		solver.stopSolver();
-		LCD.drawString("solver finished :)", 0, 1);
-		Delay.msDelay(2000);
-	}*/
 }

@@ -3,33 +3,38 @@ package kit.edu.irobot.solver;
 import kit.edu.irobot.behaviors.AvoidObstacle;
 import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.HitObstacle;
-import kit.edu.irobot.behaviors.RobotBehavior;
+import kit.edu.irobot.behaviors.BaseBehavior;
 
 /**
  * Behavior for the maze
  * @author Pascal Becker
  *
  */
-public class MazeStageSolver extends StageSolver{	
+public class MazeStageSolver extends BaseStageSolver{	
 	
-	private RobotBehavior[] behaviors;
+	private BaseBehavior[] behaviors;
 	
 	public MazeStageSolver() {
-		super("Maze");
+		this("Maze");
+	}
+	
+	public MazeStageSolver(String name) {
+		super(name);
 		requestResources(D_PILOT | MOTORS | TOUCH | COLOR | HEAD);
+	}
+	
+	@Override
+	protected void initArbitrator() {
+		BaseBehavior b2 = new AvoidObstacle(distanceSensor, motorLeft, motorRight);
+		BaseBehavior b3 = new HitObstacle(touchSensor, diffPilot);
+		BaseBehavior b4 = new ExitOnLight(colorSensor, exitCallback);
 
+		behaviors = new BaseBehavior[]{b2,b3,b4};
+		super.arby = new BetterArbitrator(behaviors);
 	}
 	
 	@Override
 	public void solve() {
-		RobotBehavior b2 = new AvoidObstacle(distanceSensor, motorLeft, motorRight);
-		RobotBehavior b3 = new HitObstacle(touchSensor, diffPilot);
-		RobotBehavior b4 = new ExitOnLight(colorSensor, exitCallback);
-
-		behaviors = new RobotBehavior[]{b2,b3,b4};
-		super.arby = new BetterArbitrator(behaviors);
-		
-		
 		headUp();
 		
 		super.arby.start();
@@ -42,19 +47,4 @@ public class MazeStageSolver extends StageSolver{
 		for( int i = 0; i < behaviors.length; i++)
 			behaviors[i].terminate();
 	}
-	
-	/*public static void main(String[] args) 
-	{
-		MazeStageSolver solver = new MazeStageSolver();
-
-		LCD.drawString("Starte MazeSolver mit UP", 0, 1);
-		while (!Button.UP.isDown()) {	    	
-			Delay.msDelay(100);
-		}
-		
-		Button.waitForAnyPress();
-		solver.start();
-		Button.ESCAPE.waitForPressAndRelease();
-		solver.stopSolver();
-	}*/
 }

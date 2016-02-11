@@ -5,13 +5,18 @@ package kit.edu.irobot.solver;
  * @author Pascal Becker
  *
  */
-public class SeesawStageSolver extends StageSolver{
+public class SeesawStageSolver extends BaseStageSolver{
 
 	public SeesawStageSolver() {
 		super("Seesaw");
 		requestResources(D_PILOT | TOUCH);
 	}
-
+	
+	@Override
+	protected void initArbitrator() {
+		// not needed since we coded this hard
+	}
+	
 	@Override
 	public void solve() {
 		diffPilot.setTravelSpeed(diffPilot.getMaxTravelSpeed());

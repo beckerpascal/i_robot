@@ -1,21 +1,19 @@
-package kit.edu.irobot.behaviors;
+package kit.edu.irobot.utils;
 
-import kit.edu.irobot.robot.Robot;
-import kit.edu.irobot.utils.Constants;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
+import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 
-public class LineCodeBehavior extends Thread {
-	private SampleProvider light = null;
-	private Robot robot = null;
-	private float[] val = null;
+public class LineCodeScanner extends Thread {
+	private final SampleProvider light;
+	private final float[] val;
+	
 	private int count = 0;
 
-	public LineCodeBehavior(Robot robot) {
-		this.robot = robot;
-		light = robot.getSensorLight().getRedMode();
-		val = new float[light.sampleSize()];
+	public LineCodeScanner(EV3ColorSensor color) {
+		light = color.getRedMode();
+		val = new float[1]; //safer to set size
 	}
 	
 	public int getCurrentStage(){		

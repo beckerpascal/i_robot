@@ -1,22 +1,19 @@
 package kit.edu.irobot.utils;
 
 public class Buffer {
-
-	private int size = 0;
 	private float[] buffer;
 	
 	private int count = 0;
 	
 	public Buffer(int size) {
-		this.size = size; 
-		this.buffer = new float[this.size];
+		this.buffer = new float[size];
 	}
 	
 	public void add(float value) {
 		this.buffer[count] = value; 
 		this.count++;
 		
-		if(this.count == this.size) {
+		if(this.count == buffer.length) {
 			this.count = 0;
 		}
 	}
@@ -25,9 +22,10 @@ public class Buffer {
 		return this.buffer[index];
 	}
 	
+	// TODO calculate sum on add
 	public float sum() {
 		float sum = 0;
-		for(int index = 0; index < this.size; index++) {
+		for(int index = 0; index < buffer.length; index++) {
 			sum += this.get(index);
 		}
 		
@@ -36,13 +34,13 @@ public class Buffer {
 	
 	public float average() {
 		float sum = this.sum(); 
-		return sum / this.size; 
+		return sum / buffer.length; 
 	}	
 	
 	public float max() {
 		float max = this.buffer[0];
 		
-		for(int index = 0; index < this.size; index++) {
+		for(int index = 0; index < buffer.length; index++) {
 			max = Math.max(max, this.buffer[index]);
 		}
 		
@@ -52,7 +50,7 @@ public class Buffer {
 	public float min() {
 		float min = this.buffer[0];
 		
-		for(int index = 0; index < this.size; index++) {
+		for(int index = 0; index < buffer.length; index++) {
 			min = Math.min(min, this.buffer[index]);
 		}
 		
@@ -60,14 +58,14 @@ public class Buffer {
 	}
 	
 	public void reset(){
-		this.buffer = new float[this.size];
+		this.buffer = new float[buffer.length];
 		this.count = 0;
 	}
 	
 	public void reset(float value) {
 		this.reset();
 		
-		for(int index = 0; index < this.size; index++) {
+		for(int index = 0; index < buffer.length; index++) {
 			this.add(value);
 		}
 	}

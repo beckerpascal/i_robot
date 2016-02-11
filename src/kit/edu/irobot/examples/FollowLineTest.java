@@ -96,6 +96,9 @@ public class FollowLineTest {
 				 Delay.msDelay(5000);
 			}
 		}
+		leftMotor.close();
+		rightMotor.close();
+		light.close();
 	}
 
 }

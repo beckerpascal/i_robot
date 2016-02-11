@@ -1,6 +1,6 @@
 package kit.edu.irobot.solver;
 
-import kit.edu.irobot.behaviors.RobotBehavior;
+import kit.edu.irobot.behaviors.BaseBehavior;
 import lejos.robotics.subsumption.Behavior;
 
 
@@ -61,7 +61,7 @@ public class BetterArbitrator
    * Same as Arbitrator(behaviorList, false) Arbitrator start() never exits
    * @param behaviorList An array of Behavior objects.
    */
-  public BetterArbitrator(RobotBehavior[] behaviorList)
+  public BetterArbitrator(BaseBehavior[] behaviorList)
   {
     this(behaviorList, false);
   }
