@@ -2,11 +2,16 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 public class DriveForward extends RobotBehavior {
 
+
+	private EV3LargeRegulatedMotor motor_left, motor_right;
 	
-	public DriveForward(Robot robot) {
-		this.robot = robot;
+	public DriveForward(EV3LargeRegulatedMotor left, EV3LargeRegulatedMotor right) {
+		motor_left = left;
+		motor_right = right;
 	}
 
 	public boolean takeControl() {
@@ -34,6 +39,8 @@ public class DriveForward extends RobotBehavior {
 			Thread.yield();
 		}
 		
-		robot.stopMotion();
+
+		motor_left.stop(true);
+		motor_right.stop(true);
 	}
 }

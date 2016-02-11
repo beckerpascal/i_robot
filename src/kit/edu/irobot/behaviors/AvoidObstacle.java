@@ -3,6 +3,7 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
@@ -21,13 +22,16 @@ public class AvoidObstacle extends RobotBehavior {
 	private final float max_V = 0.85f;
 	private final float reg_V = 0.5f;
 	
+	private EV3LargeRegulatedMotor motor_left, motor_right;
+	
 	private SampleProvider provider;
 	
-	public AvoidObstacle(Robot robot) {
+	public AvoidObstacle(EV3UltrasonicSensor sonar,EV3LargeRegulatedMotor left, EV3LargeRegulatedMotor right) {
 		
+		this.motor_left = left;
+		this.motor_right= right;
 		
-		this.robot = robot;
-		sonar = robot.getSensorUltrasonic();
+		this.sonar = sonar;
 		provider = sonar.getDistanceMode();
 		values = new float[provider.sampleSize()];
 		
@@ -50,6 +54,7 @@ public class AvoidObstacle extends RobotBehavior {
 		suppressed = true;
 	}
 
+	
 	public void action() {
 		suppressed = false;
 		
@@ -87,9 +92,16 @@ public class AvoidObstacle extends RobotBehavior {
 			float powerA = max_V -  Turn;         
 			float powerB = max_V +  Turn;         
 
+			this.setMotorSpeed(powerA,motor_left);
+			this.setMotorSpeed(powerB,motor_right);
+
+			motor_left.forward();
+			motor_right.forward();
+			/*
 			this.robot.setMotorSpeed(powerA, this.robot.getMotorLeft());
 			this.robot.setMotorSpeed(powerB, this.robot.getMotorRight());
 			this.robot.moveRobotForward();
+			*/
 			
 			last_error = error;
 			/*
@@ -100,5 +112,7 @@ public class AvoidObstacle extends RobotBehavior {
 			LCD.drawString("Power B: " + powerB, 1, 6);
 			*/
 		}
+		motor_left.stop(true);
+		motor_right.stop(true);
 	}
 }

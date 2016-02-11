@@ -2,13 +2,14 @@ package kit.edu.irobot.behaviors;
 
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 public class DrivePlankBridge extends RobotBehavior {
-	private EV3ColorSensor sensor = null;
+	private EV3ColorSensor color = null;
 	private EV3UltrasonicSensor sonar;
 	
 	private float[] lightValue;
@@ -19,13 +20,19 @@ public class DrivePlankBridge extends RobotBehavior {
 	private float distance;
 	private float distance_max = 150.f;
 	
-	public DrivePlankBridge(Robot robot) {
-		this.robot = robot;
-		this.sensor = this.robot.getSensorLight();
-		this.lightProv = sensor.getRedMode();
+
+	private EV3LargeRegulatedMotor motor_left, motor_right;
+	
+	public DrivePlankBridge(EV3ColorSensor color,EV3UltrasonicSensor sonar,EV3LargeRegulatedMotor left, EV3LargeRegulatedMotor right) {
+
+		this.color = color;
+		this.sonar = sonar;
+		this.motor_left  = left;
+		this.motor_right = right;
+		
+		this.lightProv = color.getRedMode();
 		this.lightValue = new float[this.lightProv.sampleSize()];
 		
-		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();
 		values = new float[provider.sampleSize()];
 	}
@@ -54,15 +61,17 @@ public class DrivePlankBridge extends RobotBehavior {
 		LCD.clear();
 		LCD.drawString("drive forward...", 0, 0);
 
-		robot.setRobotSpeed(1.0f);
-		robot.moveRobotForward();
+		this.setRobotSpeed(1.0,motor_left,motor_right);
+		motor_left.forward();
+		motor_right.forward();
 		
 		this.lightProv.fetchSample(lightValue, 0);
 		while(!exit && !suppressed && (lightValue[0] < 0.8f) ){
 			Delay.msDelay(100);
 			this.lightProv.fetchSample(lightValue, 0);
 		}
-		
-		robot.stopMotion();
+
+		motor_left.stop();
+		motor_right.stop();
 	}
 }
