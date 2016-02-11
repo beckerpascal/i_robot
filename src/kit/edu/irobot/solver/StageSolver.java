@@ -64,6 +64,7 @@ public abstract class StageSolver extends Thread {
 	private int requestedResourced;
 	
 	public StageSolver(String name){
+		super(name);
 		this.name = name;
 		this.robot = Robot.getInstance();
 		this.abort = false;
@@ -92,7 +93,7 @@ public abstract class StageSolver extends Thread {
 	 * @param flags i.e: MOTORS | COLOR | TOUCH
 	 */
 	protected void requestResources(int flags) {
-		if (!this.isAlive()) throw new IllegalStateException("Ressources have to be reuqested befor start()");
+		if (this.isAlive()) throw new IllegalStateException("Ressources have to be reuqested befor start()");
 		
 		if ((flags & MOTORS) != 0 && (flags & D_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
 		if ((flags & MOTORS) != 0 && (flags & U_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");

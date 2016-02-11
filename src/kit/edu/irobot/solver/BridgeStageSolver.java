@@ -59,7 +59,7 @@ public class BridgeStageSolver extends StageSolver{
 		LCD.clear();
 		LCD.drawString("Wait for Green", 0, 0);
 		
-		SampleProvider provider = robot.getSensorLight().getAmbientMode();
+		SampleProvider provider = colorSensor.getAmbientMode();
 		float[] values = new float[provider.sampleSize()];
 		
 		while (active()) {
