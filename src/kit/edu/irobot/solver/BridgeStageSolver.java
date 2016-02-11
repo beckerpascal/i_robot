@@ -1,16 +1,12 @@
 package kit.edu.irobot.solver;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.kit.mindstorms.communication.ComModule;
 import edu.kit.mindstorms.communication.Communication;
 import kit.edu.irobot.behaviors.ExitOnLight;
 import kit.edu.irobot.behaviors.GrindtheCrack;
 import kit.edu.irobot.behaviors.RobotBehavior;
-import kit.edu.irobot.utils.UnregulatedPilot;
-import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -23,29 +19,23 @@ import lejos.utility.Delay;
  */
 
 public class BridgeStageSolver extends StageSolver{	
-	private List<RobotBehavior> behaviors;
+	private RobotBehavior[] behaviors;
 	
 	public BridgeStageSolver() {
-		super("BridgeStageSolver");
+		super("Bridge");
+		requestResources(D_PILOT | ULTRA | COLOR | TOUCH | HEAD);
 		
 		//RobotBehavior b1 = new DriveForward(super.getRobot());
-		RobotBehavior b2 = new GrindtheCrack(super.getRobot());
-		RobotBehavior b3 = new ExitOnLight(super.getRobot(), super.exitCallback);
+		RobotBehavior b2 = new GrindtheCrack(super.robot);
+		RobotBehavior b3 = new ExitOnLight(super.robot, super.exitCallback);
 
-		behaviors = new ArrayList<RobotBehavior>();
-		behaviors.add(b2);
-		behaviors.add(b3);
-		//behaviors.add(b3);
-		
-		RobotBehavior[] temp = new RobotBehavior[behaviors.size()];
-		behaviors.toArray(temp);
-		super.arby = new BetterArbitrator(temp);
-		// TODO Auto-generated constructor stub
+		behaviors = new RobotBehavior[]{b2, b3};
+		super.arby = new BetterArbitrator(behaviors);
 	}
 	
 	private void findEntry(DifferentialPilot pilot) {
 		boolean found = false;
-		while (!found && !abort) {
+		while (!found && active()) {
 			pilot.reset();
 			pilot.forward();
 			waitForBounce();
@@ -72,7 +62,7 @@ public class BridgeStageSolver extends StageSolver{
 		SampleProvider provider = robot.getSensorLight().getAmbientMode();
 		float[] values = new float[provider.sampleSize()];
 		
-		while (!abort) {
+		while (active()) {
 			provider.fetchSample(values, 0);
 			float ambient = values[0];
 			
@@ -89,109 +79,91 @@ public class BridgeStageSolver extends StageSolver{
 	}
 
 	@Override
-	public void run() {
-		super.robot.getUnregulatedPilot().close();
-		DifferentialPilot pilot = super.robot.getDifferentialPilot();
+	public void solve() {
+		diffPilot.setTravelSpeed(0.8*diffPilot.getMaxTravelSpeed());
+		if (active()) diffPilot.travel(45);
 		
-		pilot.stop();
-		pilot.setTravelSpeed(0.8*pilot.getMaxTravelSpeed());
-		pilot.travel(45);
-		
-		super.robot.HeadDown();
-		
-		Delay.msDelay(100);
-		
-		super.arby.start();
-		pilot.stop();
+		if (active()) headDown();
+		if (active()) arby.start();
+		if (active()) diffPilot.stop();
 		
 		LCD.clear();
-		LCD.drawString("JUHU, arby ended", 0, 0);
-		Delay.msDelay(100);
-		
 		
 		/* calling elevator */
 		final ComModule module = Communication.getModule();
 		LCD.clear();
-		LCD.drawString("Talking to elevator...", 0, 0);
+		LCD.drawString("Talking to elevator...", 0, 1);
 		boolean reservated = false;
 		try {
-			while (!reservated && !abort) {
+			while (!reservated && active()) {
 				String tries = "";
-				LCD.clear(1);
-				while (!module.requestStatus() && !abort) {
-					LCD.drawString("Waiting" + tries, 0, 1);
-					Delay.msDelay(1000);
+				LCD.clear(2);
+				while (!module.requestStatus() && active()) {
+					LCD.drawString("Waiting" + tries, 0, 2);
+					Delay.msDelay(500);
 					tries += ".";
 				}
 				
-				if (!abort && module.requestElevator()) {
-					LCD.drawString("Requested Elevator", 0, 1);
+				if (active() && module.requestElevator()) {
+					LCD.drawString("Requested Elevator", 0, 2);
 					reservated = true;
 				} else {
-					LCD.drawString("Requested Failed", 0, 1);
+					LCD.drawString("Requested Failed", 0, 2);
 				}
 			}
 			
 		} catch (IOException e) {
-			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 4);
+			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 5);
 			Delay.msDelay(1000);
 		}
 
 		
-		pilot.rotate(-15);
-		pilot.travel(35);
+		/* navigate into elevator */
+		if (active()) diffPilot.rotate(-15);
+		if (active()) diffPilot.travel(35);
+			
+		if (active()) waitForGreen();
+		if (active()) findEntry(diffPilot);
 		
-		waitForGreen();
-		findEntry(pilot);
 		
-		//Button.ENTER.waitForPressAndRelease();
-		
-		/* navigate into elevator*/
-		
+		/* move elevator down */
 		try {
-			if (!abort && module.moveElevatorDown()) {
-				LCD.drawString("Requested Down", 0, 3);
+			if (active() && module.moveElevatorDown()) {
+				LCD.drawString("Requested Down", 0, 4);
 			} else {
-				LCD.drawString("Down Failed", 0, 3);	
+				LCD.drawString("Down Failed", 0, 4);	
 			}
 			
 			
 		} catch (IOException e) {
-			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 4);
+			LCD.drawString("Exception in Elevator: " + e.getMessage(), 0, 5);
 			Delay.msDelay(1000);
 		}
 
 		
 		// waiting for elevator to travel down
-		for (int secs = 5; !abort && secs >= 0; secs--) {
-			LCD.drawString("Waiting " + secs, 0, 4);
+		for (int secs = 5; active() && secs >= 0; secs--) {
+			LCD.drawString("Waiting " + secs, 0, 5);
 			Delay.msDelay(1000);
 		}
+			
+			// drive out of elevator
+		if (active()) diffPilot.travel(33);
+		if (active()) LCD.drawString("Complete!", 0, 5);
 		
-		pilot.travel(33);
-		
-		LCD.drawString("Complete!", 0, 5);
-		if (!abort) Delay.msDelay(1000);
-		
-		pilot.stop();
+		diffPilot.stop();
 	}
 	
 	@Override
 	public void stopSolver() {
 		super.stopSolver();
 		
-		for( int i = 0; i < behaviors.size(); i++)		
-			behaviors.get(i).terminate();
-		
-		for( int i = 0; i < 5; i++){
-			super.arby.stop();
-			Delay.msDelay(10);
-		}
-		
-		super.getRobot().stopMotion();
+		for( int i = 0; i < behaviors.length; i++)		
+			behaviors[i].terminate();
 	}
 	
-	public static void main(String[] args) 
+	
+	/*public static void main(String[] args) 
 	{
 		BridgeStageSolver solver = new BridgeStageSolver();
 		
@@ -202,11 +174,7 @@ public class BridgeStageSolver extends StageSolver{
 		solver.start();
 		Button.ESCAPE.waitForPressAndRelease();
 		solver.stopSolver();
-		/*try {
-			solver.join();
-		} catch (InterruptedException e) {
-		}*/
 		LCD.drawString("solver finished :)", 0, 1);
 		Delay.msDelay(2000);
-	}
+	}*/
 }

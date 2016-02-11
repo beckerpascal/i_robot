@@ -58,5 +58,7 @@ public final class Constants {
 	public static final double MIN_DIFF = 0.4;
 	public static final double BAR_MIN = 0.8;
 	public static final int BARS = 1; // bars in a barcode
+	
+	public static final boolean SYNCHRONIZE = false;
 
 }

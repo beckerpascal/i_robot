@@ -1,7 +1,5 @@
 package kit.edu.irobot.solver;
 
-import lejos.robotics.navigation.DifferentialPilot;
-
 /**
  * Behavior for the final enemy!
  * 
@@ -11,21 +9,23 @@ import lejos.robotics.navigation.DifferentialPilot;
 public class BossStageSolver extends MazeStageSolver {
 
 	@Override
-	public void run() {
-		DifferentialPilot pilot = robot.getDifferentialPilot();
-		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
-		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
+	public void solve() {
+		diffPilot.setTravelSpeed(diffPilot.getMaxTravelSpeed());
+		diffPilot.setRotateSpeed(diffPilot.getMaxRotateSpeed()*0.5f);
 		
-		pilot.forward();
+		if (active()) diffPilot.forward();
 		
-		waitForBounce();
+		if (active()) waitForBounce();
 		
-		pilot.rotate(90);
-		pilot.forward();
-		waitForBounce();
-		pilot.stop();
+		if (active()) diffPilot.rotate(90);
+		if (active()) diffPilot.forward();
+		if (active()) waitForBounce();
+		diffPilot.stop();
 		
-		super.run();
-
+		super.solve();
+	}
+	
+	public void stopSolver() {
+		super.stopSolver();
 	}
 }

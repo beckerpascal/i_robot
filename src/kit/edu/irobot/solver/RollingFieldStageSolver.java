@@ -1,6 +1,5 @@
 package kit.edu.irobot.solver;
 
-import lejos.robotics.subsumption.Behavior;
 
 /**
  * Behavior for rolling field challenge
@@ -10,19 +9,19 @@ import lejos.robotics.subsumption.Behavior;
 public class RollingFieldStageSolver extends StageSolver{
 
 	public RollingFieldStageSolver() {
-		super("RollingFieldStageSolver");
-		// TODO Auto-generated constructor stub
+		super("Swamp");
+		requestResources(D_PILOT);
 	}
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public void solve() {
+		diffPilot.setTravelSpeed(diffPilot.getMaxTravelSpeed());
+		if (active()) diffPilot.travel(200);
 	}
 
 	@Override
 	public void stopSolver() {
-		// TODO Auto-generated method stub
+		super.stopSolver();
 	}
 	
 	

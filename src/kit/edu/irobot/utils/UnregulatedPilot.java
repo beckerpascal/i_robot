@@ -1,5 +1,7 @@
 package kit.edu.irobot.utils;
 
+import java.io.Closeable;
+
 import kit.edu.irobot.robot.Robot;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.UnregulatedMotor;
@@ -13,7 +15,7 @@ import lejos.robotics.navigation.MoveListener;
 import lejos.utility.Delay;
 import lejos.hardware.ev3.LocalEV3;
 
-public class UnregulatedPilot {
+public class UnregulatedPilot implements Closeable {
 
 	private final Port left_port, right_port;
 	private final UnregulatedMotor left, right;

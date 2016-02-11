@@ -1,19 +1,16 @@
 package kit.edu.irobot.solver;
 
-import lejos.robotics.navigation.DifferentialPilot;
-
 public class StartMazeStageSolver extends MazeStageSolver {
-
-	public void run() {
-		DifferentialPilot pilot = robot.getDifferentialPilot();
-		pilot.setTravelSpeed(pilot.getMaxTravelSpeed());
-		pilot.setRotateSpeed(pilot.getMaxRotateSpeed()*0.5f);
-		//pilot.rotate(90);
-		pilot.forward();
+	
+	public void solve() {
+		diffPilot.setTravelSpeed(diffPilot.getMaxTravelSpeed());
+		diffPilot.setRotateSpeed(diffPilot.getMaxRotateSpeed()*0.5f);
+		//if (active()) diffPilot.rotate(90);
+		if (active()) diffPilot.forward();
 		
-		waitForBounce();
-		pilot.stop();
+		if (active()) waitForBounce();
+		diffPilot.stop();
 		
-		super.run();
+		super.solve();
 	}
 }

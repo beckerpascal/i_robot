@@ -1,8 +1,5 @@
 package kit.edu.irobot.solver;
 
-import lejos.hardware.Button;
-import lejos.hardware.lcd.LCD;
-import lejos.utility.Delay;
 import kit.edu.irobot.behaviors.FindLine;
 import kit.edu.irobot.behaviors.FollowLine;
 import kit.edu.irobot.behaviors.RobotBehavior;
@@ -18,9 +15,10 @@ public class LineFollowingStageSolver  extends StageSolver {
 	private FollowLine followLine; 
 	
 	public LineFollowingStageSolver() {
-		super("LineFollowingStageSolver");
-		findLine = new FindLine(super.getRobot(), super.exitCallback);
-		followLine = new FollowLine(super.getRobot());
+		super("Line");
+		requestResources(U_PILOT | COLOR);
+		findLine = new FindLine(super.robot, super.exitCallback);
+		followLine = new FollowLine(super.robot);
 		
 		RobotBehavior[] behaviorPriority = {followLine, findLine};
 	
@@ -28,23 +26,20 @@ public class LineFollowingStageSolver  extends StageSolver {
 	}
 
 	@Override
-	public void run() {
+	public void solve() {
 		super.arby.start();
-		}
+		unregPilot.stop();
+	}
 
 	@Override
 	public void stopSolver() {
+		super.stopSolver();
+		
 		findLine.terminate();
 		followLine.terminate();
-		
-		for( int i = 0; i< 3;i++) {
-			super.arby.stop();
-			Delay.msDelay(1);
-		}
-		super.getRobot().stopMotion();
 	}
 	
-	public static void main(String[] args) 
+	/*public static void main(String[] args) 
 	{
 		LineFollowingStageSolver solver = new LineFollowingStageSolver();
 		
@@ -56,5 +51,5 @@ public class LineFollowingStageSolver  extends StageSolver {
 		solver.start();
 		Button.waitForAnyPress();
 		solver.stopSolver();
-	}
+	}*/
 }
