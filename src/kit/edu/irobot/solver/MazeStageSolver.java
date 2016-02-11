@@ -16,18 +16,20 @@ public class MazeStageSolver extends StageSolver{
 	
 	public MazeStageSolver() {
 		super("Maze");
-		requestResources(D_PILOT | TOUCH | COLOR | HEAD);
+		requestResources(D_PILOT | MOTORS | TOUCH | COLOR | HEAD);
 
-		RobotBehavior b2 = new AvoidObstacle(super.robot);
-		RobotBehavior b3 = new HitObstacle(super.robot);
-		RobotBehavior b4 = new ExitOnLight(super.robot, super.exitCallback);
-
-		behaviors = new RobotBehavior[]{b2,b3,b4};
-		super.arby = new BetterArbitrator(behaviors);
 	}
 	
 	@Override
 	public void solve() {
+		RobotBehavior b2 = new AvoidObstacle(distanceSensor, motorLeft, motorRight);
+		RobotBehavior b3 = new HitObstacle(touchSensor, diffPilot);
+		RobotBehavior b4 = new ExitOnLight(colorSensor, exitCallback);
+
+		behaviors = new RobotBehavior[]{b2,b3,b4};
+		super.arby = new BetterArbitrator(behaviors);
+		
+		
 		headUp();
 		
 		super.arby.start();

@@ -3,17 +3,21 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.solver.StageSolver.ExitCallback;
 import kit.edu.irobot.utils.Constants;
+import lejos.ev3.tools.EV3ScpUpload;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.filter.MeanFilter;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.utility.Delay;
 
 public class GrindtheCrack extends RobotBehavior {
 
 	private EV3UltrasonicSensor sonar;
-	private SampleProvider average;
 	private float[] values;
+	private RegulatedMotor left;
+	private RegulatedMotor right;
 
 	private float P,I,D,distance,integral,last_error;
 	
@@ -22,22 +26,14 @@ public class GrindtheCrack extends RobotBehavior {
 	private final float max_V = 0.75f;
 	private final float reg_V = 0.5f;
 	
-	private final float travel_distance;
-	
 	private SampleProvider provider;
 	
-	public GrindtheCrack(Robot robot) {
-		this(robot, Float.MAX_VALUE, null);
-	}
-	
-	public GrindtheCrack(Robot robot, float travel_distance, ExitCallback callback) {
-		this.robot = robot;
-		this.travel_distance = travel_distance;
+	public GrindtheCrack(EV3UltrasonicSensor sonar, RegulatedMotor left, RegulatedMotor right, ExitCallback callback) {
+		this.left = left;
+		this.right = right;
 		this.exitCallback = callback;
 		
-		sonar = robot.getSensorUltrasonic();
 		provider = sonar.getDistanceMode();
-	
 		values = new float[provider.sampleSize()];
 		
 		P = 0.01f;
@@ -63,7 +59,6 @@ public class GrindtheCrack extends RobotBehavior {
 
 	public void action() {
 		suppressed = false;
-		robot.getDifferentialPilot().reset();
 		
 		last_error = Float.MAX_VALUE;
 		while(!exit && !suppressed){
@@ -99,9 +94,10 @@ public class GrindtheCrack extends RobotBehavior {
 			float powerA = max_V -  Turn;         
 			float powerB = max_V +  Turn;         
 
-			this.robot.setMotorSpeed(powerA, this.robot.getMotorLeft());
-			this.robot.setMotorSpeed(powerB, this.robot.getMotorRight());
-			this.robot.moveRobotForward();
+			this.setMotorSpeed(powerA, left);
+			this.setMotorSpeed(powerB, right);
+			left.forward();
+			right.forward();
 			
 			last_error = error;
 			
@@ -118,6 +114,7 @@ public class GrindtheCrack extends RobotBehavior {
 			LCD.drawString("Travel : " + traveled, 1, 0);*/
 			
 		}
-		this.robot.stopMotion();
+		left.stop();
+		right.stop();
 	}
 }

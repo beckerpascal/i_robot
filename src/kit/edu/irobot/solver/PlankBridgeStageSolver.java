@@ -13,18 +13,19 @@ public class PlankBridgeStageSolver extends StageSolver{
 	
 	public PlankBridgeStageSolver() {
 		super("Planks");
-		requestResources(D_PILOT | TOUCH);
+		requestResources(D_PILOT | TOUCH | COLOR);
 		
-		//RobotBehavior b2 = new GrindtheCrack(super.getRobot());
-		RobotBehavior b3 = new ExitOnLight(robot, exitCallback);
-
-		behaviors = new RobotBehavior[] {b3};
-		super.arby = new BetterArbitrator(behaviors);
 	}
 	
 	
 	@Override
 	public void solve() {
+		//RobotBehavior b2 = new GrindtheCrack(super.getRobot());
+		RobotBehavior b3 = new ExitOnLight(colorSensor, exitCallback);
+
+		behaviors = new RobotBehavior[] {b3};
+		super.arby = new BetterArbitrator(behaviors);
+		
 		diffPilot.setTravelSpeed(diffPilot.getMaxTravelSpeed());
 		/* in position and still on ramp */
 		

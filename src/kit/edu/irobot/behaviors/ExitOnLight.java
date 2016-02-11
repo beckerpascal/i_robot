@@ -10,16 +10,14 @@ public class ExitOnLight extends RobotBehavior {
 	private SampleProvider lightProv = null;
 	private float[] lightValue;
 
-	public ExitOnLight(Robot robot, ExitCallback callback) {
-		this.robot = robot;
-		this.sensor = this.robot.getSensorLight();
+	public ExitOnLight(EV3ColorSensor color, ExitCallback callback) {
+		this.sensor = color;
 		this.lightProv = sensor.getRedMode();
-		this.lightValue = new float[this.lightProv.sampleSize()];
+		this.lightValue = new float[1];
 		super.exitCallback = callback;
 	}
 
 	public boolean takeControl() {
-		this.sensor = this.robot.getSensorLight();
 		this.lightProv = sensor.getRedMode();
     	if(super.exit == true){
     		return false;

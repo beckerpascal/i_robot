@@ -1,21 +1,19 @@
 package kit.edu.irobot.behaviors;
 
-import kit.edu.irobot.robot.Robot;
-import lejos.hardware.lcd.LCD;
 import lejos.hardware.sensor.EV3TouchSensor;
-import lejos.utility.Delay;
+import lejos.robotics.SampleProvider;
+import lejos.robotics.navigation.DifferentialPilot;
 
 public class HitObstacle extends RobotBehavior {
 	
-	private EV3TouchSensor touch;
+	private SampleProvider touch;
 	private float[] touch_samples;
-
-	public HitObstacle(Robot robot) {
-
-		this.robot = robot;
-		touch = robot.getSensorTouchFront();
-		touch.getTouchMode();
-		touch_samples = new float[touch.sampleSize()];
+	private DifferentialPilot pilot;
+	
+	public HitObstacle(EV3TouchSensor touch, DifferentialPilot pilot) {
+		this.touch = touch.getTouchMode();
+		this.pilot = pilot;
+		touch_samples = new float[this.touch.sampleSize()];
 	}
 
 	public boolean takeControl() {
@@ -39,8 +37,8 @@ public class HitObstacle extends RobotBehavior {
 		suppressed = false;
 		//robot.writeBehaviorNameToDisplay("HitObstacle");
 
-		this.robot.getDifferentialPilot().travel(-5.0);
-		this.robot.getDifferentialPilot().rotate(-90.0);
+		pilot.travel(-5.0);
+		pilot.rotate(-90.0);
 		//this.robot.getUnregulatedPilot().travel(-125,75);
 		//this.robot.getUnregulatedPilot().rotate(-90,75);
 		

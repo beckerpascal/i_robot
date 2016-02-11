@@ -88,6 +88,11 @@ public abstract class StageSolver extends Thread {
 		stopSolver(false);
 	}
 	
+	public void start() {
+		createResources();
+		super.start();
+	}
+	
 	/**
 	 * Call this to request resources
 	 * @param flags i.e: MOTORS | COLOR | TOUCH
@@ -95,11 +100,13 @@ public abstract class StageSolver extends Thread {
 	protected void requestResources(int flags) {
 		if (this.isAlive()) throw new IllegalStateException("Ressources have to be reuqested befor start()");
 		
-		if ((flags & MOTORS) != 0 && (flags & D_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
+		//if ((flags & MOTORS) != 0 && (flags & D_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
 		if ((flags & MOTORS) != 0 && (flags & U_PILOT) != 0) throw new IllegalArgumentException("Cant use motors and pilot");
 		if ((flags & D_PILOT) != 0 && (flags & U_PILOT) != 0) throw new IllegalArgumentException("Cant use unregulated and differential pilot");
 		
 		requestedResourced = flags;
+		
+		//createResources();
 	}
 	
 	private final void createResources() {
@@ -112,11 +119,16 @@ public abstract class StageSolver extends Thread {
 		}
 		
 		if ((requestedResourced & D_PILOT) != 0) {
-			EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
-			EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
-			diffPilot = new DifferentialPilot(4.275, 14.315, left, right);
-			ressources.add(left);
-			ressources.add(right);
+			/*EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
+			EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);*/
+			if (motorLeft == null) {
+				motorLeft = new EV3LargeRegulatedMotor(Constants.LEFT_MOTOR);
+				motorRight = new EV3LargeRegulatedMotor(Constants.RIGHT_MOTOR);
+				if (SYNCHRONIZE) motorLeft.synchronizeWith(new RegulatedMotor[]{motorRight});
+				ressources.add(motorLeft);
+				ressources.add(motorRight);
+			}
+			diffPilot = new DifferentialPilot(4.275, 14.315, motorLeft, motorRight);
 		}
 		
 		if ((requestedResourced & U_PILOT) != 0) {
@@ -148,14 +160,14 @@ public abstract class StageSolver extends Thread {
 	@Override
 	public final void run() {
 		printName();
-		createResources();
-		try {
+		//createResources();
+		//try {
 			solve();
-		} catch (Exception e) {
+		/*} catch (Exception e) {
 			LCD.clearDisplay();
 			printName();
 			LCD.drawString("ERROR: " + e.getMessage(), 0, 1);
-		}
+		}*/
 		closeRessources();
 	}
 	
@@ -214,7 +226,7 @@ public abstract class StageSolver extends Thread {
 	 * @return
 	 */
 	protected boolean active() {
-		return !abort && isInterrupted();
+		return !abort && !isInterrupted();
 	}
 	
 	protected void headUp() {

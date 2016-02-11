@@ -13,20 +13,28 @@ public class LineFollowingStageSolver  extends StageSolver {
 	
 	private FindLine findLine;
 	private FollowLine followLine; 
+	private float startOffset;
 	
 	public LineFollowingStageSolver() {
+		this(0.f);
+	}
+	
+	public LineFollowingStageSolver(float startOffset) {
 		super("Line");
 		requestResources(U_PILOT | COLOR);
-		findLine = new FindLine(super.robot, super.exitCallback);
-		followLine = new FollowLine(super.robot);
-		
-		RobotBehavior[] behaviorPriority = {followLine, findLine};
-	
-	    super.arby = new BetterArbitrator(behaviorPriority, false);	
+		this.startOffset = startOffset;
 	}
 
 	@Override
 	public void solve() {
+		findLine = new FindLine(colorSensor, unregPilot, exitCallback);
+		followLine = new FollowLine(colorSensor, unregPilot);
+		
+		RobotBehavior[] behaviorPriority = {followLine, findLine};
+	
+		unregPilot.travel(((int)startOffset * 10));
+	    super.arby = new BetterArbitrator(behaviorPriority, false);	
+		
 		super.arby.start();
 		unregPilot.stop();
 	}

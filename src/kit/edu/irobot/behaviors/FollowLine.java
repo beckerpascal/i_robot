@@ -5,6 +5,7 @@ import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.utils.Constants;
 import kit.edu.irobot.utils.Buffer;
 import lejos.hardware.lcd.LCD;
+import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Behavior;
 import lejos.utility.Delay;
@@ -14,7 +15,6 @@ import kit.edu.irobot.utils.UnregulatedPilot;
 public class FollowLine extends RobotBehavior {
 	   private boolean exit = false; 
 	   private boolean suppressed = false;
-	   private Robot robot;
 	   
 		private float integral,last_error;
 		
@@ -35,9 +35,10 @@ public class FollowLine extends RobotBehavior {
 		private SampleProvider provider;
 		private UnregulatedPilot pilot;
 	   
-	   public FollowLine(Robot robot) {
-		   		this.robot = robot;
-		   		this.pilot = robot.getUnregulatedPilot();
+	   public FollowLine(EV3ColorSensor color, UnregulatedPilot pilot) {
+		   		this.pilot = pilot;
+
+			    provider = color.getRedMode();
 	   }
 	   	   
 	   public boolean takeControl() {
@@ -112,7 +113,6 @@ public class FollowLine extends RobotBehavior {
 		 
 			pilot.reset();
 			
-		    provider = robot.getSensorLight().getRedMode();
 		    float[] values = new float[provider.sampleSize()];
 			
 			last_error = Float.MAX_VALUE;
@@ -169,8 +169,7 @@ public class FollowLine extends RobotBehavior {
 				LCD.drawString("Power B: " + powerB, 1, 6);
 			}	
 			
-			//pilot.stop();
-			robot.stopMotion();
+			pilot.stop();
 		}
 	   
 

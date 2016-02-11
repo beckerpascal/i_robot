@@ -61,7 +61,7 @@ public class DrivePlankBridge extends RobotBehavior {
 		LCD.clear();
 		LCD.drawString("drive forward...", 0, 0);
 
-		this.setRobotSpeed(1.0,motor_left,motor_right);
+		this.setRobotSpeed(1.0f, motor_left, motor_right);
 		motor_left.forward();
 		motor_right.forward();
 		

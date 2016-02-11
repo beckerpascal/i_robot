@@ -3,6 +3,7 @@ package kit.edu.irobot.behaviors;
 import kit.edu.irobot.robot.Robot;
 import kit.edu.irobot.solver.BetterArbitrator;
 import kit.edu.irobot.solver.StageSolver;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.subsumption.Behavior;
 
 public abstract class RobotBehavior implements Behavior{
@@ -14,14 +15,6 @@ public abstract class RobotBehavior implements Behavior{
 	
 	public void terminate(){
 		this.exit = true;
-	}
-	
-	public void run(){
-		while (!suppressed && !exit){			
-			Thread.yield();
-		}
-
-		robot.stopMotion();
 	}
 	
 	protected void requestArbitratorExit() {
@@ -36,4 +29,19 @@ public abstract class RobotBehavior implements Behavior{
 
 	@Override
 	public abstract void suppress();
+	
+	public void setMotorSpeed(float speed, RegulatedMotor motor) {
+		// speed = Math.abs(speed);
+		speed = Math.min(speed, 1.0f);
+
+		float max_speed = motor.getMaxSpeed();
+		float new_speed = max_speed * speed;
+		motor.setSpeed((int) new_speed);
+	}
+
+	// speed = [0-1]
+	public void setRobotSpeed(float speed, RegulatedMotor left, RegulatedMotor right) {
+		setMotorSpeed(speed, left);
+		setMotorSpeed(speed, right);
+	}
 }

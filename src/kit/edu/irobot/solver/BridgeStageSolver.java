@@ -25,12 +25,7 @@ public class BridgeStageSolver extends StageSolver{
 		super("Bridge");
 		requestResources(D_PILOT | ULTRA | COLOR | TOUCH | HEAD);
 		
-		//RobotBehavior b1 = new DriveForward(super.getRobot());
-		RobotBehavior b2 = new GrindtheCrack(super.robot);
-		RobotBehavior b3 = new ExitOnLight(super.robot, super.exitCallback);
-
-		behaviors = new RobotBehavior[]{b2, b3};
-		super.arby = new BetterArbitrator(behaviors);
+		
 	}
 	
 	private void findEntry(DifferentialPilot pilot) {
@@ -80,6 +75,15 @@ public class BridgeStageSolver extends StageSolver{
 
 	@Override
 	public void solve() {
+		//RobotBehavior b1 = new DriveForward(super.getRobot());
+		RobotBehavior b2 = new GrindtheCrack(distanceSensor, motorLeft, motorRight, exitCallback);
+		RobotBehavior b3 = new ExitOnLight(colorSensor, exitCallback);
+
+		behaviors = new RobotBehavior[]{b2, b3};
+		super.arby = new BetterArbitrator(behaviors);
+		
+		
+		
 		diffPilot.setTravelSpeed(0.8*diffPilot.getMaxTravelSpeed());
 		if (active()) diffPilot.travel(45);
 		
