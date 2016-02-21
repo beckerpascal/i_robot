@@ -1,5 +1,5 @@
 # i_robot
-
+![Alt text](model/Bowser.tiff?raw=true "Bowser")
 ##Tasks (aus dem Wintersemester 2013/14)
 
 1. Hindernisparcours
